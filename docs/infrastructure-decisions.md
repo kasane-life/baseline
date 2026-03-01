@@ -271,22 +271,58 @@ Pure Local ◄──────────────────────
 
 ---
 
+## Decision 5: Testing Strategy
+
+**Date:** Mar 1, 2026
+**Decision:** Vitest for unit/integration tests. No E2E or cross-browser testing yet.
+**Status:** Decided, partially implemented
+
+### What's implemented
+
+- **App:** Vitest (node env) — 15 tests for AES-256-GCM encryption, key management, sync logic
+- **Worker:** Vitest + `@cloudflare/vitest-pool-workers` — 7 JWT tests + 8 sync endpoint tests running in miniflare with real KV
+- **Voice parser:** 42 tests via custom Node runner (`pnpm run test:legacy`)
+
+### What we're NOT doing yet (and why)
+
+**No Playwright / E2E browser testing.** The app is pre-launch with major UI workstreams still in flux (3-phase intake redesign, Tailwind migration, PWA, iOS fixes). E2E tests at this stage would:
+- Break with every UI change, creating maintenance drag
+- Test designs that haven't been locked in
+- Slow down the design/build flywheel when speed matters most
+
+**No Sauce Labs / cross-browser matrix.** No production users means no real browser-specific bug reports to drive this investment. Cross-browser testing is expensive to maintain and premature without a stable UI.
+
+### When to revisit
+
+- **Playwright (single browser, happy path):** When core flows are stable and deployed to production. Start with one test: intake → score → result.
+- **Cross-browser matrix:** When real users report browser-specific issues, or before a major public launch.
+- **Scoring engine tests:** Next priority — the scoring logic is stable and critical. Vitest tests for `score.js` edge cases, freshness decay, NHANES percentile lookups.
+
+### Guiding principle
+
+Test what's locked in. The testing layer should trail the stability of the code, not lead it. Infrastructure (encryption, JWT, sync protocol) is stable → tested. UI (intake flow, CSS, mobile layout) is volatile → not yet tested. As features graduate from "iterating" to "shipping," add tests.
+
+### Commands
+
+```bash
+cd ~/src/baseline/app && pnpm test              # vitest: encryption + sync (15 tests)
+cd ~/src/baseline/app && pnpm run test:legacy    # voice parser (42 tests)
+cd ~/src/baseline/worker && pnpm test            # vitest: JWT + sync endpoints (15 tests)
+```
+
+---
+
 ## Future Decisions (Not Yet Made)
 
 ### Build System
-Currently: no build step. Raw HTML/CSS/JS, ES modules, `python3 -m http.server`. This is intentionally simple and fast to iterate on. When do we need a build system?
-- When JS file count exceeds ~10 and import chains get complex
-- When we want TypeScript for the scoring engine
-- When bundle size matters (tree-shaking unused NHANES data)
-- **Not yet.** Complexity budget should go to features, not tooling.
+Currently: Vite. Handles ES modules, Tailwind CSS, and production builds. No additional build complexity needed.
 
-### Testing
-Currently: manual cross-validation (JS vs Python scoring). Need automated tests for:
-- BIOMARKER_MAP parsing (input text → correct field + value)
+### Testing — Next Layers
+Covered above in Decision 5. Next candidates for test coverage:
+- Scoring engine edge cases (`score.js`)
 - Freshness decay calculations
-- Scoring engine edge cases
+- BIOMARKER_MAP parsing (input text → correct field + value)
 - Import merge logic (duplicate detection, conflict resolution)
-- **Framework:** Vitest or plain Node test runner. No heavy frameworks.
 
 ### Mobile Experience
 Currently: responsive CSS. Works on mobile but not optimized for it. The "drop files" UX is desktop-oriented. Mobile users need:
