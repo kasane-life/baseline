@@ -1,6 +1,7 @@
 name = "baseline-api"
 main = "src/index.ts"
 compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ALLOWED_ORIGIN = "https://andrewdeal.info"
@@ -8,3 +9,7 @@ ALLOWED_ORIGIN = "https://andrewdeal.info"
 [[kv_namespaces]]
 binding = "LOGS"
 id = "8818d789085540ee80b0cc8448ce1113"
+
+[[kv_namespaces]]
+binding = "CREDENTIALS"
+id = "e359bce2a59f4093958ae757e0e6f52d"

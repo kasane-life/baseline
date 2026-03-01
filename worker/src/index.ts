@@ -1,10 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { VOICE_EXTRACTION_TOOL, LAB_EXTRACTION_TOOL } from './schema';
+import { handleAuth } from './auth';
+import { handleSync } from './sync';
 
 interface Env {
   ANTHROPIC_API_KEY: string;
   ALLOWED_ORIGIN: string;
   LOGS: KVNamespace;
+  CREDENTIALS: KVNamespace;
+  JWT_SECRET: string;
 }
 
 // CORS headers for preflight and responses
@@ -17,8 +21,8 @@ function corsHeaders(origin: string, allowedOrigin: string): HeadersInit {
 
   return {
     'Access-Control-Allow-Origin': isAllowed ? origin : '',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, PUT, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
   };
 }
@@ -129,7 +133,28 @@ export default {
 
     // Health check — allow GET
     if (request.method === 'GET' && (path === '/' || path === '/health')) {
-      return Response.json({ status: 'ok', endpoints: ['/parse-voice', '/parse-lab'] }, { headers });
+      return Response.json({ status: 'ok', endpoints: ['/parse-voice', '/parse-lab', '/auth/*', '/sync/*'] }, { headers });
+    }
+
+    // Auth routes — handled separately (no Anthropic client needed)
+    if (path.startsWith('/auth/')) {
+      const response = await handleAuth(request, env, path);
+      // Add CORS headers to auth responses
+      const authHeaders = new Headers(response.headers);
+      for (const [k, v] of Object.entries(headers)) {
+        authHeaders.set(k, v as string);
+      }
+      return new Response(response.body, { status: response.status, headers: authHeaders });
+    }
+
+    // Sync routes — JWT-protected encrypted profile storage
+    if (path.startsWith('/sync/')) {
+      const response = await handleSync(request, env, path);
+      const syncHeaders = new Headers(response.headers);
+      for (const [k, v] of Object.entries(headers)) {
+        syncHeaders.set(k, v as string);
+      }
+      return new Response(response.body, { status: response.status, headers: syncHeaders });
     }
 
     if (request.method !== 'POST') {
@@ -145,6 +170,7 @@ export default {
       return new Response('Forbidden', { status: 403, headers });
     }
 
+    // Lazy Anthropic client — only created for /parse-* routes
     const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
     try {
