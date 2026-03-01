@@ -172,6 +172,22 @@ test('labs: "got my labs back"', () => {
   assertEquals(parseVoiceIntake("got my labs back").hasLabs, true);
 });
 
+// ── Blood pressure negation ──
+
+test('bp: "no blood pressure"', () => {
+  assertEquals(parseVoiceIntake("no blood pressure").noBp, true);
+});
+
+test('bp: "don\'t have my blood pressure"', () => {
+  assertEquals(parseVoiceIntake("don't have my blood pressure").noBp, true);
+});
+
+test('bp: "110 over 70" should NOT set noBp', () => {
+  const r = parseVoiceIntake("blood pressure 110 over 70");
+  assertEquals(r.systolic, 110);
+  assertEquals(r.noBp, undefined);
+});
+
 // ── Family history ──
 
 test('family: "family history of cardiac disease"', () => {

@@ -2,6 +2,7 @@
 // Takes scored output and renders into DOM
 
 import { Standing, FRESHNESS_WINDOWS } from '../score.js';
+import { renderBpTracker } from './bp-tracker.js';
 import { createLogger } from './logger.js';
 const log = createLogger('render');
 
@@ -87,6 +88,13 @@ export function renderResults(output, profile) {
 
   // Action plan
   renderMoves(output.gaps, output.coverageScore, output.results);
+
+  // Post-score tracking modules
+  const bpSlot = document.getElementById('bp-tracker-slot');
+  if (bpSlot) renderBpTracker(bpSlot);
+
+  // "Start tracking today" based on equipment selections
+  renderTrackingToday(profile);
 
   // Metric tables
   renderTier('r-tier1', 'Tier 1: Foundation', output.results.filter(r => r.tier === 1));
@@ -292,6 +300,49 @@ export function renderMoves(gaps, currentScore, results) {
   }
 
   html += `</div>`;
+  el.innerHTML = html;
+}
+
+// ── "Start tracking today" — personalized from equipment selections ──
+const TRACKING_SUGGESTIONS = {
+  bp_cuff: {
+    icon: '\u2665',
+    name: 'Track your blood pressure',
+    instruction: 'Sit quietly for 5 min, then take 2 readings 1 min apart. Same arm, same time each morning.',
+  },
+  scale: {
+    icon: '\u2696',
+    name: 'Track your weight',
+    instruction: 'Weigh yourself first thing each morning, after using the bathroom, before eating or drinking.',
+  },
+  tape_measure: {
+    icon: '\uD83D\uDCCF',
+    name: 'Track your waist circumference',
+    instruction: 'Measure at your navel, standing, after a normal exhale. Once a week, same day.',
+  },
+};
+
+function renderTrackingToday(profile) {
+  const el = document.getElementById('tracking-today');
+  if (!el) return;
+  const devices = (profile._devices || []).filter(d => d !== 'none');
+  if (devices.length === 0) { el.innerHTML = ''; return; }
+
+  let html = '<div class="mb-8">';
+  html += '<div class="font-mono text-[0.72rem] font-medium text-text-dim tracking-wider uppercase mb-3">Start tracking today</div>';
+  html += '<div class="flex flex-col gap-2">';
+  for (const d of devices) {
+    const s = TRACKING_SUGGESTIONS[d];
+    if (!s) continue;
+    html += `<div class="flex items-center gap-3.5 px-4 py-3.5 bg-white/[0.015] border border-white/[0.04] rounded-lg">
+      <div class="text-xl opacity-40 shrink-0">${s.icon}</div>
+      <div>
+        <div class="text-[0.85rem] text-text-muted font-medium">${s.name}</div>
+        <div class="text-[0.78rem] text-text-dim leading-relaxed">${s.instruction}</div>
+      </div>
+    </div>`;
+  }
+  html += '</div></div>';
   el.innerHTML = html;
 }
 

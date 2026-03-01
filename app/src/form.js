@@ -1,11 +1,12 @@
 // form.js — Form step navigation, profile building, form population
 
 import { getSelectedMeds } from './meds.js';
+import { getPhq9Score } from './phq9.js';
 import { createLogger } from './logger.js';
 const log = createLogger('form');
 
 // ── State ──
-export const TOTAL_STEPS = 4;
+export const TOTAL_STEPS = 2;
 let _currentStep = 0;
 let _parsedLabValues = {};
 let _pendingImports = [];
@@ -35,13 +36,7 @@ export function clearPendingImports() {
 }
 
 export function initProgressBar() {
-  const bar = document.getElementById('progress-bar');
-  for (let i = 0; i < TOTAL_STEPS; i++) {
-    const pip = document.createElement('div');
-    pip.className = 'pip' + (i === 0 ? ' active' : '');
-    pip.dataset.step = i;
-    bar.appendChild(pip);
-  }
+  // No longer needed — 2-phase flow doesn't use progress pips
 }
 
 export function initToggleButtons() {
@@ -96,23 +91,9 @@ export function prevStep() {
 }
 
 export function showStep(n) {
-  document.querySelectorAll('.step').forEach(s => {
-    s.classList.remove('active');
-    s.style.display = '';
-  });
-  document.getElementById('progress-bar').style.display = '';
-  const step = document.querySelector(`.step[data-step="${n}"]`);
-  if (step) step.classList.add('active');
-
-  document.querySelectorAll('.progress-bar .pip').forEach(p => {
-    const ps = parseInt(p.dataset.step);
-    p.classList.remove('active', 'done');
-    if (ps === n) p.classList.add('active');
-    else if (ps < n) p.classList.add('done');
-  });
-
+  // Legacy step navigation — now a no-op in 2-phase flow
+  // Kept as export for any remaining callers
   _currentStep = n;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 export function val(id) {
@@ -146,7 +127,7 @@ export function buildProfile() {
 
   const fhAnswer = toggleVal('family-history');
   const meds = getSelectedMeds();
-  const phq9Answer = toggleVal('phq9');
+  const phq9Score = getPhq9Score();
   const fastingAnswer = toggleVal('fasting');
   const labDateEl = document.getElementById('f-lab-date');
   const labDate = labDateEl?.value || null;
@@ -189,7 +170,7 @@ export function buildProfile() {
     vo2_max: val('f-vo2'),
     hrv_rmssd_avg: val('f-hrv'),
     weight_lbs: weightLbs,
-    phq9_score: phq9Answer === 'yes' ? 0 : null,
+    phq9_score: phq9Score,
     zone2_min_per_week: val('f-zone2'),
     has_supplement_list: null,
     _bmi: bmi,
@@ -249,8 +230,13 @@ export function populateForm(p) {
   }
 
   setToggle('family-history', p.has_family_history);
-  // Medications now handled by med search typeahead
-  setToggle('phq9', p.phq9_score != null ? true : null);
+  // PHQ-9: populate direct entry input if score exists
+  if (p.phq9_score != null) {
+    const phq9Input = document.getElementById('phq9-direct-input');
+    if (phq9Input) phq9Input.value = p.phq9_score;
+    // Trigger the phq9 module to pick up the value
+    import('./phq9.js').then(m => m.setPhq9Score(p.phq9_score));
+  }
   setToggle('fasting', p.fasting);
 
   if (p.lab_draw_date) {
@@ -269,6 +255,5 @@ export function switchIntakeTab(tab) {
   } else {
     document.getElementById('intake-split').style.display = 'none';
     document.getElementById('form-mode').classList.add('open');
-    showStep(0);
   }
 }

@@ -160,6 +160,12 @@ export function parseVoiceIntake(text) {
     result.medicationText = '';
   }
 
+  // ── Step 3b2: Blood pressure — handle negation
+  const bpNeg = /\b(?:no\s+(?:blood\s*pressure|bp)|(?:don'?t|do\s*not)\s+(?:have|know)\s+(?:my\s+)?(?:blood\s*pressure|bp)|(?:blood\s*pressure|bp)\s*[,:]?\s*(?:none|no|nothing|don'?t|skip|unknown))\b/.test(lower);
+  if (bpNeg && !result.systolic) {
+    result.noBp = true;
+  }
+
   // ── Step 3c: Labs — handle negations and positive mentions
   const labsNeg = /\b(?:no\s+(?:labs?|blood\s*work|blood\s*tests?)|(?:don'?t|do\s*not)\s+have\s+(?:any\s+)?(?:labs?|blood\s*work)|haven'?t\s+(?:had|done|gotten)\s+(?:labs?|blood\s*work))\b/.test(lower);
   if (labsNeg) {
@@ -172,14 +178,17 @@ export function parseVoiceIntake(text) {
   }
 
   // ── Step 4: Family history ──
-  const famNeg = /\b(?:no\s+(?:family\s*history|history)|(?:family\s*history)\s*[,:]?\s*(?:none|no|nothing)|nothing\s+runs\s+in\s+(?:my|the)\s+family)\b/.test(lower);
+  // Must require "family" context — avoid misfiring on bare "heart", "disease", etc.
+  const famNeg = /\b(?:no\s+family\s*history|family\s*history\s*[,:]?\s*(?:none|no|nothing|negative)|nothing\s+runs\s+in\s+(?:my|the)\s+family|no\s+history\s+of\s+(?:cardiac|heart|cancer|diabetes))\b/.test(lower);
   const famRelatives = /\b(?:dad|father|mom|mother|parent|brother|sister|uncle|aunt|grandfather|grandmother|grandpa|grandma)\b/.test(lower);
-  const famKeywords = /\b(?:family\s*history|(?:family|history)\s+(?:of\s+)?(?:cardiac|heart|cancer|diabetes|stroke))\b/.test(lower);
-  const famConditions = /\b(?:cardiac|heart|cancer|diabetes|stroke|disease|attack|issues?|problems?)\b/.test(lower);
+  // "family history of <condition>" — explicit phrase
+  const famExplicit = /\bfamily\s*history\s+(?:of\s+)?(?:cardiac|heart|cancer|diabetes|stroke|disease|risk|issues?|problems?)\b/.test(lower);
+  // Relative + medical event — "father had a heart attack", "mom diagnosed with diabetes"
+  const famRelativeCondition = famRelatives && /\b(?:had\s+(?:a\s+)?(?:heart\s*attack|stroke|cancer|diabetes)|died\s+(?:of|from)|diagnosed\s+with|passed\s+(?:from|away))\b/.test(lower);
 
   if (famNeg) {
     result.familyHistory = false;
-  } else if ((famRelatives && famConditions) || famKeywords) {
+  } else if (famExplicit || famRelativeCondition) {
     result.familyHistory = true;
   }
 

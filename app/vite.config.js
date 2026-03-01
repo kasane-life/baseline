@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   root: '.',
@@ -9,4 +10,7 @@ export default defineConfig({
   server: {
     port: 8787,
   },
+  plugins: [
+    tailwindcss(),
+  ],
 });

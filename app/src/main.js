@@ -6,39 +6,99 @@ import { initStorage, loadFullProfile, saveDemographics, addImportWithObservatio
 import { exportAll, importAll } from '../db.js';
 import { createLogger } from './logger.js';
 
-import { initProgressBar, initToggleButtons, toggleDevice, nextStep, prevStep, showStep, buildProfile, populateForm, switchIntakeTab, addParsedLabValues, clearPendingImports, getPendingImports, resetState } from './form.js';
+import { initToggleButtons, toggleDevice, showStep, buildProfile, populateForm, switchIntakeTab, addParsedLabValues, clearPendingImports, getPendingImports, resetState } from './form.js';
 import { initLabDrop, handleLabFileInput, parseLabText, togglePasteLabs, toggleManualLabs } from './lab-import.js';
 import { renderResults } from './render.js';
-import { toggleFullVoice, toggleVoice, submitVoiceIntake, hasSpeechSupport, hideSpeechUI, resetVoiceState, checklistLocked, setShowGapBridge, applyExtraction, expandTranscript } from './intake.js';
+import { toggleFullVoice, toggleVoice, submitVoiceIntake, hasSpeechSupport, hideSpeechUI, resetVoiceState, checklistLocked, applyExtraction, expandTranscript } from './intake.js';
 import { initMedSearch, removeMedTag } from './meds.js';
-import { showGapBridge, handleBridgeLabImport, bridgeScore, setComputeResults } from './bridge.js';
+import { initPhq9, getPhq9Score, resetPhq9 } from './phq9.js';
+import { initErrorBoundary, initBreadcrumbTracking, initFeatureFlags, initVoiceFallback, initFeedbackButton, addBreadcrumb } from './feedback.js';
+import { isPasskeySupported, isPlatformAuthenticatorAvailable, isAuthenticated, registerPasskey, loginWithPasskey, getIdentityStatus } from './identity.js';
+import { syncOnLogin } from './sync.js';
 
 const log = createLogger('main');
 
-// ── Wire up circular dependencies ──
-setShowGapBridge(showGapBridge);
-setComputeResults(computeResults);
+// ── Error boundary first — catches all subsequent init errors ──
+initErrorBoundary();
+initFeatureFlags();
 
 // ── Init ──
 log.info('baseline app starting');
 await loadNhanes();
 const persisted = await initStorage();
-initProgressBar();
 initToggleButtons();
 initLabDrop();
 initMedSearch();
+initPhq9();
 await checkReturnVisit();
+initIdentityUI();
 if (!persisted) {
   log.warn('storage not persistent — show export reminder after scoring');
 }
 
-// Hide voice tab if Speech API isn't available
-if (!hasSpeechSupport()) {
-  hideSpeechUI();
+// Hide voice tab if Speech API isn't available or ?voice=off
+// Note: mobile devices with speech support (iOS Safari) get voice by default
+if (!hasSpeechSupport() || window._forceFormMode) {
+  if (!hasSpeechSupport()) hideSpeechUI();
   switchIntakeTab('form');
+  addBreadcrumb('init', `form-mode: speech=${hasSpeechSupport()}, flag=${!!window._forceFormMode}`);
 }
 
 log.info('baseline app ready');
+
+// ── Service worker registration (PWA — production only) ──
+if ('serviceWorker' in navigator && !import.meta.env.DEV) {
+  navigator.serviceWorker.register('/baseline/app/sw.js').then(
+    (reg) => log.info('sw registered', { scope: reg.scope }),
+    (err) => log.warn('sw registration failed', { error: err.message })
+  );
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'SW_UPDATED') {
+      const toast = document.createElement('div');
+      toast.className = 'sw-toast';
+      toast.innerHTML = 'Updated version available. <button onclick="location.reload()">Refresh</button>';
+      document.body.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+    }
+  });
+}
+
+// ── Phase navigation ──
+function showPhase2() {
+  document.getElementById('phase1').style.display = 'none';
+  const phase2 = document.getElementById('phase2');
+  phase2.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Re-init lab drop zone in case it moved DOM
+  initLabDrop();
+  // Reset carousel to step 0
+  _currentEnrichStep = 0;
+  phase2.querySelectorAll('.stepper-step').forEach((s, i) => {
+    s.classList.remove('active', 'touched');
+    if (i === 0) s.classList.add('active');
+  });
+  phase2.querySelectorAll('.enrich-slide').forEach((s, i) => {
+    s.classList.remove('active', 'slide-enter-left', 'slide-enter-right');
+    if (i === 0) s.classList.add('active');
+  });
+  const cta = phase2.querySelector('.phase2-actions');
+  if (cta) cta.classList.remove('revealed');
+  const skipWrap = phase2.querySelector('.phase2-skip-wrap');
+  if (skipWrap) { skipWrap.classList.remove('revealed'); skipWrap.style.display = ''; }
+  log.info('navigated to phase 2');
+}
+
+function goBackToPhase1() {
+  document.getElementById('phase2').style.display = 'none';
+  document.getElementById('phase1').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  log.info('navigated back to phase 1');
+}
+
+// Voice submit → Phase 2 (replaces gap bridge)
+function onVoiceSubmitComplete() {
+  showPhase2();
+}
 
 // ── Compute & render results ──
 async function computeResults() {
@@ -102,18 +162,159 @@ async function checkReturnVisit() {
   }
 }
 
+// ── Identity UI ──
+async function initIdentityUI() {
+  const banner = document.getElementById('passkey-banner');
+  const sidebarSection = document.getElementById('identity-sidebar');
+  if (!banner || !sidebarSection) return;
+
+  if (!isPasskeySupported()) {
+    banner.style.display = 'none';
+    sidebarSection.style.display = 'none';
+    return;
+  }
+
+  const platformAvailable = await isPlatformAuthenticatorAvailable();
+  if (!platformAvailable) {
+    banner.style.display = 'none';
+    sidebarSection.style.display = 'none';
+    return;
+  }
+
+  updateIdentityUI();
+}
+
+function updateIdentityUI() {
+  const banner = document.getElementById('passkey-banner');
+  const sidebarSection = document.getElementById('identity-sidebar');
+  const sidebarBtn = document.getElementById('identity-sidebar-btn');
+  const sidebarStatus = document.getElementById('identity-sidebar-status');
+  if (!banner) return;
+
+  if (isAuthenticated()) {
+    banner.classList.remove('active');
+    if (sidebarStatus) sidebarStatus.textContent = 'Signed in with passkey';
+    if (sidebarBtn) sidebarBtn.textContent = 'Add another device';
+  } else {
+    banner.classList.add('active');
+    if (sidebarStatus) sidebarStatus.textContent = '';
+    if (sidebarBtn) sidebarBtn.textContent = 'Set up passkey';
+  }
+}
+
+window.handlePasskeyAction = async function() {
+  const btn = document.getElementById('passkey-action-btn') || document.getElementById('identity-sidebar-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Setting up...'; }
+
+  try {
+    if (isAuthenticated()) {
+      await registerPasskey();
+    } else {
+      try {
+        await loginWithPasskey();
+      } catch {
+        await registerPasskey();
+      }
+    }
+    updateIdentityUI();
+    addBreadcrumb('identity', 'passkey auth success');
+    // Sync profile after successful auth
+    syncOnLogin().catch(err => log.warn('sync after auth failed', { error: err.message }));
+  } catch (err) {
+    if (err.name === 'NotAllowedError') {
+      addBreadcrumb('identity', 'passkey cancelled by user');
+    } else {
+      log.warn('passkey error', { error: err.message });
+      addBreadcrumb('identity', `passkey error: ${err.message}`);
+    }
+  } finally {
+    if (btn) { btn.disabled = false; }
+    updateIdentityUI();
+  }
+};
+
+// Expose for console testing — wrapped to prevent unhandled rejections
+window.__baseline_identity = {
+  isPasskeySupported,
+  isPlatformAuthenticatorAvailable,
+  isAuthenticated,
+  getIdentityStatus,
+  registerPasskey: () => registerPasskey().catch(err => {
+    if (err.name !== 'NotAllowedError') log.warn('registerPasskey failed', { error: err.message });
+    return { error: err.message };
+  }),
+  loginWithPasskey: () => loginWithPasskey().catch(err => {
+    if (err.name !== 'NotAllowedError') log.warn('loginWithPasskey failed', { error: err.message });
+    return { error: err.message };
+  }),
+};
+
+// ── Enrich carousel navigation ──
+let _currentEnrichStep = 0;
+const ENRICH_STEP_COUNT = 4;
+
+function goToEnrichStep(n) {
+  if (n < 0 || n >= ENRICH_STEP_COUNT) return;
+  const slides = document.querySelectorAll('.enrich-slide');
+  const steps = document.querySelectorAll('.stepper-step');
+  const prev = _currentEnrichStep;
+
+  // Deactivate current slide
+  slides[prev]?.classList.remove('active', 'slide-enter-left', 'slide-enter-right');
+  steps[prev]?.classList.remove('active');
+
+  // Activate target slide
+  const isMobile = window.innerWidth <= 640;
+  const slide = slides[n];
+  if (slide) {
+    slide.classList.add('active');
+    if (isMobile) {
+      slide.classList.add(n > prev ? 'slide-enter-right' : 'slide-enter-left');
+    }
+  }
+  steps[n]?.classList.add('active');
+
+  _currentEnrichStep = n;
+}
+
+function advanceEnrichStep() {
+  const steps = document.querySelectorAll('.stepper-step');
+  const current = steps[_currentEnrichStep];
+  if (current && !current.classList.contains('touched')) {
+    current.classList.add('touched');
+  }
+
+  // Show skip link once first step is touched
+  const skipWrap = document.querySelector('.phase2-skip-wrap');
+  if (skipWrap && !skipWrap.classList.contains('revealed')) {
+    skipWrap.classList.add('revealed');
+  }
+
+  // Check if all steps are touched
+  const touchedCount = document.querySelectorAll('.stepper-step.touched').length;
+  if (_currentEnrichStep >= ENRICH_STEP_COUNT - 1 || touchedCount >= ENRICH_STEP_COUNT) {
+    // Mark last step touched
+    if (current) current.classList.add('touched');
+    const allTouched = document.querySelectorAll('.stepper-step.touched').length >= ENRICH_STEP_COUNT;
+    if (allTouched) {
+      const cta = document.querySelector('.phase2-actions');
+      if (cta) cta.classList.add('revealed');
+      if (skipWrap) skipWrap.style.display = 'none';
+    }
+    if (_currentEnrichStep >= ENRICH_STEP_COUNT - 1) return;
+  }
+
+  goToEnrichStep(_currentEnrichStep + 1);
+}
+
 // ── Window bindings for HTML onclick handlers ──
 window.toggleFullVoice = toggleFullVoice;
 window.toggleVoice = toggleVoice;
 window.toggleDevice = toggleDevice;
-window.nextStep = nextStep;
-window.prevStep = prevStep;
 window.switchIntakeTab = switchIntakeTab;
 window.expandForm = () => switchIntakeTab('form');
 window.showFormMode = () => switchIntakeTab('form');
 window.submitVoiceIntake = submitVoiceIntake;
-window.handleBridgeLabImport = handleBridgeLabImport;
-window.bridgeScore = bridgeScore;
 window.computeResults = computeResults;
 window.parseLabText = parseLabText;
 window.togglePasteLabs = togglePasteLabs;
@@ -121,6 +322,16 @@ window.toggleManualLabs = toggleManualLabs;
 window.handleLabFileInput = handleLabFileInput;
 window.expandTranscript = expandTranscript;
 window.removeMedTag = removeMedTag;
+window.showPhase2 = showPhase2;
+window.goBackToPhase1 = goBackToPhase1;
+window.goToEnrichStep = goToEnrichStep;
+window.advanceEnrichStep = advanceEnrichStep;
+
+// ── Feedback tracking (after window bindings are set) ──
+initBreadcrumbTracking();
+initVoiceFallback();
+initFeedbackButton();
+addBreadcrumb('init', 'app ready');
 
 window.loadSavedProfile = async function() {
   const tsProfile = await loadFullProfile();
@@ -141,7 +352,8 @@ window.clearSaved = async function() {
 window.startOver = function() {
   document.getElementById('results').classList.remove('active');
   document.getElementById('questionnaire').style.display = 'block';
-  document.getElementById('gap-bridge').classList.remove('active');
+  document.getElementById('phase1').style.display = 'block';
+  document.getElementById('phase2').style.display = 'none';
   document.getElementById('voice-hero').style.display = '';
   document.getElementById('intake-tabs').style.display = '';
   switchIntakeTab('voice');
@@ -158,15 +370,17 @@ window.startOver = function() {
 window.clearAndRestart = async function() {
   await clearAll();
   resetState();
+  resetPhq9();
   document.getElementById('results').classList.remove('active');
   document.getElementById('questionnaire').style.display = 'block';
+  document.getElementById('phase1').style.display = 'block';
+  document.getElementById('phase2').style.display = 'none';
   document.querySelectorAll('.field-input').forEach(i => i.value = '');
   document.querySelectorAll('.opt-btn, .toggle-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('lab-paste').value = '';
   document.getElementById('parse-results').classList.remove('active');
   document.getElementById('lab-file-list').innerHTML = '';
   document.querySelectorAll('.manual-fields').forEach(f => f.classList.remove('open'));
-  document.getElementById('gap-bridge').classList.remove('active');
   document.getElementById('voice-hero').style.display = '';
   document.getElementById('intake-tabs').style.display = '';
   document.getElementById('voice-idle').style.display = '';
@@ -178,6 +392,27 @@ window.clearAndRestart = async function() {
   const guideEl = document.getElementById('voice-guide');
   if (guideEl) { const n = guideEl.querySelector('#guide-nudges'); if (n) n.innerHTML = ''; }
   switchIntakeTab('voice');
+  // Clear PHQ-9 questionnaire state
+  document.querySelectorAll('.phq9-radio').forEach(r => r.classList.remove('selected'));
+  const phq9Input = document.getElementById('phq9-direct-input');
+  if (phq9Input) phq9Input.value = '';
+  const phq9Display = document.getElementById('phq9-score-display');
+  if (phq9Display) { phq9Display.classList.remove('active'); phq9Display.innerHTML = ''; }
+  // Reset carousel stepper + slides
+  _currentEnrichStep = 0;
+  document.querySelectorAll('.stepper-step').forEach((s, i) => {
+    s.classList.remove('active', 'touched');
+    if (i === 0) s.classList.add('active');
+  });
+  document.querySelectorAll('.stepper-status').forEach(s => s.textContent = '');
+  document.querySelectorAll('.enrich-slide').forEach((s, i) => {
+    s.classList.remove('active', 'slide-enter-left', 'slide-enter-right');
+    if (i === 0) s.classList.add('active');
+  });
+  const ctaEl = document.querySelector('.phase2-actions');
+  if (ctaEl) ctaEl.classList.remove('revealed');
+  const skipEl = document.querySelector('.phase2-skip-wrap');
+  if (skipEl) { skipEl.classList.remove('revealed'); skipEl.style.display = ''; }
 };
 
 window.exportProfile = async function() {

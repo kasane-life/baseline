@@ -23,7 +23,8 @@ let currentNudgeState = null;
 // Monotonic — once checked, stays checked for this session
 export const checklistLocked = new Set();
 
-// Items that need AI confirmation
+// Items that need AI confirmation before going green
+// (prevents false positives from regex on short interim fragments)
 const AI_CONFIRMED_ITEMS = new Set(['age', 'sex', 'height', 'weight', 'history']);
 
 // Nudge definitions in checklist order
@@ -194,6 +195,15 @@ export function updateVoiceChecklist(extracted, source = 'live') {
       checklistLocked.add('labs');
     }
   }
+  // BP: check if provided, or mark as declined
+  if (!checklistLocked.has('bp')) {
+    const bpItem = document.querySelector('.voice-checklist-item[data-check="bp"]');
+    if (bpItem && extracted.noBp) {
+      bpItem.classList.remove('pending');
+      bpItem.classList.add('declined');
+      checklistLocked.add('bp');
+    }
+  }
   check('bp', !!extracted.systolic);
   check('waist', !!extracted.waist);
   check('history', extracted.familyHistory != null);
@@ -239,7 +249,13 @@ function updateVoiceGuide(ex, source = 'live') {
   const nudgesEl = document.getElementById('guide-nudges');
   if (!guide) return;
 
-  const nextNudge = NUDGE_SEQUENCE.find(n => !checklistLocked.has(n.check));
+  // Find the next unchecked item — skip items that are already pending (waiting for AI)
+  const nextNudge = NUDGE_SEQUENCE.find(n => {
+    if (checklistLocked.has(n.check)) return false;
+    const item = document.querySelector(`.voice-checklist-item[data-check="${n.check}"]`);
+    if (item && item.classList.contains('pending')) return false;
+    return true;
+  }) || NUDGE_SEQUENCE.find(n => !checklistLocked.has(n.check));
   const nextCheck = nextNudge ? nextNudge.check : '_done';
 
   let isPending = false;
@@ -355,15 +371,19 @@ export function toggleFullVoice() {
       const ex = result.extracted;
       const regexCheck = parseVoiceIntake(text);
 
+      // Trust AI extraction for checklist items — regex is a bonus signal, not a gate.
+      // For numeric values (age, height, weight, BP), AI is authoritative.
+      // For family history, still cross-check: regex false positives are common.
       const mapped = {
-        age: (ex.age && regexCheck.age) ? ex.age : undefined,
-        sex: (ex.sex && regexCheck.sex) ? ex.sex : undefined,
-        heightFt: (ex.height_feet && regexCheck.heightFt) ? ex.height_feet : undefined,
-        weight: (ex.weight_lbs && regexCheck.weight) ? ex.weight_lbs : undefined,
+        age: ex.age || undefined,
+        sex: ex.sex || undefined,
+        heightFt: ex.height_feet || undefined,
+        weight: ex.weight_lbs || undefined,
         labs: (ex.labs && Object.keys(ex.labs).length > 0) ? ex.labs : undefined,
         noLabs: ex.has_labs === false ? true : undefined,
         hasLabs: ex.has_labs === true ? true : undefined,
-        systolic: (ex.systolic && regexCheck.systolic) ? ex.systolic : undefined,
+        systolic: ex.systolic || undefined,
+        noBp: ex.has_bp === false ? true : undefined,
         waist: ex.waist_inches && ex.waist_inches >= 20 && ex.waist_inches <= 60 ? ex.waist_inches : undefined,
         hasMedications: ex.has_medications === true ? true : undefined,
         familyHistory: ex.has_family_history != null
@@ -425,6 +445,7 @@ export function toggleFullVoice() {
     if ((isYes || isNo) && currentNudgeCheck && !checklistLocked.has(currentNudgeCheck)) {
       const contextMap = {
         labs:    isYes ? { hasLabs: true } : { noLabs: true },
+        bp:      isYes ? {} : { noBp: true },
         history: isYes ? { familyHistory: true } : { familyHistory: false },
       };
       if (contextMap[currentNudgeCheck]) {
@@ -478,10 +499,6 @@ export function toggleFullVoice() {
 }
 
 // ── Submit voice intake ──
-// showGapBridge is injected from bridge.js to avoid circular dependency
-let _showGapBridge = null;
-export function setShowGapBridge(fn) { _showGapBridge = fn; }
-
 export async function submitVoiceIntake() {
   const text = document.getElementById('voice-full-transcript').value;
   if (!text.trim()) return;
@@ -524,16 +541,18 @@ export async function submitVoiceIntake() {
     noLabs: extracted.has_labs === false,
     hasLabs: extracted.has_labs === true || extracted.hasLabs === true,
     systolic: extracted.systolic,
+    noBp: extracted.has_bp === false || extracted.noBp,
     waist: extracted.waist_inches,
     hasMedications: extracted.has_medications,
     familyHistory: extracted.has_family_history,
   }, 'ai');
 
-  btn.textContent = 'Score this';
+  btn.textContent = 'Done';
   statusEl.classList.remove('active');
 
-  if (_showGapBridge) {
-    _showGapBridge(extracted);
+  // Navigate to Phase 2 (shared Import & Enrich screen)
+  if (window.showPhase2) {
+    window.showPhase2();
   }
 }
 

@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>baseline. — Health Coverage Score</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#08080a">
+<meta name="apple-mobile-web-app-title" content="Baseline">
 <meta name="description" content="Enter your health data and get a real coverage score with NHANES percentile benchmarks and actionable gap analysis.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,15 +35,24 @@
     </div>
   </div>
 
-  <!-- Questionnaire -->
+  <!-- Passkey identity banner -->
+  <div class="passkey-banner" id="passkey-banner">
+    <span>Save your profile across devices?</span>
+    <button id="passkey-action-btn" onclick="handlePasskeyAction()">Set up passkey</button>
+  </div>
+
+  <!-- Questionnaire: 3-Phase Converged Intake -->
   <div id="questionnaire">
 
-    <!-- ═══ INTAKE: tab toggle between voice and form ═══ -->
+    <!-- ═══ PHASE 1: About You — pick voice or form ═══ -->
+    <div id="phase1">
+
     <div class="intake-tabs" id="intake-tabs">
       <button class="intake-tab active" data-tab="voice" onclick="switchIntakeTab('voice')">Talk it out <span class="disclaimer-badge">Experimental</span></button>
-      <button class="intake-tab" data-tab="form" onclick="switchIntakeTab('form')">Type it in <span class="tab-field-count">23</span></button>
+      <button class="intake-tab" data-tab="form" onclick="switchIntakeTab('form')">Type it in</button>
     </div>
 
+    <!-- Voice tab -->
     <div class="intake-split" id="intake-split">
     <div class="voice-hero" id="voice-hero">
       <div class="margin-note" id="voice-margin-note">
@@ -45,7 +61,6 @@
           Your transcript is sent to AI for extraction and logged anonymously for quality improvement. No personal identifiers are stored. Results improve as we learn from how people describe their health.
         </div>
       </div>
-      <!-- IDLE: centered mic, inviting -->
       <div class="voice-idle" id="voice-idle">
         <p class="voice-hero-sub">Tell us about yourself in 30 seconds.</p>
         <div class="voice-record-ring" onclick="toggleFullVoice()">
@@ -54,100 +69,47 @@
         <div class="voice-idle-label">Tap to start</div>
       </div>
 
-      <!-- ACTIVE: mic + AI guide left, checklist right -->
       <div class="voice-active" id="voice-active">
         <div class="voice-active-layout">
-          <!-- Left: mic + AI guide fills the space -->
           <div class="voice-left">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-              <div class="voice-record-ring" id="voice-ring" onclick="toggleFullVoice()" style="width:40px;height:40px;flex-shrink:0;">
+              <div class="voice-record-ring" id="voice-ring" onclick="toggleFullVoice()" style="flex-shrink:0;">
                 <svg viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
               </div>
               <div class="voice-status" id="voice-full-status" style="text-align:left;">Listening...</div>
             </div>
-
-            <!-- AI guide: nudge + processing — fills the left column -->
             <div class="voice-guide" id="voice-guide">
               <div id="guide-nudges"></div>
               <div class="guide-haiku-status" id="guide-haiku-status"></div>
             </div>
           </div>
-
-          <!-- Right: checklist only -->
           <div class="voice-right">
             <div class="voice-checklist" id="voice-checklist">
-              <div class="voice-checklist-item" data-check="age">
-                <div class="check-box"></div>
-                <span>Age</span>
-              </div>
-              <div class="voice-checklist-item" data-check="sex">
-                <div class="check-box"></div>
-                <span>Sex</span>
-              </div>
-              <div class="voice-checklist-item" data-check="height">
-                <div class="check-box"></div>
-                <span>Height</span>
-              </div>
-              <div class="voice-checklist-item" data-check="weight">
-                <div class="check-box"></div>
-                <span>Weight</span>
-              </div>
-              <div class="voice-checklist-item" data-check="labs">
-                <div class="check-box"></div>
-                <span>Lab results</span>
-                <span class="check-hint" id="lab-count-hint">0 found</span>
-              </div>
-              <div class="voice-checklist-item" data-check="bp">
-                <div class="check-box"></div>
-                <span>Blood pressure</span>
-              </div>
-              <div class="voice-checklist-item" data-check="waist">
-                <div class="check-box"></div>
-                <span>Waist</span>
-              </div>
-              <div class="voice-checklist-item" data-check="history">
-                <div class="check-box"></div>
-                <span>Family hx</span>
-              </div>
+              <div class="voice-checklist-item" data-check="age"><div class="check-box"></div><span>Age</span></div>
+              <div class="voice-checklist-item" data-check="sex"><div class="check-box"></div><span>Sex</span></div>
+              <div class="voice-checklist-item" data-check="height"><div class="check-box"></div><span>Height</span></div>
+              <div class="voice-checklist-item" data-check="weight"><div class="check-box"></div><span>Weight</span></div>
+              <div class="voice-checklist-item" data-check="labs"><div class="check-box"></div><span>Lab results</span><span class="check-hint" id="lab-count-hint">0 found</span></div>
+              <div class="voice-checklist-item" data-check="bp"><div class="check-box"></div><span>Blood pressure</span></div>
+              <div class="voice-checklist-item" data-check="waist"><div class="check-box"></div><span>Waist</span></div>
+              <div class="voice-checklist-item" data-check="history"><div class="check-box"></div><span>Family hx</span></div>
             </div>
           </div>
         </div>
-
         <textarea class="voice-transcript" id="voice-full-transcript" placeholder="Your words appear here as you speak..." style="margin-top:16px;"></textarea>
-
         <div class="voice-actions">
           <button class="voice-submit" id="voice-submit-btn" onclick="submitVoiceIntake()" disabled>Tap to submit</button>
         </div>
       </div>
     </div>
-
-    <!-- Gap Bridge: post-dictation import prompts -->
-    <div class="gap-bridge" id="gap-bridge">
-      <div class="bridge-header">
-        <h2>Nice — got it</h2>
-        <div class="bridge-summary" id="bridge-summary"></div>
-      </div>
-
-      <div class="bridge-prompts" id="bridge-prompts">
-        <!-- Dynamically populated based on what voice missed -->
-      </div>
-
-      <div class="bridge-actions">
-        <button class="bridge-score-btn" onclick="bridgeScore()">See my score</button>
-        <button class="bridge-skip-btn" onclick="bridgeScore()">Skip — score with what I have</button>
-      </div>
-    </div>
-
     </div><!-- /intake-split -->
 
+    <!-- Form tab: Phase 1 — all 7 fields on one screen -->
     <div class="form-mode" id="form-mode">
 
-    <div class="progress-bar" id="progress-bar"></div>
-
-    <!-- Step 0: Demographics -->
     <div class="step active" data-step="0">
       <h2>About you</h2>
-      <p class="step-hint">For percentile comparison. 10 seconds.</p>
+      <p class="step-hint">For percentile comparison. Takes about 30 seconds.</p>
 
       <div class="field-group" style="text-align:center;">
         <div class="field-label">Age</div>
@@ -180,242 +142,6 @@
         </div>
       </div>
 
-      <div class="step-nav">
-        <button class="nav-back hidden">&larr; Back</button>
-        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
-      </div>
-    </div>
-
-    <!-- Step 1: Import your data (labs + wearables) -->
-    <div class="step" data-step="1">
-      <h2>Import your data</h2>
-      <p class="step-hint">Drop everything you have — lab PDFs, wearable exports, anything. We'll extract what we need.</p>
-
-      <div class="field-group">
-        <div class="field-label">Lab reports</div>
-        <div class="upload-zone" id="lab-drop" onclick="document.getElementById('lab-file-input').click()">
-          <div class="icon">&darr;</div>
-          <div class="uz-title">Drop lab report PDFs here</div>
-          <div class="uz-hint">or click to browse &middot; multiple files OK &middot; Quest, LabCorp, hospital, any format</div>
-        </div>
-        <input type="file" id="lab-file-input" accept=".pdf,.txt,.csv" multiple style="display:none" onchange="handleLabFileInput(event)">
-
-        <div class="parse-summary" id="lab-import-summary"></div>
-        <div id="lab-file-list"></div>
-      </div>
-
-      <div class="field-group" style="margin-top: 24px;">
-        <div class="field-label">What do you track with?</div>
-        <div class="device-grid" id="device-selector">
-          <div class="device-card" data-device="apple_watch" onclick="toggleDevice(this)">
-            <div class="device-icon">&#9201;</div>
-            <div class="device-name">Apple Watch</div>
-            <div class="device-check"></div>
-          </div>
-          <div class="device-card" data-device="garmin" onclick="toggleDevice(this)">
-            <div class="device-icon">&#9650;</div>
-            <div class="device-name">Garmin</div>
-            <div class="device-check"></div>
-          </div>
-          <div class="device-card" data-device="oura" onclick="toggleDevice(this)">
-            <div class="device-icon">&#9711;</div>
-            <div class="device-name">Oura</div>
-            <div class="device-check"></div>
-          </div>
-          <div class="device-card" data-device="fitbit" onclick="toggleDevice(this)">
-            <div class="device-icon">&#9632;</div>
-            <div class="device-name">Fitbit</div>
-            <div class="device-check"></div>
-          </div>
-          <div class="device-card" data-device="whoop" onclick="toggleDevice(this)">
-            <div class="device-icon">&#9644;</div>
-            <div class="device-name">WHOOP</div>
-            <div class="device-check"></div>
-          </div>
-          <div class="device-card" data-device="none" onclick="toggleDevice(this)">
-            <div class="device-icon" style="opacity:0.25;">&#10005;</div>
-            <div class="device-name">None</div>
-            <div class="device-check"></div>
-          </div>
-        </div>
-        <div class="device-notify">Select all that apply &middot; integrations coming soon</div>
-      </div>
-
-      <div class="field-group" style="margin-top: 24px;">
-        <div class="field-label">Medications & supplements</div>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">Type to search — select all that apply, or skip.</p>
-        <div class="med-search-wrap">
-          <input type="text" class="med-search-input" id="med-search" placeholder="e.g. tirzepatide, vitamin D, creatine..." autocomplete="off">
-          <div class="med-dropdown" id="med-dropdown"></div>
-        </div>
-        <div class="med-tags" id="med-tags"></div>
-      </div>
-
-      <div class="or-divider">or paste text / enter manually</div>
-
-      <button class="manual-toggle" onclick="togglePasteLabs()" id="paste-toggle">Paste lab text &darr;</button>
-      <div class="manual-fields" id="paste-labs">
-        <div class="field-group">
-          <div class="field-label">When were these labs drawn?</div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="month" class="field-input" id="f-lab-date" style="max-width:200px;">
-              <div class="field-hint">Month & year is fine — we'll check freshness</div>
-            </div>
-            <div class="field-col">
-              <div class="field-label" style="margin-bottom:8px;">Fasting blood draw?</div>
-              <div class="toggle-group" data-field="fasting">
-                <div class="toggle-btn" data-value="yes">Yes</div>
-                <div class="toggle-btn" data-value="no">No</div>
-                <div class="toggle-btn" data-value="unsure">Unsure</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-group">
-          <div class="field-label">Paste or dictate lab results</div>
-          <div class="voice-input-wrap">
-            <textarea class="paste-area" id="lab-paste" placeholder="Paste here, or tap the mic and read your numbers:
-
-&quot;LDL 128, HDL 52, triglycerides 95, ApoB 85, glucose 92&quot;
-
-Any format works — we'll extract the values."></textarea>
-            <button class="mic-btn" id="lab-mic" onclick="toggleVoice('lab-paste', this)" title="Dictate lab results">
-              <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-            </button>
-          </div>
-          <div class="voice-hint" id="lab-voice-hint">Listening... speak your lab values</div>
-          <button class="parse-btn" onclick="parseLabText()">Extract values</button>
-
-          <div class="parse-results" id="parse-results">
-            <div class="parse-summary" id="parse-summary"></div>
-            <div class="parsed-values" id="parsed-values"></div>
-          </div>
-        </div>
-      </div>
-
-      <button class="manual-toggle" onclick="toggleManualLabs()">Show individual fields &darr;</button>
-      <div class="manual-fields" id="manual-labs">
-        <div class="field-group">
-          <div class="field-label">Lipids</div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-apob" placeholder="—" step="0.1">
-              <div class="field-unit">ApoB (mg/dL)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-ldl" placeholder="—" step="0.1">
-              <div class="field-unit">LDL-C (mg/dL)</div>
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-hdl" placeholder="—" step="0.1">
-              <div class="field-unit">HDL-C (mg/dL)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-trig" placeholder="—" step="0.1">
-              <div class="field-unit">Triglycerides (mg/dL)</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-group">
-          <div class="field-label">Metabolic</div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-glucose" placeholder="—" step="0.1">
-              <div class="field-unit">Fasting Glucose (mg/dL)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-hba1c" placeholder="—" step="0.01">
-              <div class="field-unit">HbA1c (%)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-insulin" placeholder="—" step="0.1">
-              <div class="field-unit">Fasting Insulin (µIU/mL)</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-group">
-          <div class="field-label">Special markers</div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-lpa" placeholder="—" step="0.1">
-              <div class="field-unit">Lp(a) (nmol/L)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-hscrp" placeholder="—" step="0.01">
-              <div class="field-unit">hs-CRP (mg/L)</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-group">
-          <div class="field-label">Liver enzymes</div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-alt" placeholder="—" step="0.1">
-              <div class="field-unit">ALT (U/L)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-ggt" placeholder="—" step="0.1">
-              <div class="field-unit">GGT (U/L)</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-group">
-          <div class="field-label">CBC</div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-hemoglobin" placeholder="—" step="0.1">
-              <div class="field-unit">Hemoglobin (g/dL)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-wbc" placeholder="—" step="0.1">
-              <div class="field-unit">WBC (K/µL)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-platelets" placeholder="—" step="1">
-              <div class="field-unit">Platelets (K/µL)</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-group">
-          <div class="field-label">Thyroid & vitamins</div>
-          <div class="field-row">
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-tsh" placeholder="—" step="0.01">
-              <div class="field-unit">TSH (mIU/L)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-vitd" placeholder="—" step="0.1">
-              <div class="field-unit">Vitamin D (ng/mL)</div>
-            </div>
-            <div class="field-col">
-              <input type="number" class="field-input" id="f-ferritin" placeholder="—" step="0.1">
-              <div class="field-unit">Ferritin (ng/mL)</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
-        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
-      </div>
-      <p class="skip-hint">Don't have labs? Skip — they'll show as gaps in your score.</p>
-    </div>
-
-    <!-- Step 2: Measurements (things you do yourself) -->
-    <div class="step" data-step="2">
-      <h2>Two quick measurements</h2>
-      <p class="step-hint">Just a cuff and a tape measure. Skip what you don't have.</p>
-
       <div class="field-group" style="text-align:center;">
         <div class="field-label">Blood pressure</div>
         <div class="field-row" style="justify-content:center;">
@@ -431,7 +157,7 @@ Any format works — we'll extract the values."></textarea>
         </div>
       </div>
 
-      <div class="field-group" style="text-align:center;margin-top:32px;">
+      <div class="field-group" style="text-align:center;">
         <div class="field-label">Waist</div>
         <div style="display:flex;justify-content:center;">
           <div style="flex:0 0 120px;">
@@ -441,7 +167,17 @@ Any format works — we'll extract the values."></textarea>
         </div>
       </div>
 
-      <!-- Hidden fields — populated by wearable import, not shown to user -->
+      <div class="field-group">
+        <div class="field-label" style="text-align:center;">Family history</div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;text-align:center;">Heart disease, stroke, or diabetes in the family?</p>
+        <div class="toggle-group" data-field="family-history" style="justify-content:center;">
+          <div class="toggle-btn" data-value="yes">Yes</div>
+          <div class="toggle-btn" data-value="no">No</div>
+          <div class="toggle-btn" data-value="skip">Don't know</div>
+        </div>
+      </div>
+
+      <!-- Hidden fields — populated by wearable import -->
       <input type="hidden" id="f-rhr">
       <input type="hidden" id="f-vo2">
       <input type="hidden" id="f-hrv">
@@ -451,43 +187,350 @@ Any format works — we'll extract the values."></textarea>
       <input type="hidden" id="f-sleep-reg">
 
       <div class="step-nav">
-        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
-        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
-      </div>
-      <p class="skip-hint">No cuff? No tape? Just skip.</p>
-    </div>
-
-    <!-- Step 3: Context -->
-    <div class="step" data-step="3">
-      <h2>Almost done</h2>
-      <p class="step-hint">Two quick taps.</p>
-
-      <div class="field-group">
-        <div class="field-label">Family history</div>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">Heart disease, stroke, or diabetes in the family?</p>
-        <div class="toggle-group" data-field="family-history" style="justify-content:center;">
-          <div class="toggle-btn" data-value="yes">Yes</div>
-          <div class="toggle-btn" data-value="no">No</div>
-          <div class="toggle-btn" data-value="skip">Don't know</div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">Mental health screening</div>
-        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">PHQ-9 or similar in the last year?</p>
-        <div class="toggle-group" data-field="phq9" style="justify-content:center;">
-          <div class="toggle-btn" data-value="yes">Yes</div>
-          <div class="toggle-btn" data-value="no">No</div>
-        </div>
-      </div>
-
-      <div class="step-nav" style="flex-direction:column;gap:12px;align-items:stretch;">
-        <button class="nav-next cta-final" onclick="computeResults()">See my score</button>
-        <button class="nav-back" onclick="prevStep()" style="text-align:center;">&larr; Back</button>
+        <button class="nav-next" onclick="showPhase2()">Next &rarr;</button>
       </div>
     </div>
 
     </div><!-- /form-mode -->
+
+    </div><!-- /phase1 -->
+
+    <!-- ═══ PHASE 2: Import & Enrich (shared screen — both voice and form land here) ═══ -->
+    <div id="phase2" style="display:none;">
+      <div class="max-w-[600px] mx-auto pb-16">
+        <button class="phase2-back" onclick="goBackToPhase1()">&larr; Back</button>
+
+        <div class="text-center pt-5 pb-9 opacity-0 animate-[fadeSlideUp_0.5s_ease-out_0.05s_forwards]">
+          <h2 class="font-display text-[1.8rem] font-extrabold uppercase tracking-tight mb-1.5">Fill in the picture</h2>
+          <p class="text-sm text-text-dim max-w-[380px] mx-auto leading-relaxed">Add what you have, skip what you don't. Every bit sharpens your score.</p>
+        </div>
+
+        <!-- Stepper strip -->
+        <div class="flex gap-1 mb-3">
+          <button class="stepper-step active" data-step="0" onclick="goToEnrichStep(0)">
+            <span class="stepper-num">1</span>
+            <span class="stepper-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3v2m6-2v2M9 5a2 2 0 0 0-2 2v2l-1 9a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3l-1-9V7a2 2 0 0 0-2-2H9z"/><path d="M9 14h6" opacity="0.5"/></svg>
+            </span>
+            <span class="stepper-label max-sm:hidden">Labs</span>
+            <span class="stepper-status max-sm:hidden" id="labs-card-status"></span>
+            <span class="stepper-check">&check;</span>
+          </button>
+          <button class="stepper-step" data-step="1" onclick="goToEnrichStep(1)">
+            <span class="stepper-num">2</span>
+            <span class="stepper-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </span>
+            <span class="stepper-label max-sm:hidden">Equip</span>
+            <span class="stepper-status max-sm:hidden" id="equip-card-status"></span>
+            <span class="stepper-check">&check;</span>
+          </button>
+          <button class="stepper-step" data-step="2" onclick="goToEnrichStep(2)">
+            <span class="stepper-num">3</span>
+            <span class="stepper-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="7" rx="3.5"/><path d="M12 11v7" opacity="0.4"/><path d="M8.5 7a3.5 3.5 0 1 1 7 0v4h-7V7z" opacity="0.6"/></svg>
+            </span>
+            <span class="stepper-label max-sm:hidden">Meds</span>
+            <span class="stepper-status max-sm:hidden" id="meds-card-status"></span>
+            <span class="stepper-check">&check;</span>
+          </button>
+          <button class="stepper-step" data-step="3" onclick="goToEnrichStep(3)">
+            <span class="stepper-num">4</span>
+            <span class="stepper-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M9 10h.01M15 10h.01" stroke-linecap="round"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke-linecap="round"/></svg>
+            </span>
+            <span class="stepper-label max-sm:hidden">PHQ-9</span>
+            <span class="stepper-status max-sm:hidden" id="phq9-card-status"></span>
+            <span class="stepper-check">&check;</span>
+          </button>
+        </div>
+
+        <!-- Carousel container -->
+        <div class="enrich-carousel relative min-h-60 bg-bg-elevated border border-border rounded-[10px] overflow-hidden">
+          <!-- Slide 0: Blood work -->
+          <div class="enrich-slide active" data-slide="0">
+            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
+              <span class="text-[0.82rem] text-text-dim leading-snug">Upload, paste, or enter lab results</span>
+              <button class="enrich-next-btn" onclick="advanceEnrichStep()">Next &rarr;</button>
+            </div>
+            <div class="field-group">
+              <div class="upload-zone flex items-center gap-3.5 px-5 py-4 text-left bg-white/[0.015] border-[1.5px] border-dashed border-white/12 rounded-md cursor-pointer transition-all hover:border-white/25 hover:bg-white/[0.03]" id="lab-drop" onclick="document.getElementById('lab-file-input').click()">
+                <div class="shrink-0 text-text-dim opacity-50">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-body text-[0.88rem] text-text-muted mb-0.5">Upload lab report</div>
+                  <div class="font-mono text-[0.7rem] text-text-dim">PDF or text &middot; Quest, LabCorp, any format</div>
+                </div>
+              </div>
+              <input type="file" id="lab-file-input" accept=".pdf,.txt,.csv" multiple style="display:none" onchange="handleLabFileInput(event)">
+              <div class="parse-summary" id="lab-import-summary"></div>
+              <div id="lab-file-list"></div>
+            </div>
+
+            <div class="enrich-divider"><span>or</span></div>
+
+            <button class="enrich-alt-btn" onclick="togglePasteLabs()" id="paste-toggle">
+              <span>Paste or dictate values</span>
+              <span class="enrich-alt-arrow">&#9662;</span>
+            </button>
+            <div class="manual-fields" id="paste-labs">
+              <div class="field-group" style="margin-top:12px;">
+                <div class="field-row">
+                  <div class="field-col">
+                    <div class="field-unit" style="margin-bottom:6px;">Draw date</div>
+                    <input type="text" class="field-input" id="f-lab-date" placeholder="YYYY-MM" pattern="\d{4}-\d{2}" style="max-width:200px;">
+                  </div>
+                  <div class="field-col">
+                    <div class="field-unit" style="margin-bottom:6px;">Fasting?</div>
+                    <div class="toggle-group" data-field="fasting">
+                      <div class="toggle-btn" data-value="yes">Yes</div>
+                      <div class="toggle-btn" data-value="no">No</div>
+                      <div class="toggle-btn" data-value="unsure">Unsure</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <div class="voice-input-wrap">
+                  <textarea class="paste-area paste-area-compact" id="lab-paste" placeholder="Paste lab results or tap mic to dictate: &quot;LDL 128, HDL 52, ApoB 85...&quot;"></textarea>
+                  <button class="mic-btn" id="lab-mic" onclick="toggleVoice('lab-paste', this)" title="Dictate lab results">
+                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                  </button>
+                </div>
+                <div class="voice-hint" id="lab-voice-hint">Listening... speak your lab values</div>
+                <button class="parse-btn" onclick="parseLabText()">Extract values</button>
+                <div class="parse-results" id="parse-results">
+                  <div class="parse-summary" id="parse-summary"></div>
+                  <div class="parsed-values" id="parsed-values"></div>
+                </div>
+              </div>
+            </div>
+
+            <button class="enrich-alt-btn" onclick="toggleManualLabs()" style="margin-top:8px;">
+              <span>Enter values individually</span>
+              <span class="enrich-alt-arrow">&#9662;</span>
+            </button>
+            <div class="manual-fields" id="manual-labs">
+              <div class="field-group">
+                <div class="field-label">Lipids</div>
+                <div class="field-row">
+                  <div class="field-col"><input type="number" class="field-input" id="f-apob" placeholder="—" step="0.1"><div class="field-unit">ApoB (mg/dL)</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-ldl" placeholder="—" step="0.1"><div class="field-unit">LDL-C (mg/dL)</div></div>
+                </div>
+                <div class="field-row">
+                  <div class="field-col"><input type="number" class="field-input" id="f-hdl" placeholder="—" step="0.1"><div class="field-unit">HDL-C (mg/dL)</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-trig" placeholder="—" step="0.1"><div class="field-unit">Triglycerides (mg/dL)</div></div>
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Metabolic</div>
+                <div class="field-row">
+                  <div class="field-col"><input type="number" class="field-input" id="f-glucose" placeholder="—" step="0.1"><div class="field-unit">Fasting Glucose</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-hba1c" placeholder="—" step="0.01"><div class="field-unit">HbA1c (%)</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-insulin" placeholder="—" step="0.1"><div class="field-unit">Fasting Insulin</div></div>
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Special markers</div>
+                <div class="field-row">
+                  <div class="field-col"><input type="number" class="field-input" id="f-lpa" placeholder="—" step="0.1"><div class="field-unit">Lp(a) (nmol/L)</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-hscrp" placeholder="—" step="0.01"><div class="field-unit">hs-CRP (mg/L)</div></div>
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Liver</div>
+                <div class="field-row">
+                  <div class="field-col"><input type="number" class="field-input" id="f-alt" placeholder="—" step="0.1"><div class="field-unit">ALT (U/L)</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-ggt" placeholder="—" step="0.1"><div class="field-unit">GGT (U/L)</div></div>
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">CBC</div>
+                <div class="field-row">
+                  <div class="field-col"><input type="number" class="field-input" id="f-hemoglobin" placeholder="—" step="0.1"><div class="field-unit">Hemoglobin</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-wbc" placeholder="—" step="0.1"><div class="field-unit">WBC (K/µL)</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-platelets" placeholder="—" step="1"><div class="field-unit">Platelets</div></div>
+                </div>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Thyroid & vitamins</div>
+                <div class="field-row">
+                  <div class="field-col"><input type="number" class="field-input" id="f-tsh" placeholder="—" step="0.01"><div class="field-unit">TSH (mIU/L)</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-vitd" placeholder="—" step="0.1"><div class="field-unit">Vitamin D</div></div>
+                  <div class="field-col"><input type="number" class="field-input" id="f-ferritin" placeholder="—" step="0.1"><div class="field-unit">Ferritin</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 1: Equipment -->
+          <div class="enrich-slide" data-slide="1">
+            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
+              <span class="text-[0.82rem] text-text-dim leading-snug">What can you measure between lab visits?</span>
+              <button class="enrich-next-btn" onclick="advanceEnrichStep()">Next &rarr;</button>
+            </div>
+            <div class="grid grid-cols-3 max-sm:grid-cols-2 gap-2 mb-2" id="device-selector">
+              <div class="device-card" data-device="bp_cuff" onclick="toggleDevice(this)">
+                <div class="device-icon">&#9829;</div>
+                <div class="device-name">BP Cuff</div>
+                <div class="device-check"></div>
+              </div>
+              <div class="device-card" data-device="scale" onclick="toggleDevice(this)">
+                <div class="device-icon">&#9878;</div>
+                <div class="device-name">Scale</div>
+                <div class="device-check"></div>
+              </div>
+              <div class="device-card" data-device="tape_measure" onclick="toggleDevice(this)">
+                <div class="device-icon">&#128207;</div>
+                <div class="device-name">Tape Measure</div>
+                <div class="device-check"></div>
+              </div>
+              <div class="device-card" data-device="none" onclick="toggleDevice(this)">
+                <div class="device-icon" style="opacity:0.25;">&#10005;</div>
+                <div class="device-name">None yet</div>
+                <div class="device-check"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Medications -->
+          <div class="enrich-slide" data-slide="2">
+            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
+              <span class="text-[0.82rem] text-text-dim leading-snug">Type to search — we'll factor these into your picture.</span>
+              <button class="enrich-next-btn" onclick="advanceEnrichStep()">Next &rarr;</button>
+            </div>
+            <div class="relative mt-2">
+              <input type="text" class="med-search-input" id="med-search" placeholder="e.g. tirzepatide, vitamin D, creatine..." autocomplete="off">
+              <div class="med-dropdown" id="med-dropdown"></div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mt-2" id="med-tags"></div>
+          </div>
+
+          <!-- Slide 3: Mental Health -->
+          <div class="enrich-slide" data-slide="3" id="phq9-section">
+            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
+              <span class="text-[0.82rem] text-text-dim leading-snug">Quick mental health screen</span>
+              <button class="enrich-next-btn enrich-done-btn" onclick="advanceEnrichStep()">Done &rarr;</button>
+            </div>
+            <p class="text-[0.85rem] text-text-dim mb-3.5 leading-relaxed">Depression is an independent cardiovascular risk factor. A quick screen sharpens your picture.</p>
+
+            <div class="flex items-center gap-3 mb-3">
+              <label class="text-[0.88rem] text-text-muted">Already have a score?</label>
+              <input type="number" class="field-input max-w-20 text-center" id="phq9-direct-input" placeholder="0–27" min="0" max="27" step="1">
+            </div>
+
+            <button class="enrich-alt-btn" id="phq9-expand-btn">
+              <span>Take the 2-minute screening</span>
+              <span class="enrich-alt-arrow">&rarr;</span>
+            </button>
+            <div class="phq9-questionnaire" id="phq9-questionnaire">
+              <p class="phq9-intro">Over the <strong>last 2 weeks</strong>, how often have you been bothered by:</p>
+
+              <div class="phq9-question" data-q="0">
+                <div class="phq9-q-text">1. Little interest or pleasure in doing things</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="0" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="0" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="0" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="0" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="1">
+                <div class="phq9-q-text">2. Feeling down, depressed, or hopeless</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="1" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="1" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="1" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="1" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="2">
+                <div class="phq9-q-text">3. Trouble falling or staying asleep, or sleeping too much</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="2" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="2" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="2" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="2" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="3">
+                <div class="phq9-q-text">4. Feeling tired or having little energy</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="3" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="3" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="3" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="3" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="4">
+                <div class="phq9-q-text">5. Poor appetite or overeating</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="4" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="4" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="4" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="4" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="5">
+                <div class="phq9-q-text">6. Feeling bad about yourself — or that you are a failure</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="5" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="5" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="5" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="5" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="6">
+                <div class="phq9-q-text">7. Trouble concentrating on things</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="6" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="6" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="6" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="6" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="7">
+                <div class="phq9-q-text">8. Moving or speaking slowly / being fidgety or restless</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="7" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="7" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="7" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="7" data-value="3">Nearly every day</div>
+                </div>
+              </div>
+              <div class="phq9-question" data-q="8">
+                <div class="phq9-q-text">9. Thoughts that you would be better off dead, or of hurting yourself</div>
+                <div class="phq9-options">
+                  <div class="phq9-radio" data-question="8" data-value="0">Not at all</div>
+                  <div class="phq9-radio" data-question="8" data-value="1">Several days</div>
+                  <div class="phq9-radio" data-question="8" data-value="2">More than half</div>
+                  <div class="phq9-radio" data-question="8" data-value="3">Nearly every day</div>
+                </div>
+                <div class="phq9-crisis-note">If you're in crisis, call or text <strong>988</strong> (Suicide & Crisis Lifeline) anytime.</div>
+              </div>
+            </div>
+
+            <div class="phq9-score-display" id="phq9-score-display"></div>
+          </div>
+        </div><!-- /enrich-carousel -->
+
+        <!-- Skip link (visible once first step is touched) -->
+        <div class="phase2-skip-wrap">
+          <button class="phase2-skip bg-transparent border-none text-text-dim font-mono text-[0.68rem] p-2 cursor-pointer text-center tracking-wide opacity-60 transition-colors hover:text-text-muted hover:opacity-100" onclick="computeResults()">skip &mdash; score with what I have</button>
+        </div>
+
+        <!-- Score CTA (revealed only after all steps walked through) -->
+        <div class="phase2-actions">
+          <button class="score-cta" onclick="computeResults()">
+            <span class="score-cta-text">See my score</span>
+            <span class="score-cta-arrow">&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div><!-- /phase2 -->
+
   </div>
 
   <!-- Results -->
@@ -541,6 +584,12 @@ Any format works — we'll extract the values."></textarea>
     <!-- Action plan: moves + timeline + remaining gaps unified -->
     <div class="next-moves" id="r-moves"></div>
 
+    <!-- Post-score tracking modules -->
+    <div class="tracking-modules">
+      <div id="bp-tracker-slot"></div>
+      <div id="tracking-today"></div>
+    </div>
+
     <!-- Metric results -->
     <div class="results-section" id="r-tier1"></div>
     <div class="results-section" id="r-tier2"></div>
@@ -554,6 +603,11 @@ Any format works — we'll extract the values."></textarea>
     <button onclick="startOver()">Update values</button>
     <button onclick="exportProfile()">Export JSON</button>
     <button onclick="clearAndRestart()">Start fresh</button>
+    <div class="identity-sidebar" id="identity-sidebar" style="display:none;">
+      <div class="identity-divider"></div>
+      <span class="identity-status" id="identity-sidebar-status"></span>
+      <button id="identity-sidebar-btn" onclick="handlePasskeyAction()">Set up passkey</button>
+    </div>
   </aside>
   </div><!-- /results-layout -->
 </div><!-- /results -->

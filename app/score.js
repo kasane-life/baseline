@@ -552,9 +552,20 @@ function scoreProfile(profile) {
 
   // --- Tier 2: PHQ-9 ---
   const phq9Has = profile.phq9_score != null;
+  let phq9Standing = Standing.UNKNOWN;
+  let phq9Pct = null;
+  if (phq9Has) {
+    const s = profile.phq9_score;
+    if (s <= 4)       { phq9Standing = Standing.OPTIMAL;    phq9Pct = 90; }
+    else if (s <= 9)  { phq9Standing = Standing.GOOD;       phq9Pct = 70; }
+    else if (s <= 14) { phq9Standing = Standing.AVERAGE;    phq9Pct = 45; }
+    else if (s <= 19) { phq9Standing = Standing.BELOW_AVG;  phq9Pct = 20; }
+    else              { phq9Standing = Standing.CONCERNING;  phq9Pct = 5; }
+  }
   results.push({
     name: 'PHQ-9 (Depression)', tier: 2, rank: 19, hasData: phq9Has,
-    value: null, unit: '', standing: phq9Has ? Standing.GOOD : Standing.UNKNOWN, percentile: null,
+    value: phq9Has ? profile.phq9_score : null, unit: '/27',
+    standing: phq9Standing, percentile: phq9Pct,
     weight: TIER2_WEIGHTS.phq9,
     costToClose: 'Free — 3 min questionnaire',
     note: !phq9Has ? 'Depression independently raises CVD risk 80%' : '',

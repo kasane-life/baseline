@@ -30,6 +30,9 @@ function linearInterp(x, xp, fp) {
 async function loadNhanes() {
   if (_nhanesData) return _nhanesData;
   const resp = await fetch('nhanes_percentiles.json');
+  if (!resp.ok) throw new Error(`NHANES fetch failed: ${resp.status}`);
+  const ct = resp.headers.get('content-type') || '';
+  if (!ct.includes('json')) throw new Error(`NHANES fetch returned non-JSON: ${ct}`);
   _nhanesData = await resp.json();
   return _nhanesData;
 }
