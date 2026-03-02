@@ -1505,7 +1505,7 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   line-height: 1.4;
 }
 .wins-block {
-  margin: 16px 0 8px;
+  margin: 16px 0 28px;
   padding: 12px 16px;
   border-radius: 8px;
   background: var(--green-bg, rgba(92, 184, 92, 0.08));

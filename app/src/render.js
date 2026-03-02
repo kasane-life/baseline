@@ -426,7 +426,8 @@ function renderHealthFlags(results, container) {
     });
     const key0 = metricKeyFor(wins[0]);
     const topWhy = key0 ? getIntervention(key0) : null;
-    let sentence = `Your ${winParts.join(' and ')} ${wins.length === 1 ? 'is' : 'are'} above average for your age.`;
+    const joined = winParts.length <= 2 ? winParts.join(' and ') : winParts.slice(0, -1).join(', ') + ', and ' + winParts[winParts.length - 1];
+    let sentence = `Your ${joined} ${wins.length === 1 ? 'is' : 'are'} above average for your age.`;
     if (topWhy) sentence += ` ${topWhy.why.split('.')[0]}.`;
     html += `<div class="wins-block">
       <div class="wins-label">What's working</div>
@@ -560,89 +561,129 @@ const TRACKING_SUGGESTIONS = {
 const INSIGHTS = [
   {
     tag: 'Steps',
-    stat: '+1,000 steps → −15% mortality',
-    body: 'Each additional 1,000 daily steps reduces all-cause mortality by ~15%. The first 7,000 steps deliver the biggest return — going from sedentary to 7K cuts risk by roughly half.',
-    source: 'Paluch et al., JAMA Network Open 2021'
+    metricKey: 'daily_steps',
+    evidence: 'Each additional 1,000 daily steps cuts all-cause mortality ~15%. The first 7,000 deliver the biggest return.',
+    contextGood: 'You\'re in a strong position here — benefits plateau above 10K, and you\'re close.',
+    contextLow: 'Walking after meals and taking calls on foot are the easiest levers.',
+    gapAction: 'Your wearable already collects this — connect it to close this gap.',
+    source: 'Paluch et al., JAMA Network Open 2021',
   },
   {
     tag: 'ApoB',
-    stat: '$30 test → best cardiac predictor',
-    body: 'ApoB predicts cardiovascular events better than LDL alone. A $15-30 add-on to your next panel gives you the single most informative lipid marker — and a real target to manage.',
-    source: 'Sniderman et al., Lancet 2019'
+    metricKey: 'apob',
+    evidence: 'ApoB predicts cardiovascular events better than LDL alone. Each 10 mg/dL reduction cuts events ~10%.',
+    contextGood: 'Your ApoB is well-managed — keep it here.',
+    contextLow: 'Reducing saturated fat and adding soluble fiber are first-line. Statins lower ApoB 30-50% if lifestyle isn\'t enough.',
+    gapAction: 'A $15-30 add-on to your next lipid panel — the single most informative lipid marker.',
+    source: 'Sniderman et al., Lancet 2019',
   },
   {
     tag: 'Blood pressure',
-    stat: '120 → 110 = −20% CV risk',
-    body: 'Lowering systolic from 120 to under 120 reduced major cardiovascular events by 25% in the SPRINT trial. A $30 home cuff and 2 minutes a week gives you the data to act on this.',
-    source: 'SPRINT Trial, NEJM 2015'
+    metricKey: 'bp_systolic',
+    evidence: 'Lowering systolic below 120 reduced major cardiovascular events by 25% in the SPRINT trial.',
+    contextGood: 'Your blood pressure is well-controlled — this is one of the strongest protective factors you have.',
+    contextLow: 'DASH diet (-11 mmHg), 150 min/week exercise (-5-8 mmHg), sodium <2300mg/day (-3-5 mmHg).',
+    gapAction: 'A $30 home cuff and 2 minutes a week gives you the data to act on this.',
+    source: 'SPRINT Trial, NEJM 2015',
   },
   {
     tag: 'Sleep',
-    stat: '7–8 hrs → −12% mortality',
-    body: 'Moving from <6 hours to 7–8 hours of consistent sleep reverses a 12% mortality increase. It also restores insulin sensitivity, improves recovery, and protects cognitive function.',
-    source: 'Cappuccio et al., Sleep Medicine Reviews 2010'
+    metricKey: 'sleep_duration',
+    evidence: 'Moving from <6 hours to 7-8 hours reverses a 12% mortality increase and restores insulin sensitivity.',
+    contextGood: 'You\'re hitting the target range — sleep is one of the highest-leverage health behaviors.',
+    contextLow: 'Fixed wake time, no screens 1hr before bed, room temp 65-68°F. Consistency matters more than duration.',
+    gapAction: 'Your wearable tracks this — connect it to see where you stand.',
+    source: 'Cappuccio et al., Sleep Medicine Reviews 2010',
   },
   {
     tag: 'HbA1c',
-    stat: 'Catches pre-diabetes years early',
-    body: 'HbA1c detects metabolic drift years before fasting glucose flags a problem. Catching it early means diet and exercise can reverse it — once you cross the diabetes threshold, the math changes.',
-    source: 'American Diabetes Association, Standards of Care 2024'
+    metricKey: 'hba1c',
+    evidence: 'HbA1c detects metabolic drift years before fasting glucose flags a problem. Each 1% above 5.0% raises CV mortality 20-30%.',
+    contextGood: 'Your metabolic health looks solid — diet and exercise are keeping this in check.',
+    contextLow: 'Resistance training 3x/week improves insulin sensitivity within weeks. Prioritize protein and fiber at every meal.',
+    gapAction: 'Standard on most lab panels — catches pre-diabetes years before symptoms.',
+    source: 'American Diabetes Association, Standards of Care 2024',
   },
   {
     tag: 'Lp(a)',
-    stat: '$30 · one test · lifetime answer',
-    body: 'Lp(a) is genetically set — it doesn\'t change with diet or exercise. If it\'s elevated (20% of people), it changes your entire risk calculus. One test, done forever.',
-    source: 'Tsimikas et al., JACC 2018'
+    metricKey: 'lpa',
+    evidence: 'Lp(a) is genetically set — it doesn\'t change with diet or exercise. If elevated (20% of people), it triples cardiovascular risk.',
+    contextGood: 'Your Lp(a) is normal — one fewer thing to worry about. This test is done forever.',
+    contextLow: 'No current drug lowers it meaningfully, but knowing changes your entire risk calculus and may warrant earlier statin therapy.',
+    gapAction: '$15-30 add-on to any lipid panel. One test, lifetime answer.',
+    source: 'Tsimikas et al., JACC 2018',
   },
   {
     tag: 'VO2 max',
-    stat: 'Bottom 25% → average = −70% risk',
-    body: 'Low cardiorespiratory fitness predicts mortality more strongly than smoking. Moving from the bottom quartile to above-average cuts all-cause mortality risk by ~70%. Zone 2 training is the lever.',
-    source: 'Mandsager et al., JAMA Network Open 2018'
+    metricKey: 'vo2_max',
+    evidence: 'Strongest modifiable mortality predictor. Moving from the bottom 25% to average cuts death risk by 70%.',
+    contextGood: 'Your fitness level is protective — larger effect than quitting smoking. Keep the Zone 2 work going.',
+    contextLow: '150 min/week Zone 2 cardio (conversational pace). Add 1-2 HIIT sessions per week for faster VO2 gains.',
+    gapAction: 'Estimated by most fitness wearables, or tested directly at a sports medicine clinic (~$150).',
+    source: 'Mandsager et al., JAMA Network Open 2018',
   },
   {
     tag: 'Vitamin D',
-    stat: '$10/yr supplement if low',
-    body: 'If your levels are below 30 ng/mL (42% of US adults), a $10/year vitamin D3 supplement improves bone density, immune function, and mood. A $20 test tells you whether you need it.',
-    source: 'Forrest & Stuhldreher, Nutrition Research 2011'
+    metricKey: 'vitamin_d',
+    evidence: '42% of US adults are deficient. Below 20 ng/mL impairs bone density, immunity, and raises all-cause mortality.',
+    contextGood: 'Your levels are healthy — maintain with current supplementation or sun exposure.',
+    contextLow: 'Supplement D3 1000-2000 IU/day, take with fat for absorption. Retest in 3 months. Aim for 30-50 ng/mL.',
+    gapAction: 'A $20 test tells you if you need a $10/year supplement.',
+    source: 'Forrest & Stuhldreher, Nutrition Research 2011',
   },
 ];
 
 export function renderInsights(output, profile) {
   const el = document.getElementById('r-insights');
 
-  const gapMetrics = new Set(output.gaps.map(g => g.metric));
-  const coveredMetrics = new Set(output.results.filter(r => r.hasData).map(r => r.metric));
+  // Build lookup for result by metricKey
+  const resultByKey = {};
+  for (const r of output.results) {
+    const k = metricKeyFor(r);
+    if (k) resultByKey[k] = r;
+  }
+  const gapKeys = new Set(output.gaps.map(g => g.metric));
 
-  const relevanceMap = {
-    'Steps': ['daily_steps_avg'],
-    'ApoB': ['apob'],
-    'Blood pressure': ['systolic', 'sbp'],
-    'Sleep': ['sleep_duration_avg', 'sleep_hours'],
-    'HbA1c': ['hba1c'],
-    'Lp(a)': ['lpa'],
-    'VO2 max': ['vo2_max'],
-    'Vitamin D': ['vitamin_d'],
-  };
-
+  // Score and personalize each insight
   const scored = INSIGHTS.map(ins => {
-    const related = relevanceMap[ins.tag] || [];
-    const isGap = related.some(m => gapMetrics.has(m));
-    const isCovered = related.some(m => coveredMetrics.has(m));
-    return { ...ins, relevance: isGap ? 2 : isCovered ? 1 : 0 };
+    const result = resultByKey[ins.metricKey];
+    const hasData = result && result.hasData;
+    const isGap = gapKeys.has(ins.metricKey);
+    // relevance: 2 = has data, 1 = gap (actionable), 0 = unrelated
+    const relevance = hasData ? 2 : isGap ? 1 : 0;
+
+    let stat, body;
+    if (hasData) {
+      const pctLabel = result.percentile != null ? ` (${ordinal(result.percentile)} percentile)` : '';
+      stat = `You're at ${result.value} ${result.unit}${pctLabel}`;
+      const isStrong = result.standing === 'Optimal' || result.standing === 'Good';
+      if (isStrong) {
+        body = ins.evidence + ' ' + ins.contextGood;
+      } else {
+        const intervention = getIntervention(ins.metricKey);
+        const lever = intervention ? intervention.lever : ins.contextLow;
+        body = ins.evidence + ' ' + lever;
+      }
+    } else {
+      stat = 'Not yet tracked';
+      body = ins.evidence + ' ' + ins.gapAction;
+    }
+
+    return { ...ins, stat, body, relevance, hasData };
   });
 
   scored.sort((a, b) => b.relevance - a.relevance);
   const shown = scored.slice(0, 6);
+  const personalCount = shown.filter(s => s.hasData).length;
 
   const insId = 'insights-toggle';
   let html = `<div class="remaining-gaps open" id="${insId}">`;
-  html += `<div class="remaining-gaps-label" onclick="document.getElementById('${insId}').classList.toggle('open')">The evidence · ${shown.length} studies</div>`;
+  html += `<div class="remaining-gaps-label" onclick="document.getElementById('${insId}').classList.toggle('open')">Evidence · personalized · ${personalCount} of ${shown.length} matched</div>`;
   html += `<div class="remaining-gap-rows"><div>`;
   html += `<div class="insights-grid">`;
   shown.forEach(ins => {
-    const relevanceLabel = ins.relevance === 2 ? 'Closes a gap' : ins.relevance === 1 ? 'Matches your data' : '';
-    const relevanceBadge = relevanceLabel ? `<span class="insight-relevance insight-rel-${ins.relevance === 2 ? 'gap' : 'match'}">${relevanceLabel}</span>` : '';
+    const relevanceLabel = ins.hasData ? 'Your data' : ins.relevance === 1 ? 'Closes a gap' : '';
+    const relevanceBadge = relevanceLabel ? `<span class="insight-relevance insight-rel-${ins.hasData ? 'match' : 'gap'}">${relevanceLabel}</span>` : '';
     html += `<div class="insight-card">
       <div class="insight-tag">${ins.tag}${relevanceBadge}</div>
       <div class="insight-stat">${ins.stat}</div>
