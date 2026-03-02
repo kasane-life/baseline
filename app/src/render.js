@@ -4,6 +4,7 @@
 import { Standing, FRESHNESS_WINDOWS } from '../score.js';
 import { renderBpTracker } from './bp-tracker.js';
 import { renderDiscoveryForm } from './discovery.js';
+import { getIntervention } from './interventions.js';
 import { createLogger } from './logger.js';
 const log = createLogger('render');
 
@@ -351,12 +352,45 @@ function gapCategory(gap) {
 
 const CATEGORY_LABELS = { lab: 'Lab', wearable: 'Wearable', equipment: 'Equipment', lifestyle: 'Lifestyle' };
 
+// Name-to-intervention-key mapping for results that lack a metric key
+const NAME_TO_METRIC_KEY = {
+  'Blood Pressure': 'bp_systolic',
+  'Lipid Panel + ApoB': 'apob',
+  'Metabolic Panel': 'hba1c',
+  'Lp(a)': 'lpa',
+  'Resting Heart Rate': 'rhr',
+  'Waist Circumference': 'waist',
+  'Sleep Duration': 'sleep_duration',
+  'Sleep Regularity': 'sleep_regularity',
+  'Daily Steps': 'daily_steps',
+  'VO2 Max': 'vo2_max',
+  'hs-CRP': 'hscrp',
+  'Weight Trends': 'weight_trends',
+};
+
+function metricKeyFor(r) {
+  if (r.metric) return r.metric;
+  // HRV name varies by device type, e.g. "HRV RMSSD (7-day avg)"
+  if (r.name && r.name.startsWith('HRV')) return 'hrv_rmssd';
+  // Vitamin D + Ferritin composite
+  if (r.name && r.name.startsWith('Vitamin D')) return 'vitamin_d';
+  return NAME_TO_METRIC_KEY[r.name] || null;
+}
+
 /** ACT 1: Health flags — rendered above the moves section */
 function renderHealthFlags(results, container) {
   if (!container) return;
   const flags = results.filter(r =>
     r.hasData && (r.standing === 'Below Average' || r.standing === 'Concerning')
   );
+
+  // Build wins list (Optimal or Good with data + percentile)
+  const wins = results
+    .filter(r => r.hasData && r.percentile != null && (r.standing === 'Optimal' || r.standing === 'Good'))
+    .sort((a, b) => b.percentile - a.percentile)
+    .slice(0, 3);
+
+  let html = '';
 
   if (flags.length > 0) {
     const concerning = flags.filter(r => r.standing === 'Concerning').length;
@@ -365,31 +399,50 @@ function renderHealthFlags(results, container) {
     if (concerning > 0) summaryParts.push(`${concerning} flagged`);
     if (watching > 0) summaryParts.push(`${watching} to watch`);
 
-    let html = `<div class="health-flags-act1">`;
+    html += `<div class="health-flags-act1">`;
     html += `<div class="moves-section-label">Health <span class="moves-section-meta">${summaryParts.join(', ')}</span></div>`;
     flags.forEach(r => {
       const color = r.standing === 'Concerning' ? 'var(--red)' : '#e08850';
+      const key = metricKeyFor(r);
+      const interv = key ? getIntervention(key) : null;
+      const valueStr = r.value != null ? ` (${r.value}${r.unit ? ' ' + r.unit : ''})` : '';
       html += `<div class="move-card health-flag-card">
         <div class="move-body">
           <h4>${r.name}</h4>
-          <p class="move-detail">${r.standing === 'Concerning' ? 'Needs attention' : 'Room to improve'} — ${ordinal(r.percentile)} percentile${r.value != null ? ` (${r.value})` : ''}</p>
+          <p class="move-detail">${r.standing === 'Concerning' ? 'Needs attention' : 'Room to improve'} — ${ordinal(r.percentile)} percentile${valueStr}</p>
+          ${interv ? `<p class="flag-lever">${interv.lever}</p>` : ''}
         </div>
         <div class="move-tag" style="background:${color}20;color:${color};">${r.standing === 'Concerning' ? 'Flag' : 'Watch'}</div>
       </div>`;
     });
     html += `</div>`;
-    container.innerHTML = html;
-  } else {
+  }
+
+  // Wins block — show after flags, or as main content when no flags
+  if (wins.length > 0) {
+    const winParts = wins.map(r => {
+      const valueStr = r.value != null ? `${r.value}${r.unit ? ' ' + r.unit : ''}` : '';
+      return `${r.name}${valueStr ? ` (${valueStr}, ${ordinal(r.percentile)} percentile)` : ` (${ordinal(r.percentile)} percentile)`}`;
+    });
+    const key0 = metricKeyFor(wins[0]);
+    const topWhy = key0 ? getIntervention(key0) : null;
+    let sentence = `Your ${winParts.join(' and ')} ${wins.length === 1 ? 'is' : 'are'} above average for your age.`;
+    if (topWhy) sentence += ` ${topWhy.why.split('.')[0]}.`;
+    html += `<div class="wins-block">
+      <div class="wins-label">What's working</div>
+      <p class="wins-text">${sentence}</p>
+    </div>`;
+  } else if (flags.length === 0) {
     const assessedCount = results.filter(r => r.hasData && r.percentile != null).length;
     if (assessedCount >= 5) {
-      container.innerHTML = `<div class="health-flags-act1">
+      html += `<div class="health-flags-act1">
         <div class="moves-section-label">Health</div>
         <p style="color:var(--text-muted);font-size:0.88rem;margin:8px 0 4px;">All clear — ${assessedCount} metrics assessed, no flags.</p>
       </div>`;
-    } else {
-      container.innerHTML = '';
     }
   }
+
+  container.innerHTML = html;
 }
 
 export function renderMoves(gaps, currentScore, results, devices) {
@@ -435,13 +488,18 @@ export function renderMoves(gaps, currentScore, results, devices) {
         trackingInline = `<p class="move-tracking">${trackingSugg.instruction}</p>`;
       }
 
+      const gKey = metricKeyFor(g);
+      const interv = gKey ? getIntervention(gKey) : null;
+
       html += `<div class="move-card">
         <div class="move-num">${i + 1}</div>
         <div class="move-body">
           <span class="move-category move-cat-${cat}">${CATEGORY_LABELS[cat]}</span>
           <h4>${g.name}</h4>
+          ${interv ? `<p class="move-why">${interv.why}</p>` : ''}
           <p class="move-detail">${detail}</p>
           ${trackingInline}
+          ${interv?.source ? `<p class="move-source">Source: ${interv.source}</p>` : ''}
         </div>
         <div class="move-tag">+${g.weight} pts</div>
       </div>`;
