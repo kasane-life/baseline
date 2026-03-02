@@ -130,16 +130,42 @@ Results don't have a `metric` field. Agent P built a name-to-key mapping in rend
 - Still on calendar: r/QuantifiedSelf (40 metrics ranked), r/longevity, r/Biohackers
 - See `docs/content-calendar.md` for schedule
 
+## Beta Launch Session (late night)
+
+### Beta Gate + Analytics + Mobile Fix — SHIPPED
+Deployed to `beta.mybaseline.health`. Shared with Paul + family.
+
+| Change | Status |
+|--------|--------|
+| Email gate (Formspree + localStorage) | **Live** — emails arriving |
+| Analytics tracker (sendBeacon → worker KV) | **Live** — fixed wrong worker URL, redeployed |
+| Worker `POST /track` endpoint (90-day TTL) | **Deployed** |
+| Mobile defaults to form tab (voice unreliable) | **Live** |
+| "About" link fix (`../landing/` → `https://mybaseline.health`) | **Live** |
+
+**Files changed (uncommitted):**
+- `app/src/gate.js` — NEW
+- `app/src/analytics.js` — NEW
+- `app/src/main.js` — gate + analytics wiring, mobile form default
+- `app/src/discovery.js` — analytics track call
+- `app/index.html` — about link fix
+- `app/css/app.css` — gate styles
+- `worker/src/index.ts` — `/track` endpoint
+
+### Known Issue — Track Events
+Analytics URL was wrong in first deploy (`baseline-worker` instead of `baseline-api`). Fixed and redeployed. Need to verify events are landing in KV after a fresh flow-through.
+
 ## Still On Deck
 
-1. ~~**Commit + push**~~ — UI polish, favicon, privacy page → **doing now**
-2. **Build Apple Shortcut on iPhone** — Andrew builds per `docs/apple-shortcut-bridge.md`
-3. **End-to-end wearable flow test** — Garmin CSV + paste JSON
-4. **Garmin approval check** — submitted March 2, expected ~March 4
-5. **Push to production + test with Paul**
-6. **Reddit posts** — per content calendar schedule
-7. **Sleep regularity post** — drafted in `docs/draft-sleep-regularity-post.md`, schedule Thu/Fri
-8. **Quote-tweet schedule** — wearable post QTs: +2d (RHR), +3d (sleep), +5d (steps+RHR), +7d (60%)
+1. **Commit all beta gate + analytics + mobile fix changes**
+2. **Verify track events in KV** — `npx wrangler kv:key list --binding=LOGS --prefix=track/` from `worker/`
+3. **Paul test** — messaged, waiting for him to run through on iPhone
+4. **Build Apple Shortcut on iPhone** — Andrew builds per `docs/apple-shortcut-bridge.md`
+5. **End-to-end wearable flow test** — Garmin CSV + paste JSON
+6. **Garmin approval check** — submitted March 2, expected ~March 4
+7. **Reddit posts** — per content calendar schedule
+8. **Sleep regularity post** — drafted in `docs/draft-sleep-regularity-post.md`, schedule Thu/Fri
+9. **Quote-tweet schedule** — wearable post QTs: +2d (RHR), +3d (sleep), +5d (steps+RHR), +7d (60%)
 
 ## Resume Prompt
 
@@ -151,19 +177,21 @@ You are the orchestrator. Read these files before doing anything:
 2. git log --oneline -10 and git diff --stat
 
 Summary of where we are:
+- Beta live at beta.mybaseline.health — shared with Paul + family
+- Email gate + analytics + mobile form default all deployed
 - 14 agents (E through R) all landed and committed
-- Results page insights redesign complete: interventions, health flags + wins,
-  gap card context, evidence personalization, UI polish
+- Results page insights redesign complete
 - Content: wearable post live on LinkedIn + X, sleep regularity post drafted
-- Landing page: favicon added, privacy page comprehensive
 
 Next immediate:
-1. Build Apple Shortcut on iPhone (Andrew, per docs/apple-shortcut-bridge.md)
-2. End-to-end wearable flow test (Garmin CSV + paste JSON)
-3. Garmin approval check (~March 4)
-4. Push to production + test with Paul
-5. Reddit posts per content calendar
-6. Sleep regularity post Thu/Fri
+1. Commit beta gate + analytics + mobile fix changes
+2. Verify track events landing in KV
+3. Wait for Paul's test feedback
+4. Build Apple Shortcut on iPhone (per docs/apple-shortcut-bridge.md)
+5. End-to-end wearable flow test (Garmin CSV + paste JSON)
+6. Garmin approval check (~March 4)
+7. Reddit posts per content calendar
+8. Sleep regularity post Thu/Fri
 
 NEVER use the Agent tool to spawn workers. Write kickoff prompts as text, user spawns them.
 Small inline fixes (< 15 lines) are OK to do directly.

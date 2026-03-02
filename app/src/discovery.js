@@ -1,6 +1,8 @@
 // discovery.js — "What should we build next?" form for results page
 // Stores responses locally in IndexedDB, sends to Formspree for collection
 
+import { track } from './analytics.js';
+
 const DISCOVERY_OPTIONS = [
   { id: 'garmin', label: 'Auto-import wearable data', description: 'Sync steps, sleep, heart rate directly from your watch' },
   { id: 'trends', label: 'Track changes over time', description: 'See how your numbers move between lab draws' },
@@ -19,11 +21,7 @@ export function renderDiscoveryForm(container) {
     return;
   }
 
-  const discId = 'discovery-toggle';
-  let html = `<div class="remaining-gaps open" id="${discId}">`;
-  html += `<div class="remaining-gaps-label" onclick="document.getElementById('${discId}').classList.toggle('open')">Help us build · give feedback</div>`;
-  html += `<div class="remaining-gap-rows"><div>`;
-  html += `<div class="discovery-form">
+  let html = `<div class="discovery-form">
     <h3 class="discovery-title">What would be most useful next?</h3>
     <p class="discovery-subtitle">Pick any that resonate — or tell us what's missing.</p>
     <div class="discovery-options">`;
@@ -45,7 +43,6 @@ export function renderDiscoveryForm(container) {
     <button class="discovery-submit" disabled>Send</button>
     <p class="discovery-thanks" style="display:none;">Thanks — this shapes what we build.</p>
   </div>`;
-  html += `</div></div></div>`;
 
   container.innerHTML = html;
 
@@ -104,6 +101,8 @@ export function renderDiscoveryForm(container) {
         }),
       });
     } catch (_) { /* Offline or blocked — local copy is the backup */ }
+
+    track('discovery_submitted', { selected });
 
     // Show thanks
     form.querySelector('.discovery-options').style.display = 'none';

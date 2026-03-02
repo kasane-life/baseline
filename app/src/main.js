@@ -17,12 +17,20 @@ import { initPhq9, getPhq9Score, resetPhq9 } from './phq9.js';
 import { initErrorBoundary, initBreadcrumbTracking, initFeatureFlags, initVoiceFallback, initFeedbackButton, addBreadcrumb } from './feedback.js';
 import { isPasskeySupported, isPlatformAuthenticatorAvailable, isAuthenticated, registerPasskey, loginWithPasskey, getIdentityStatus } from './identity.js';
 import { syncOnLogin } from './sync.js';
+import { isGateRequired, showGate } from './gate.js';
+import { track } from './analytics.js';
 
 const log = createLogger('main');
 
 // ── Error boundary first — catches all subsequent init errors ──
 initErrorBoundary();
 initFeatureFlags();
+
+// ── Beta gate ──
+if (isGateRequired()) {
+  await showGate();
+  track('gate_passed');
+}
 
 // ── Init ──
 log.info('baseline app starting');
@@ -39,12 +47,16 @@ if (!persisted) {
   log.warn('storage not persistent — show export reminder after scoring');
 }
 
-// Hide voice tab if Speech API isn't available or ?voice=off
-// Note: mobile devices with speech support (iOS Safari) get voice by default
+// Default to form on mobile (voice dictation is unreliable on mobile browsers)
+// Also hide voice entirely if Speech API isn't available or ?voice=off
+const isMobile = window.matchMedia('(pointer: coarse)').matches;
 if (!hasSpeechSupport() || window._forceFormMode) {
   if (!hasSpeechSupport()) hideSpeechUI();
   switchIntakeTab('form');
   addBreadcrumb('init', `form-mode: speech=${hasSpeechSupport()}, flag=${!!window._forceFormMode}`);
+} else if (isMobile) {
+  switchIntakeTab('form');
+  addBreadcrumb('init', 'form-default: mobile device, voice still available');
 }
 
 // ── Theme toggle ──
@@ -70,6 +82,7 @@ function initThemeToggle() {
 initThemeToggle();
 
 log.info('baseline app ready');
+track('phase1_started', { mode: hasSpeechSupport() && !window._forceFormMode ? 'voice' : 'form' });
 
 // ── Service worker — DISABLED during active development ──
 // Uncomment to re-enable for production PWA:
@@ -120,6 +133,7 @@ function showPhase2() {
   if (reveal) reveal.classList.remove('active');
   const continueBtn = document.getElementById('stepper-continue');
   if (continueBtn) continueBtn.classList.remove('has-data');
+  track('phase2_started');
   log.info('navigated to phase 2');
 }
 
@@ -190,6 +204,7 @@ async function computeResults() {
 
   interstitial.classList.remove('active');
   renderResults(output, formProfile);
+  track('score_calculated', { score: Math.round(output.coverageScore) });
   log.info('results computed', { score: output.coverageScore });
 }
 
@@ -496,6 +511,7 @@ function parseWearablePaste() {
   }
   resultsEl.textContent = '';
   resultsEl.className = 'parse-summary';
+  track('wearable_imported', { source: result.source });
   log.info('imported wearable paste', { source: result.source, days: result.days });
 }
 

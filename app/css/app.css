@@ -1547,3 +1547,44 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   display: flex;
   flex-direction: column;
 }
+
+/* ── Beta gate ── */
+.gate-logo {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: lowercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.gate-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gate-email-input {
+  @apply bg-bg border border-border rounded-lg px-4 py-3 text-text font-body;
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.gate-email-input:focus { border-color: var(--red); }
+.gate-submit {
+  @apply bg-accent text-white font-body font-medium rounded-lg py-3;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: opacity 0.15s;
+}
+.gate-submit:disabled { opacity: 0.5; cursor: default; }
+.gate-privacy {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 12px;
+}

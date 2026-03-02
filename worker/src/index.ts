@@ -133,7 +133,23 @@ export default {
 
     // Health check — allow GET
     if (request.method === 'GET' && (path === '/' || path === '/health')) {
-      return Response.json({ status: 'ok', endpoints: ['/parse-voice', '/parse-lab', '/auth/*', '/sync/*'] }, { headers });
+      return Response.json({ status: 'ok', endpoints: ['/parse-voice', '/parse-lab', '/auth/*', '/sync/*', '/track'] }, { headers });
+    }
+
+    // Analytics tracking — fire-and-forget, never errors
+    // Placed before origin validation so sendBeacon with text/plain works without CORS preflight
+    if (request.method === 'POST' && path === '/track') {
+      try {
+        const text = await request.text();
+        const payload = JSON.parse(text);
+        const event = payload.event || 'unknown';
+        const id = `track/${event}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+        const country = request.headers.get('cf-ipcountry') || '';
+        await env.LOGS.put(id, JSON.stringify({ ...payload, country, ip_country: country }), {
+          expirationTtl: 90 * 24 * 60 * 60, // 90 days
+        });
+      } catch { /* swallow all errors */ }
+      return new Response('ok', { status: 200, headers: { ...headers, 'Content-Type': 'text/plain' } });
     }
 
     // Auth routes — handled separately (no Anthropic client needed)
