@@ -156,7 +156,7 @@ function revalidateChecklist(haikuEx, regexCheck) {
   }
 }
 
-// ── Submit gate — disabled while any checklist item is still processing ──
+// ── Submit gate — single authority on button disabled state ──
 function updateSubmitGate() {
   const btn = document.getElementById('voice-submit-btn');
   if (!btn) return;
@@ -423,8 +423,7 @@ export function toggleFullVoice() {
     status.textContent = 'Listening...';
     status.classList.add('active');
     fullVoiceRecognition = recognition;
-    const submitBtn = document.getElementById('voice-submit-btn');
-    if (submitBtn) submitBtn.disabled = true;
+    updateSubmitGate();
     updateVoiceGuide({});
   };
 
