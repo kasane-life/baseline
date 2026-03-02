@@ -10,7 +10,7 @@ import { initToggleButtons, toggleDevice, showStep, buildProfile, populateForm, 
 import { initLabDrop, handleLabFileInput, parseLabText, togglePasteLabs, toggleManualLabs } from './lab-import.js';
 import { renderResults } from './render.js';
 import { toggleFullVoice, toggleVoice, submitVoiceIntake, hasSpeechSupport, hideSpeechUI, resetVoiceState, checklistLocked, applyExtraction, expandTranscript } from './intake.js';
-import { initMedSearch, removeMedTag } from './meds.js';
+import { initMedSearch, removeMedTag, resetMeds } from './meds.js';
 import { initPhq9, getPhq9Score, resetPhq9 } from './phq9.js';
 import { initErrorBoundary, initBreadcrumbTracking, initFeatureFlags, initVoiceFallback, initFeedbackButton, addBreadcrumb } from './feedback.js';
 import { isPasskeySupported, isPlatformAuthenticatorAvailable, isAuthenticated, registerPasskey, loginWithPasskey, getIdentityStatus } from './identity.js';
@@ -185,10 +185,23 @@ async function checkReturnVisit() {
   const hasData = profile && Object.keys(profile.observations).length > 0;
   if (hasData) {
     const metricCount = Object.keys(profile.observations).length;
-    const importCount = profile.imports?.length || 0;
+    // Find most recent update date from profile meta or observations
+    let lastVisit = profile.meta?.updated_at;
+    if (lastVisit) {
+      const d = new Date(lastVisit);
+      const month = d.toLocaleString('en-US', { month: 'short' });
+      const day = d.getDate();
+      lastVisit = `${month} ${day}`;
+    }
+    // Quick coverage calc
+    const output = scoreTimeSeriesProfile(profile);
+    const coverage = output?.coverageScore != null ? `${Math.round(output.coverageScore)}% coverage` : `${metricCount} metrics`;
+
     const banner = document.getElementById('return-banner');
-    banner.querySelector('span').innerHTML =
-      `Welcome back. <strong>${metricCount} metrics</strong> from ${importCount} import${importCount !== 1 ? 's' : ''} saved. Update or start fresh?`;
+    const parts = ['Welcome back.'];
+    if (lastVisit) parts.push(`Last visit: ${lastVisit} &mdash;`);
+    parts.push(`<strong>${coverage}</strong> saved.`);
+    banner.querySelector('span').innerHTML = parts.join(' ');
     banner.classList.add('active');
   }
 }
@@ -430,16 +443,28 @@ window.loadSavedProfile = async function() {
   const tsProfile = await loadFullProfile();
   if (!tsProfile || Object.keys(tsProfile.observations).length === 0) return;
   document.getElementById('return-banner').classList.remove('active');
+  // Flatten observations → most recent value per metric
   const flat = { demographics: tsProfile.demographics };
   for (const [metric, obs] of Object.entries(tsProfile.observations)) {
     if (obs.length > 0) flat[metric] = obs[0].value;
   }
   populateForm(flat);
+  // Hydrate device card selections if stored
+  if (flat._devices) {
+    for (const device of flat._devices) {
+      const card = document.querySelector(`.device-card[data-device="${device}"]`);
+      if (card) toggleDevice(card);
+    }
+  }
+  log.info('loaded saved profile', { metrics: Object.keys(tsProfile.observations).length });
 };
 
 window.clearSaved = async function() {
   await clearAll();
+  sessionStorage.clear();
+  resetState();
   document.getElementById('return-banner').classList.remove('active');
+  log.info('cleared saved profile');
 };
 
 window.startOver = function() {
@@ -462,18 +487,33 @@ window.startOver = function() {
 
 window.clearAndRestart = async function() {
   await clearAll();
+  sessionStorage.clear();
   resetState();
   resetPhq9();
+  document.getElementById('return-banner').classList.remove('active');
   document.getElementById('results').classList.remove('active');
   document.getElementById('questionnaire').style.display = 'block';
   document.getElementById('phase1').style.display = 'block';
   document.getElementById('phase2').style.display = 'none';
+  // Reset all form inputs
   document.querySelectorAll('.field-input').forEach(i => i.value = '');
   document.querySelectorAll('.opt-btn, .toggle-btn').forEach(b => b.classList.remove('selected'));
+  // Clear lab state
   document.getElementById('lab-paste').value = '';
   document.getElementById('parse-results').classList.remove('active');
   document.getElementById('lab-file-list').innerHTML = '';
+  const labSummary = document.getElementById('lab-import-summary');
+  if (labSummary) labSummary.textContent = '';
+  const parseSummary = document.getElementById('parse-summary');
+  if (parseSummary) parseSummary.textContent = '';
   document.querySelectorAll('.manual-fields').forEach(f => f.classList.remove('open'));
+  // Clear device selections
+  document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
+  // Clear meds module state + DOM
+  resetMeds();
+  const medSearch = document.getElementById('med-search');
+  if (medSearch) medSearch.value = '';
+  // Reset voice state
   document.getElementById('voice-hero').style.display = '';
   document.getElementById('intake-tabs').style.display = '';
   document.getElementById('voice-idle').style.display = '';
@@ -508,6 +548,7 @@ window.clearAndRestart = async function() {
   if (revealEl) revealEl.classList.remove('active');
   const contBtn = document.getElementById('stepper-continue');
   if (contBtn) contBtn.classList.remove('has-data');
+  log.info('cleared all data and restarted');
 };
 
 window.exportProfile = async function() {

@@ -21,6 +21,7 @@ export function resetState() {
   _parsedLabValues = {};
   _pendingImports = [];
   _currentStep = 0;
+  _selectedDevices = [];
 }
 
 export function addParsedLabValues(values) {

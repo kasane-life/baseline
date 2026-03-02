@@ -245,6 +245,11 @@ function renderTags() {
   ).join('');
 }
 
+export function resetMeds() {
+  selectedMeds = [];
+  renderTags();
+}
+
 export function getSelectedMeds() {
   return [...selectedMeds];
 }
