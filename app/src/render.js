@@ -372,7 +372,15 @@ export function renderMoves(gaps, currentScore, results, devices) {
 
   if (healthFlags.length > 0) {
     html += `<div class="moves-divider"></div>`;
-    html += `<div class="moves-section-label">Health <span class="moves-section-meta">${healthFlags.length} flag${healthFlags.length !== 1 ? 's' : ''}</span></div>`;
+    const hfId = 'health-flags-toggle';
+    const concerning = healthFlags.filter(r => r.standing === 'Concerning').length;
+    const summaryParts = [];
+    if (concerning > 0) summaryParts.push(`${concerning} flagged`);
+    const watching = healthFlags.length - concerning;
+    if (watching > 0) summaryParts.push(`${watching} to watch`);
+    html += `<div class="remaining-gaps" id="${hfId}">`;
+    html += `<div class="remaining-gaps-label" onclick="document.getElementById('${hfId}').classList.toggle('open')">Health · ${summaryParts.join(', ')}</div>`;
+    html += `<div class="remaining-gap-rows"><div>`;
 
     healthFlags.forEach(r => {
       const color = r.standing === 'Concerning' ? 'var(--red)' : '#e08850';
@@ -384,6 +392,8 @@ export function renderMoves(gaps, currentScore, results, devices) {
         <div class="move-tag" style="background:${color}20;color:${color};">${r.standing === 'Concerning' ? 'Flag' : 'Watch'}</div>
       </div>`;
     });
+
+    html += `</div></div></div>`;
   }
 
   html += `</div>`;
@@ -512,7 +522,11 @@ export function renderInsights(output, profile) {
   scored.sort((a, b) => b.relevance - a.relevance);
   const shown = scored.slice(0, 6);
 
-  let html = `<h3>The evidence</h3><div class="insights-grid">`;
+  const insId = 'insights-toggle';
+  let html = `<div class="remaining-gaps" id="${insId}">`;
+  html += `<div class="remaining-gaps-label" onclick="document.getElementById('${insId}').classList.toggle('open')">The evidence · ${shown.length} studies</div>`;
+  html += `<div class="remaining-gap-rows"><div>`;
+  html += `<div class="insights-grid">`;
   shown.forEach(ins => {
     html += `<div class="insight-card">
       <div class="insight-tag">${ins.tag}</div>
@@ -522,6 +536,7 @@ export function renderInsights(output, profile) {
     </div>`;
   });
   html += '</div>';
+  html += `</div></div></div>`;
 
   el.innerHTML = html;
 }
