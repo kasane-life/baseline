@@ -242,14 +242,23 @@
           <div class="stepper-step active" data-step="0">
             <span class="stepper-num">1</span>
             <span class="stepper-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8V4m0 0L9 7m3-3l3 3"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M9 14h6" opacity="0.5"/><path d="M12 12v4" opacity="0.5"/></svg>
+            </span>
+            <span class="stepper-label">Wearable</span>
+            <span class="stepper-status" id="wearable-card-status"></span>
+            <span class="stepper-check">&check;</span>
+          </div>
+          <div class="stepper-step" data-step="1">
+            <span class="stepper-num">2</span>
+            <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3v2m6-2v2M9 5a2 2 0 0 0-2 2v2l-1 9a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3l-1-9V7a2 2 0 0 0-2-2H9z"/><path d="M9 14h6" opacity="0.5"/></svg>
             </span>
             <span class="stepper-label">Labs</span>
             <span class="stepper-status" id="labs-card-status"></span>
             <span class="stepper-check">&check;</span>
           </div>
-          <div class="stepper-step" data-step="1">
-            <span class="stepper-num">2</span>
+          <div class="stepper-step" data-step="2">
+            <span class="stepper-num">3</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
             </span>
@@ -257,8 +266,8 @@
             <span class="stepper-status" id="equip-card-status"></span>
             <span class="stepper-check">&check;</span>
           </div>
-          <div class="stepper-step" data-step="2">
-            <span class="stepper-num">3</span>
+          <div class="stepper-step" data-step="3">
+            <span class="stepper-num">4</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="7" rx="3.5"/><path d="M12 11v7" opacity="0.4"/><path d="M8.5 7a3.5 3.5 0 1 1 7 0v4h-7V7z" opacity="0.6"/></svg>
             </span>
@@ -266,8 +275,8 @@
             <span class="stepper-status" id="meds-card-status"></span>
             <span class="stepper-check">&check;</span>
           </div>
-          <div class="stepper-step" data-step="3">
-            <span class="stepper-num">4</span>
+          <div class="stepper-step" data-step="4">
+            <span class="stepper-num">5</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M9 10h.01M15 10h.01" stroke-linecap="round"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke-linecap="round"/></svg>
             </span>
@@ -283,8 +292,102 @@
         </button>
 
         <!-- Step content (no carousel wrapper — slides flow as page content) -->
-          <!-- Slide 0: Blood work -->
+          <!-- Slide 0: Wearable import -->
           <div class="enrich-slide active" data-slide="0">
+
+            <!-- Zone 1: Device selector (primary action) -->
+            <div class="wearable-zone wearable-zone-primary">
+              <div class="wearable-zone-label">What do you wear?</div>
+              <div class="brand-selector" id="brand-selector"></div>
+              <div class="model-selector" id="model-selector" style="display:none;">
+                <select class="model-dropdown" id="model-dropdown" onchange="selectModel(this.value)">
+                  <option value="">Select your model...</option>
+                </select>
+              </div>
+              <div class="device-cap-summary" id="device-cap-summary"></div>
+            </div>
+
+            <!-- Zone 2: Import data (secondary action) -->
+            <div class="wearable-zone wearable-zone-secondary">
+              <div class="wearable-zone-label">Import your data</div>
+
+              <!-- Device guides — collapsed, filtered by brand -->
+              <div id="device-guides">
+                <button class="enrich-alt-btn" onclick="toggleDeviceGuide('apple')" id="guide-btn-apple">
+                  <span>Apple Watch export guide</span>
+                  <span class="enrich-alt-arrow">&#9662;</span>
+                </button>
+                <div class="manual-fields" id="guide-apple">
+                  <ol class="device-guide-steps">
+                    <li>Install the Baseline Shortcut on your iPhone (link coming soon)</li>
+                    <li>Open the Shortcut &mdash; it reads your last 30 days from Apple Health</li>
+                    <li>Tap &ldquo;Copy to Clipboard&rdquo; when it finishes</li>
+                    <li>Paste the JSON below</li>
+                  </ol>
+                </div>
+
+                <button class="enrich-alt-btn" onclick="toggleDeviceGuide('garmin')" id="guide-btn-garmin">
+                  <span>Garmin export guide</span>
+                  <span class="enrich-alt-arrow">&#9662;</span>
+                </button>
+                <div class="manual-fields" id="guide-garmin">
+                  <ol class="device-guide-steps">
+                    <li>Go to <strong>connect.garmin.com</strong> and sign in</li>
+                    <li>Click your profile &rarr; Health Stats &rarr; Export</li>
+                    <li>Select CSV format and your date range</li>
+                    <li>Upload the file below</li>
+                  </ol>
+                </div>
+
+                <button class="enrich-alt-btn" onclick="toggleDeviceGuide('oura')" id="guide-btn-oura">
+                  <span>Oura export guide</span>
+                  <span class="enrich-alt-arrow">&#9662;</span>
+                </button>
+                <div class="manual-fields" id="guide-oura">
+                  <ol class="device-guide-steps">
+                    <li>Open the Oura app on your phone</li>
+                    <li>Go to Settings &rarr; Account &rarr; Download My Data</li>
+                    <li>Select JSON format</li>
+                    <li>Upload the file below</li>
+                  </ol>
+                </div>
+
+                <div class="manual-fields" id="guide-unsupported" style="display:none;">
+                  <p class="text-[0.82rem] text-text-dim leading-relaxed" style="margin:12px 0;">Export support coming soon. Select your model above so we know what to build next.</p>
+                </div>
+              </div>
+
+              <div class="upload-zone" id="wearable-drop" onclick="document.getElementById('wearable-file-input').click()" style="margin-top:16px;">
+                <div class="text-text-dim opacity-40">
+                  <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+                </div>
+                <div>
+                  <div class="font-body text-[0.92rem] text-text-muted font-medium mb-1">Upload wearable export</div>
+                  <div class="font-mono text-[0.7rem] text-text-dim">Garmin CSV, Apple Health XML, or Oura JSON</div>
+                </div>
+              </div>
+              <input type="file" id="wearable-file-input" accept=".csv,.xml,.json" multiple style="display:none" onchange="handleWearableFileInput(event)">
+
+              <div class="enrich-divider"><span>or</span></div>
+
+              <button class="enrich-alt-btn" onclick="togglePasteWearable()">
+                <span>Paste wearable JSON</span>
+                <span class="enrich-alt-arrow">&#9662;</span>
+              </button>
+              <div class="manual-fields" id="paste-wearable">
+                <div class="field-group" style="margin-top:12px;">
+                  <textarea class="paste-area" id="wearable-paste" placeholder='{"sleep":[{"total":25920,"hr_average":54,"rmssd":38}],"activity":[{"steps":9842}],"source":"apple_health_shortcut"}'></textarea>
+                  <button class="parse-btn" onclick="parseWearablePaste()">Import</button>
+                  <div class="parse-summary" id="wearable-paste-results"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="parse-summary" id="wearable-import-summary"></div>
+          </div>
+
+          <!-- Slide 1: Blood work -->
+          <div class="enrich-slide" data-slide="1">
             <div class="field-group">
               <div class="upload-zone" id="lab-drop" onclick="document.getElementById('lab-file-input').click()">
                 <div class="text-text-dim opacity-40">
@@ -395,25 +498,10 @@
                 </div>
               </div>
             </div>
-
-            <div class="enrich-divider"><span>or</span></div>
-
-            <!-- Wearable import -->
-            <div class="upload-zone" id="wearable-drop" onclick="document.getElementById('wearable-file-input').click()">
-              <div class="text-text-dim opacity-40">
-                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
-              </div>
-              <div>
-                <div class="font-body text-[0.92rem] text-text-muted font-medium mb-1">Upload wearable export</div>
-                <div class="font-mono text-[0.7rem] text-text-dim">Garmin CSV, Apple Health XML, or Oura JSON</div>
-              </div>
-            </div>
-            <input type="file" id="wearable-file-input" accept=".csv,.xml,.json" multiple style="display:none" onchange="handleWearableFileInput(event)">
-            <div class="parse-summary" id="wearable-import-summary"></div>
           </div>
 
-          <!-- Slide 1: Equipment -->
-          <div class="enrich-slide" data-slide="1">
+          <!-- Slide 2: Equipment -->
+          <div class="enrich-slide" data-slide="2">
             <div class="slide-hint">What can you measure between lab visits?</div>
             <div class="grid grid-cols-4 max-sm:grid-cols-2 gap-3 mb-4" id="device-selector">
               <div class="device-card" data-device="bp_cuff" onclick="toggleDevice(this)">
@@ -439,8 +527,8 @@
             </div>
           </div>
 
-          <!-- Slide 2: Medications -->
-          <div class="enrich-slide" data-slide="2">
+          <!-- Slide 3: Medications -->
+          <div class="enrich-slide" data-slide="3">
             <div class="slide-hint">Type to search — we'll factor these into your picture.</div>
             <div class="relative">
               <input type="text" class="med-search-input" id="med-search" placeholder="e.g. tirzepatide, vitamin D, creatine..." autocomplete="off">
@@ -449,8 +537,8 @@
             <div class="flex flex-wrap gap-2 mt-5" id="med-tags"></div>
           </div>
 
-          <!-- Slide 3: Mental Health -->
-          <div class="enrich-slide" data-slide="3" id="phq9-section">
+          <!-- Slide 4: Mental Health -->
+          <div class="enrich-slide" data-slide="4" id="phq9-section">
             <div class="slide-hint">Quick mental health screen</div>
             <p class="text-[0.85rem] text-text-dim mb-6 leading-relaxed">Depression is an independent cardiovascular risk factor. A quick screen sharpens your picture.</p>
 
@@ -618,34 +706,7 @@
       <p class="score-context" id="r-context"></p>
     </div>
 
-    <!-- ACTION: Next moves (most important interactive section) -->
-    <div class="next-moves" id="r-moves"></div>
-
-    <!-- LOOP: Post-score tracking modules (BP protocol, tracking today) -->
-    <div class="tracking-modules">
-      <div id="bp-tracker-slot"></div>
-      <div id="tracking-today"></div>
-    </div>
-
-    <!-- SAVE: Passkey prompt (post-score, when user has something worth saving) -->
-    <div class="passkey-prompt" id="passkey-banner">
-      <div class="passkey-prompt-inner">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" class="passkey-prompt-icon"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
-        <div class="passkey-prompt-text">
-          <span class="passkey-prompt-title">Save your profile across devices</span>
-          <span class="passkey-prompt-sub">Your data stays on-device. A passkey lets you access it from any browser.</span>
-        </div>
-        <button id="passkey-action-btn" onclick="handlePasskeyAction()">Set up passkey</button>
-      </div>
-    </div>
-
-    <!-- ─── fold ─── -->
-    <div class="results-fold">
-      <div class="results-fold-line"></div>
-      <div class="results-fold-label">Detail</div>
-    </div>
-
-    <!-- DETAIL: Tier coverage bars -->
+    <!-- ACT 1: Your Picture — scorecard at a glance -->
     <div class="tier-summary">
       <div class="tier-block">
         <div class="t-label">Core</div>
@@ -656,6 +717,35 @@
         <div class="t-label">Advanced</div>
         <div class="t-track"><div class="t-fill" id="r-t2-fill" style="width:0%"></div></div>
         <div class="t-pct" id="r-t2-pct">0%</div>
+      </div>
+    </div>
+
+    <!-- ACT 1 continued: Health flags rendered dynamically -->
+    <div id="health-flags-slot"></div>
+
+    <!-- ACT 2: Next Moves — action zone -->
+    <div class="next-moves" id="r-moves"></div>
+
+    <!-- BP tracker inline slot (only used when BP is top-3 gap) -->
+    <div class="tracking-modules">
+      <div id="bp-tracker-slot"></div>
+    </div>
+
+    <!-- ─── fold ─── -->
+    <div class="results-fold">
+      <div class="results-fold-line"></div>
+      <div class="results-fold-text">That's your snapshot. Details below.</div>
+    </div>
+
+    <!-- ACT 3: Detail — reference material below the fold -->
+    <div class="passkey-prompt" id="passkey-banner">
+      <div class="passkey-prompt-inner">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" class="passkey-prompt-icon"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+        <div class="passkey-prompt-text">
+          <span class="passkey-prompt-title">Save your profile across devices</span>
+          <span class="passkey-prompt-sub">Your data stays on-device. A passkey lets you access it from any browser.</span>
+        </div>
+        <button id="passkey-action-btn" onclick="handlePasskeyAction()">Set up passkey</button>
       </div>
     </div>
 

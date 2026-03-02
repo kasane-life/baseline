@@ -40,6 +40,12 @@ export async function handleWearableFiles(fileList) {
 
       populateFields(result.metrics);
       showSummary(summaryEl, result);
+      // Set brand-level device fallback for device-aware costToClose
+      const brandMap = { 'Garmin': 'garmin', 'Apple Health': 'apple', 'Oura': 'oura' };
+      const detectedBrand = brandMap[result.source];
+      if (detectedBrand && !window.__selectedDevice) {
+        window.__selectedDevice = { brand: detectedBrand, model: null };
+      }
       log.info('imported wearable file', { file: file.name, source: result.source, days: result.days });
     } catch (err) {
       log.error('error processing wearable file', { file: file.name, error: err.message });
@@ -49,7 +55,7 @@ export async function handleWearableFiles(fileList) {
   }
 }
 
-function detectAndParse(text, filename) {
+export function detectAndParse(text, filename) {
   // Oura JSON — has "sleep" array
   if (text.trimStart().startsWith('{')) {
     try {
@@ -191,8 +197,11 @@ function parseOuraJSON(data) {
   if (rhrs.length)     metrics.resting_hr         = Math.round(avg(rhrs));
   if (hrvs.length)     metrics.hrv_rmssd_avg      = Math.round(avg(hrvs));
   if (steps.length)    metrics.daily_steps_avg    = Math.round(avg(steps));
+  // Apple Shortcut bridge puts vo2_max at top level
+  if (data.vo2_max != null) metrics.vo2_max        = round1(Number(data.vo2_max));
 
-  return { source: 'Oura', days, metrics };
+  const source = data.source === 'apple_health_shortcut' ? 'Apple Health' : 'Oura';
+  return { source, days, metrics };
 }
 
 // ── Populate form fields ──
@@ -205,7 +214,7 @@ const METRIC_TO_INPUT = {
   hrv_rmssd_avg:      'f-hrv',
 };
 
-function populateFields(metrics) {
+export function populateFields(metrics) {
   for (const [key, value] of Object.entries(metrics)) {
     const inputId = METRIC_TO_INPUT[key];
     if (inputId) {
