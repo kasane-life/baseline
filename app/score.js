@@ -6,7 +6,7 @@
  */
 
 import { getPercentile } from './nhanes.js';
-import { getDeviceCapabilities } from './src/device-db.js';
+import { getDeviceCapabilities, getHrvType } from './src/device-db.js';
 
 // ---------------------------------------------------------------------------
 // Standings
@@ -188,6 +188,17 @@ const CUTOFF_TABLES = {
       '20-29|F': [18, 25, 40, 60], '30-39|F': [15, 22, 35, 55],
       '40-49|F': [12, 18, 28, 45], '50-59|F': [10, 15, 22, 38],
       '60-69|F': [8, 12, 18, 30], '70+|F': [6, 10, 15, 25],
+    },
+  },
+  hrv_sdnn: {
+    lower_is_better: false,
+    cutoffs: {
+      '20-29|M': [25, 38, 55, 75], '30-39|M': [22, 33, 48, 65],
+      '40-49|M': [18, 28, 40, 55], '50-59|M': [15, 23, 33, 48],
+      '60-69|M': [12, 18, 27, 40], '70+|M': [10, 15, 22, 35],
+      '20-29|F': [22, 35, 50, 70], '30-39|F': [20, 30, 44, 60],
+      '40-49|F': [16, 25, 36, 50], '50-59|F': [13, 20, 30, 43],
+      '60-69|F': [10, 16, 24, 36], '70+|F': [8, 13, 20, 32],
     },
   },
 };
@@ -497,10 +508,13 @@ function scoreProfile(profile) {
 
   // --- Tier 2: HRV ---
   const hrvHas = profile.hrv_rmssd_avg != null;
-  const hrv = assess(profile.hrv_rmssd_avg, 'hrv_rmssd', demo, null);
+  const hrvType = getHrvType(selectedDevice?.brand, selectedDevice?.model) || 'rmssd';
+  const hrvTableKey = hrvType === 'sdnn' ? 'hrv_sdnn' : 'hrv_rmssd';
+  const hrv = assess(profile.hrv_rmssd_avg, hrvTableKey, demo, null);
+  const hrvTypeSuffix = hrvType === 'sdnn' ? 'SDNN' : 'RMSSD';
   results.push({
-    name: 'HRV (7-day avg)', tier: 2, rank: 13, hasData: hrvHas,
-    value: profile.hrv_rmssd_avg, unit: 'ms RMSSD',
+    name: `HRV ${hrvTypeSuffix} (7-day avg)`, tier: 2, rank: 13, hasData: hrvHas,
+    value: profile.hrv_rmssd_avg, unit: `ms ${hrvTypeSuffix}`,
     standing: hrv.standing, percentile: hrv.percentile,
     weight: TIER2_WEIGHTS.hrv,
     costToClose: deviceAwareCost('hrv', 'Free with most wearables', deviceCaps, modelName, hrvHas),
