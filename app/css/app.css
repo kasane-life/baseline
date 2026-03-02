@@ -799,6 +799,7 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   @apply font-mono text-[0.78rem] text-text-muted mb-3 px-3.5 py-2.5 bg-success-dim rounded-[5px];
   border: 1px solid rgba(60, 140, 92, 0.2);
 }
+.parse-summary:empty { @apply hidden; }
 .parse-summary .count { @apply text-success font-medium; }
 .parsed-values { @apply grid grid-cols-2 gap-1.5; }
 .parsed-chip {

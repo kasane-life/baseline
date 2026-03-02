@@ -516,7 +516,13 @@ export function toggleFullVoice() {
 // ── Submit voice intake ──
 export async function submitVoiceIntake() {
   const text = document.getElementById('voice-full-transcript').value;
-  if (!text.trim()) return;
+
+  // If profile was loaded (no transcript), skip extraction and go straight to Phase 2
+  if (!text.trim()) {
+    if (fullVoiceRecognition) fullVoiceRecognition.stop();
+    if (window.showPhase2) window.showPhase2();
+    return;
+  }
 
   const btn = document.getElementById('voice-submit-btn');
   const statusEl = document.getElementById('voice-full-status');
