@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   root: '.',
-  base: '/baseline/app/',
+  base: '/',
   build: {
     outDir: 'dist',
   },

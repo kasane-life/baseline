@@ -13,9 +13,9 @@ interface Env {
 
 // CORS headers for preflight and responses
 function corsHeaders(origin: string, allowedOrigin: string): HeadersInit {
-  // Allow localhost during development
+  const allowedOrigins = allowedOrigin.split(',');
   const isAllowed =
-    origin === allowedOrigin ||
+    allowedOrigins.includes(origin) ||
     origin.startsWith('http://localhost:') ||
     origin.startsWith('http://127.0.0.1:');
 
@@ -165,7 +165,7 @@ export default {
     if (
       !origin.startsWith('http://localhost:') &&
       !origin.startsWith('http://127.0.0.1:') &&
-      origin !== env.ALLOWED_ORIGIN
+      !env.ALLOWED_ORIGIN.split(',').includes(origin)
     ) {
       return new Response('Forbidden', { status: 403, headers });
     }

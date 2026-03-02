@@ -122,6 +122,22 @@ h1 .word-not {
   line-height: 1.6;
 }
 
+.beta-cta {
+  display: inline-block;
+  padding: 14px 36px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  margin-bottom: 20px;
+  transition: opacity 0.2s;
+}
+.beta-cta:hover { opacity: 0.85; text-decoration: none; }
+
 .signup-form {
   display: flex;
   gap: 8px;
@@ -1272,6 +1288,7 @@ footer p {
       <span class="line-neg">Average <span class="word-not">&ne;</span> Healthy.</span>
     </h1>
     <p class="hero-sub">Build your health record once. Use it everywhere. Take it with you forever.</p>
+    <a href="https://beta.mybaseline.health" class="beta-cta">Try the beta</a>
     <form class="signup-form" id="hero-form" action="https://formspree.io/f/mjgezrdp" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
       <input type="hidden" name="source" value="hero">
