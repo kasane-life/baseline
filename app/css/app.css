@@ -893,12 +893,12 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   opacity: 1;
   background: rgba(200, 60, 60, 0.12);
   border-color: rgba(200, 60, 60, 0.35);
-  color: #e8a0a0;
+  color: var(--color-accent);
 }
 .stepper-continue.has-data:hover {
   background: rgba(200, 60, 60, 0.22);
   border-color: rgba(200, 60, 60, 0.5);
-  color: #fff;
+  color: var(--color-text);
   box-shadow: 0 2px 12px rgba(200, 60, 60, 0.2);
 }
 .stepper-continue-arrow { @apply text-[0.85rem]; }
@@ -1074,7 +1074,7 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 }
 .bp-tracker {
   @apply rounded-xl px-6 py-6;
-  background: linear-gradient(135deg, rgba(200, 60, 60, 0.04) 0%, rgba(20, 20, 24, 1) 60%);
+  background: linear-gradient(135deg, rgba(200, 60, 60, 0.04) 0%, var(--color-bg) 60%);
   border: 1px solid rgba(200, 60, 60, 0.12);
   animation: fadeSlideUp 0.4s ease-out;
 }
@@ -1175,6 +1175,17 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   transition: all 0.2s;
   box-shadow: 0 2px 12px rgba(0,0,0,0.4);
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── Light mode component overrides ── */
+@media (prefers-color-scheme: light) {
+  .sw-toast { box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+  .feedback-fab { box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+  .feedback-overlay { background: rgba(245, 245, 247, 0.88); }
+  .score-ring .track { stroke: rgba(var(--surface),0.1); }
+  .score-ring.glow-low::before { background: radial-gradient(circle, rgba(200,60,60,0.08) 0%, transparent 70%); }
+  .score-ring.glow-mid::before { background: radial-gradient(circle, rgba(212,162,76,0.08) 0%, transparent 70%); }
+  .score-ring.glow-high::before { background: radial-gradient(circle, rgba(60,140,92,0.08) 0%, transparent 70%); }
 }
 .feedback-fab:hover { border-color: rgba(var(--surface),0.2); @apply text-text-muted scale-105; }
 
