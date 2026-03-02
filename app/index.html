@@ -194,50 +194,55 @@
       <div class="mx-auto pb-16">
         <button class="phase2-back" onclick="goBackToPhase1()">&larr; Back</button>
 
-        <div class="text-center pt-2 pb-6 opacity-0 animate-[fadeSlideUp_0.5s_ease-out_0.05s_forwards]">
-          <h2 class="font-display text-[1.6rem] font-extrabold uppercase tracking-tight mb-1">Fill in the picture</h2>
-          <p class="text-[0.82rem] text-text-dim max-w-[340px] mx-auto leading-relaxed">Add what you have, skip what you don't. Every bit sharpens your score.</p>
+        <div class="text-center pt-2 pb-8 opacity-0 animate-[fadeSlideUp_0.5s_ease-out_0.05s_forwards]">
+          <h2 class="font-display text-[1.6rem] font-extrabold uppercase tracking-tight mb-3">Fill in the picture</h2>
+          <p class="text-[0.82rem] text-text-dim mx-auto leading-relaxed">Add what you have, skip what you don't. Every bit sharpens your score.</p>
         </div>
 
-        <!-- Stepper strip -->
-        <div class="flex gap-1.5 mb-4">
-          <button class="stepper-step active" data-step="0" onclick="goToEnrichStep(0)">
+        <!-- Stepper strip (progress indicators) -->
+        <div class="stepper-strip">
+          <div class="stepper-step active" data-step="0">
             <span class="stepper-num">1</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3v2m6-2v2M9 5a2 2 0 0 0-2 2v2l-1 9a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3l-1-9V7a2 2 0 0 0-2-2H9z"/><path d="M9 14h6" opacity="0.5"/></svg>
             </span>
-            <span class="stepper-label max-sm:hidden">Labs</span>
-            <span class="stepper-status max-sm:hidden" id="labs-card-status"></span>
+            <span class="stepper-label">Labs</span>
+            <span class="stepper-status" id="labs-card-status"></span>
             <span class="stepper-check">&check;</span>
-          </button>
-          <button class="stepper-step" data-step="1" onclick="goToEnrichStep(1)">
+          </div>
+          <div class="stepper-step" data-step="1">
             <span class="stepper-num">2</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
             </span>
-            <span class="stepper-label max-sm:hidden">Equip</span>
-            <span class="stepper-status max-sm:hidden" id="equip-card-status"></span>
+            <span class="stepper-label">Equip</span>
+            <span class="stepper-status" id="equip-card-status"></span>
             <span class="stepper-check">&check;</span>
-          </button>
-          <button class="stepper-step" data-step="2" onclick="goToEnrichStep(2)">
+          </div>
+          <div class="stepper-step" data-step="2">
             <span class="stepper-num">3</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="7" rx="3.5"/><path d="M12 11v7" opacity="0.4"/><path d="M8.5 7a3.5 3.5 0 1 1 7 0v4h-7V7z" opacity="0.6"/></svg>
             </span>
-            <span class="stepper-label max-sm:hidden">Meds</span>
-            <span class="stepper-status max-sm:hidden" id="meds-card-status"></span>
+            <span class="stepper-label">Meds</span>
+            <span class="stepper-status" id="meds-card-status"></span>
             <span class="stepper-check">&check;</span>
-          </button>
-          <button class="stepper-step" data-step="3" onclick="goToEnrichStep(3)">
+          </div>
+          <div class="stepper-step" data-step="3">
             <span class="stepper-num">4</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M9 10h.01M15 10h.01" stroke-linecap="round"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke-linecap="round"/></svg>
             </span>
-            <span class="stepper-label max-sm:hidden">PHQ-9</span>
-            <span class="stepper-status max-sm:hidden" id="phq9-card-status"></span>
+            <span class="stepper-label">PHQ-9</span>
+            <span class="stepper-status" id="phq9-card-status"></span>
             <span class="stepper-check">&check;</span>
-          </button>
+          </div>
         </div>
+        <!-- Continue button — own row below stepper -->
+        <button class="stepper-continue" id="stepper-continue" onclick="advanceEnrichStep()">
+          <span class="stepper-continue-label">Continue</span>
+          <span class="stepper-continue-arrow">&rarr;</span>
+        </button>
 
         <!-- Step content (no carousel wrapper — slides flow as page content) -->
           <!-- Slide 0: Blood work -->
@@ -352,7 +357,6 @@
                 </div>
               </div>
             </div>
-            <button class="enrich-next-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
 
           <!-- Slide 1: Equipment -->
@@ -380,7 +384,6 @@
                 <div class="device-check"></div>
               </div>
             </div>
-            <button class="enrich-next-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
 
           <!-- Slide 2: Medications -->
@@ -391,7 +394,6 @@
               <div class="med-dropdown" id="med-dropdown"></div>
             </div>
             <div class="flex flex-wrap gap-2 mt-5" id="med-tags"></div>
-            <button class="enrich-next-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
 
           <!-- Slide 3: Mental Health -->
@@ -496,7 +498,6 @@
             </div>
 
             <div class="phq9-score-display" id="phq9-score-display"></div>
-            <button class="enrich-next-btn enrich-done-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
         <!-- /step content -->
 

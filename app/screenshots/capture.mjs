@@ -66,9 +66,9 @@ async function capture() {
           step++;
         };
 
-        // Helper: click the visible Continue button (only the active slide's button is visible)
+        // Helper: click the Continue button in the stepper strip
         const clickContinue = async () => {
-          await page.locator('.enrich-slide.active .enrich-next-btn').click();
+          await page.locator('#stepper-continue').click();
           await page.waitForTimeout(400);
         };
 

@@ -92,6 +92,8 @@ function showPhase2() {
   if (skipWrap) { skipWrap.classList.remove('revealed'); skipWrap.style.display = ''; }
   const reveal = document.getElementById('score-reveal');
   if (reveal) reveal.classList.remove('active');
+  const continueBtn = document.getElementById('stepper-continue');
+  if (continueBtn) continueBtn.classList.remove('has-data');
   log.info('navigated to phase 2');
 }
 
@@ -256,9 +258,6 @@ function goToEnrichStep(n) {
   const steps = document.querySelectorAll('.stepper-step');
   const prev = _currentEnrichStep;
 
-  // Only allow navigating to touched (completed) steps for review, or current step
-  if (n !== _currentEnrichStep && !steps[n]?.classList.contains('touched')) return;
-
   // Mark the step we're leaving as touched (user visited it)
   if (prev !== n && steps[prev]) {
     steps[prev].classList.add('touched');
@@ -272,6 +271,7 @@ function goToEnrichStep(n) {
   steps[n]?.classList.add('active');
 
   _currentEnrichStep = n;
+  _updateContinueButton(n);
 }
 
 function _updateEnrichProgress() {
@@ -308,6 +308,77 @@ function advanceEnrichStep() {
   goToEnrichStep(_currentEnrichStep + 1);
 }
 
+// ── Continue button progressive disclosure ──
+function _slideHasData(slideIndex) {
+  switch (slideIndex) {
+    case 0: { // Labs — any parsed results, uploaded files, or manual field values
+      if (document.getElementById('lab-import-summary')?.textContent?.trim()) return true;
+      if (document.getElementById('lab-file-list')?.children?.length > 0) return true;
+      if (document.getElementById('parse-summary')?.textContent?.trim()) return true;
+      const manualIds = ['f-apob','f-ldl','f-hdl','f-trig','f-glucose','f-hba1c','f-insulin','f-lpa','f-hscrp','f-alt','f-ggt','f-hemoglobin','f-wbc','f-platelets','f-tsh','f-vitd','f-ferritin'];
+      for (const id of manualIds) { if (document.getElementById(id)?.value) return true; }
+      const paste = document.getElementById('lab-paste');
+      if (paste?.value?.trim()) return true;
+      return false;
+    }
+    case 1: // Equipment — any device card selected
+      return !!document.querySelector('.device-card.selected');
+    case 2: // Meds — any med tags added
+      return document.getElementById('med-tags')?.children?.length > 0;
+    case 3: { // PHQ-9 — direct input or any radio selected
+      if (document.getElementById('phq9-direct-input')?.value) return true;
+      return !!document.querySelector('.phq9-radio.selected');
+    }
+    default: return false;
+  }
+}
+
+function _updateContinueButton(slideIndex) {
+  if (slideIndex === undefined) slideIndex = _currentEnrichStep;
+  const btn = document.getElementById('stepper-continue');
+  if (!btn) return;
+  btn.classList.toggle('has-data', _slideHasData(slideIndex));
+}
+
+function _initContinueWatchers() {
+  // Slide 0 (Labs): watch manual inputs, paste area, file uploads
+  const labInputs = document.querySelectorAll('#manual-labs input, #lab-paste');
+  labInputs.forEach(el => el.addEventListener('input', () => _updateContinueButton(0)));
+  // Watch for lab import summary changes via MutationObserver
+  const labSummary = document.getElementById('lab-import-summary');
+  if (labSummary) {
+    new MutationObserver(() => _updateContinueButton(0)).observe(labSummary, { childList: true, characterData: true, subtree: true });
+  }
+  const parseSummary = document.getElementById('parse-summary');
+  if (parseSummary) {
+    new MutationObserver(() => _updateContinueButton(0)).observe(parseSummary, { childList: true, characterData: true, subtree: true });
+  }
+  const labFileList = document.getElementById('lab-file-list');
+  if (labFileList) {
+    new MutationObserver(() => _updateContinueButton(0)).observe(labFileList, { childList: true });
+  }
+
+  // Slide 1 (Equipment): watch device cards for clicks
+  document.querySelectorAll('.device-card').forEach(card => {
+    card.addEventListener('click', () => setTimeout(() => _updateContinueButton(1), 0));
+  });
+
+  // Slide 2 (Meds): watch med-tags for additions/removals
+  const medTags = document.getElementById('med-tags');
+  if (medTags) {
+    new MutationObserver(() => _updateContinueButton(2)).observe(medTags, { childList: true });
+  }
+
+  // Slide 3 (PHQ-9): watch direct input and radio clicks
+  const phq9Input = document.getElementById('phq9-direct-input');
+  if (phq9Input) phq9Input.addEventListener('input', () => _updateContinueButton(3));
+  document.querySelectorAll('.phq9-radio').forEach(r => {
+    r.addEventListener('click', () => _updateContinueButton(3));
+  });
+}
+
+_initContinueWatchers();
+
 // ── Window bindings for HTML onclick handlers ──
 window.toggleFullVoice = toggleFullVoice;
 window.toggleVoice = toggleVoice;
@@ -325,7 +396,6 @@ window.expandTranscript = expandTranscript;
 window.removeMedTag = removeMedTag;
 window.showPhase2 = showPhase2;
 window.goBackToPhase1 = goBackToPhase1;
-window.goToEnrichStep = goToEnrichStep;
 window.advanceEnrichStep = advanceEnrichStep;
 
 // ── Feedback tracking (after window bindings are set) ──
@@ -414,6 +484,8 @@ window.clearAndRestart = async function() {
   if (skipEl) { skipEl.classList.remove('revealed'); skipEl.style.display = ''; }
   const revealEl = document.getElementById('score-reveal');
   if (revealEl) revealEl.classList.remove('active');
+  const contBtn = document.getElementById('stepper-continue');
+  if (contBtn) contBtn.classList.remove('has-data');
 };
 
 window.exportProfile = async function() {

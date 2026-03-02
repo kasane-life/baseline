@@ -391,6 +391,7 @@ a:hover { @apply text-text; }
 }
 .remaining-gap-row:last-child { @apply border-b-0; }
 .remaining-gap-row .gap-pts { @apply font-mono text-[0.72rem] text-text-muted; }
+.remaining-gap-equip { @apply block text-[0.72rem] text-text-dim mt-0.5; }
 .freshness-note { @apply mt-5 font-mono text-[0.68rem] text-text-dim leading-relaxed; }
 .moves-divider { @apply h-px my-8; background: rgba(var(--surface),0.06); }
 .health-flag-card { border-left: 2px solid var(--red); }
@@ -833,22 +834,27 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 }
 .phase2-back:hover { @apply text-text; }
 
-/* ── Stepper strip ── */
-.stepper-step {
-  @apply flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-bg-elevated border border-border rounded-lg cursor-pointer transition-all duration-200 relative select-none;
+/* ── Stepper strip (progress indicators + inline Continue) ── */
+.stepper-strip {
+  @apply flex gap-1.5 mt-6 mb-4 justify-center flex-wrap;
 }
-.stepper-step:hover { border-color: rgba(var(--surface),0.15); }
+.stepper-step {
+  @apply flex items-center gap-1.5 px-3 py-2.5 bg-bg-elevated border border-border rounded-lg transition-all duration-200 relative select-none;
+  cursor: default;
+  pointer-events: none;
+  min-width: 0;
+}
 .stepper-step .stepper-num {
-  @apply w-[22px] h-[22px] rounded-full text-text-dim font-mono text-[0.68rem] font-semibold flex items-center justify-center shrink-0 transition-all duration-200;
+  @apply w-[20px] h-[20px] rounded-full text-text-dim font-mono text-[0.62rem] font-semibold flex items-center justify-center shrink-0 transition-all duration-200;
   background: rgba(var(--surface),0.06);
 }
 .stepper-step.active .stepper-num { @apply bg-accent text-white; }
 .stepper-step .stepper-icon { @apply flex text-text-dim shrink-0 transition-colors duration-200; }
 .stepper-step.active .stepper-icon { @apply text-text; }
-.stepper-step .stepper-label { @apply font-display text-[0.82rem] font-bold uppercase tracking-wide text-text-dim transition-colors duration-200 whitespace-nowrap; }
+.stepper-step .stepper-label { @apply font-display text-[0.72rem] font-bold uppercase tracking-wide text-text-dim transition-colors duration-200 whitespace-nowrap; }
 .stepper-step.active .stepper-label { @apply text-text; }
-.stepper-step .stepper-status { @apply font-mono text-[0.62rem] text-success whitespace-nowrap ml-auto; }
-.stepper-step .stepper-check { @apply hidden text-success text-[0.72rem] shrink-0; }
+.stepper-step .stepper-status { @apply font-mono text-[0.58rem] text-success whitespace-nowrap ml-auto; }
+.stepper-step .stepper-check { @apply hidden text-success text-[0.68rem] shrink-0; }
 
 .stepper-step.touched .stepper-check { display: inline; }
 .stepper-step.touched .stepper-num { display: none; }
@@ -863,14 +869,39 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   background: rgba(var(--surface),0.03);
 }
 
-/* Untouched future tabs — non-clickable appearance */
+/* Untouched future steps — dimmed */
 .stepper-step:not(.touched):not(.active) {
-  cursor: default;
   opacity: 0.45;
 }
-.stepper-step:not(.touched):not(.active):hover {
-  border-color: var(--color-border);
+
+/* ── Continue button (own row below stepper strip) ── */
+.stepper-continue {
+  @apply flex items-center justify-center gap-2 mt-3 mb-2 px-8 py-2.5 rounded-lg font-display text-[0.82rem] font-bold uppercase tracking-wide cursor-pointer transition-all duration-300 select-none border mx-auto;
+  width: fit-content;
+  background: rgba(var(--surface), 0.03);
+  border-color: rgba(var(--surface), 0.06);
+  color: var(--color-text-dim);
+  opacity: 0.4;
 }
+.stepper-continue:hover {
+  opacity: 0.6;
+  background: rgba(var(--surface), 0.06);
+  border-color: rgba(var(--surface), 0.1);
+}
+/* Activated — data entered on current slide */
+.stepper-continue.has-data {
+  opacity: 1;
+  background: rgba(200, 60, 60, 0.12);
+  border-color: rgba(200, 60, 60, 0.35);
+  color: #e8a0a0;
+}
+.stepper-continue.has-data:hover {
+  background: rgba(200, 60, 60, 0.22);
+  border-color: rgba(200, 60, 60, 0.5);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(200, 60, 60, 0.2);
+}
+.stepper-continue-arrow { @apply text-[0.85rem]; }
 
 /* ── Step content (borderless — flows as page content) ── */
 .enrich-slide {
@@ -885,9 +916,11 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Mobile: stepper compact */
+/* Mobile: stepper compact — hide labels, show only icons */
 @media (max-width: 640px) {
-  .stepper-step { @apply justify-center px-2 py-2.5; }
+  .stepper-step { @apply justify-center px-1.5 py-2; }
+  .stepper-step .stepper-label,
+  .stepper-step .stepper-status { @apply hidden; }
 }
 
 
@@ -948,37 +981,6 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 .score-reveal-btn:active {
   transform: translateY(0);
   box-shadow: 0 4px 16px rgba(200, 60, 60, 0.2);
-}
-
-/* Next button inside steps — muted by default, activates when data is present */
-.enrich-next-btn {
-  @apply block mx-auto mt-10 px-10 py-3 rounded-lg font-body text-[0.85rem] font-medium cursor-pointer text-center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: var(--color-text-dim);
-  transition: all 0.25s;
-}
-.enrich-next-btn:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: var(--color-text-muted);
-}
-/* Activated state — when slide has data */
-.enrich-next-btn.has-data {
-  background: rgba(200, 60, 60, 0.12);
-  border-color: rgba(200, 60, 60, 0.3);
-  color: #e8a0a0;
-  font-weight: 600;
-}
-.enrich-next-btn.has-data:hover {
-  background: rgba(200, 60, 60, 0.2);
-  border-color: rgba(200, 60, 60, 0.4);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(200, 60, 60, 0.15);
-}
-/* Final step (PHQ-9 Done) — same muted style as other steps, no red (SEE MY SCORE is the primary CTA) */
-.enrich-done-btn {
-  width: 100%;
 }
 
 /* Skip — secondary button, visible once first card touched */

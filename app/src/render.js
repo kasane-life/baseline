@@ -356,8 +356,10 @@ export function renderMoves(gaps, currentScore, results, devices) {
       html += `<div class="remaining-gaps-label" onclick="document.getElementById('${rgId}').classList.toggle('open')">Remaining ${remaining.length} gaps · +${totalRemaining} pts</div>`;
       html += `<div class="remaining-gap-rows"><div>`;
       remaining.forEach(g => {
+        const detail = equipmentAwareCost(g, deviceSet);
+        const needsEquip = detail !== g.costToClose;
         html += `<div class="remaining-gap-row">
-          <span>${g.name}</span>
+          <span>${g.name}${needsEquip ? `<span class="remaining-gap-equip">${detail}</span>` : ''}</span>
           <span class="gap-pts">+${g.weight}</span>
         </div>`;
       });
