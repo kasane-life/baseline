@@ -46,20 +46,27 @@ if (!hasSpeechSupport() || window._forceFormMode) {
 
 log.info('baseline app ready');
 
-// ── Service worker registration (PWA — production only) ──
-if ('serviceWorker' in navigator && !import.meta.env.DEV) {
-  navigator.serviceWorker.register('/baseline/app/sw.js').then(
-    (reg) => log.info('sw registered', { scope: reg.scope }),
-    (err) => log.warn('sw registration failed', { error: err.message })
-  );
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data?.type === 'SW_UPDATED') {
-      const toast = document.createElement('div');
-      toast.className = 'sw-toast';
-      toast.innerHTML = 'Updated version available. <button onclick="location.reload()">Refresh</button>';
-      document.body.appendChild(toast);
-      requestAnimationFrame(() => toast.classList.add('show'));
-    }
+// ── Service worker — DISABLED during active development ──
+// Uncomment to re-enable for production PWA:
+// if ('serviceWorker' in navigator && !import.meta.env.DEV) {
+//   navigator.serviceWorker.register('/baseline/app/sw.js').then(
+//     (reg) => log.info('sw registered', { scope: reg.scope }),
+//     (err) => log.warn('sw registration failed', { error: err.message })
+//   );
+//   navigator.serviceWorker.addEventListener('message', (event) => {
+//     if (event.data?.type === 'SW_UPDATED') {
+//       const toast = document.createElement('div');
+//       toast.className = 'sw-toast';
+//       toast.innerHTML = 'Updated version available. <button onclick="location.reload()">Refresh</button>';
+//       document.body.appendChild(toast);
+//       requestAnimationFrame(() => toast.classList.add('show'));
+//     }
+//   });
+// }
+// Unregister any existing SW to clear stale caches
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((regs) => {
+    regs.forEach((reg) => reg.unregister());
   });
 }
 
@@ -78,13 +85,13 @@ function showPhase2() {
     if (i === 0) s.classList.add('active');
   });
   phase2.querySelectorAll('.enrich-slide').forEach((s, i) => {
-    s.classList.remove('active', 'slide-enter-left', 'slide-enter-right');
+    s.classList.remove('active');
     if (i === 0) s.classList.add('active');
   });
-  const cta = phase2.querySelector('.phase2-actions');
-  if (cta) cta.classList.remove('revealed');
   const skipWrap = phase2.querySelector('.phase2-skip-wrap');
   if (skipWrap) { skipWrap.classList.remove('revealed'); skipWrap.style.display = ''; }
+  const reveal = document.getElementById('score-reveal');
+  if (reveal) reveal.classList.remove('active');
   log.info('navigated to phase 2');
 }
 
@@ -165,19 +172,16 @@ async function checkReturnVisit() {
 // ── Identity UI ──
 async function initIdentityUI() {
   const banner = document.getElementById('passkey-banner');
-  const sidebarSection = document.getElementById('identity-sidebar');
-  if (!banner || !sidebarSection) return;
+  if (!banner) return;
 
   if (!isPasskeySupported()) {
     banner.style.display = 'none';
-    sidebarSection.style.display = 'none';
     return;
   }
 
   const platformAvailable = await isPlatformAuthenticatorAvailable();
   if (!platformAvailable) {
     banner.style.display = 'none';
-    sidebarSection.style.display = 'none';
     return;
   }
 
@@ -186,19 +190,12 @@ async function initIdentityUI() {
 
 function updateIdentityUI() {
   const banner = document.getElementById('passkey-banner');
-  const sidebarSection = document.getElementById('identity-sidebar');
-  const sidebarBtn = document.getElementById('identity-sidebar-btn');
-  const sidebarStatus = document.getElementById('identity-sidebar-status');
   if (!banner) return;
 
   if (isAuthenticated()) {
     banner.classList.remove('active');
-    if (sidebarStatus) sidebarStatus.textContent = 'Signed in with passkey';
-    if (sidebarBtn) sidebarBtn.textContent = 'Add another device';
   } else {
     banner.classList.add('active');
-    if (sidebarStatus) sidebarStatus.textContent = '';
-    if (sidebarBtn) sidebarBtn.textContent = 'Set up passkey';
   }
 }
 
@@ -259,50 +256,54 @@ function goToEnrichStep(n) {
   const steps = document.querySelectorAll('.stepper-step');
   const prev = _currentEnrichStep;
 
-  // Deactivate current slide
-  slides[prev]?.classList.remove('active', 'slide-enter-left', 'slide-enter-right');
-  steps[prev]?.classList.remove('active');
+  // Only allow navigating to touched (completed) steps for review, or current step
+  if (n !== _currentEnrichStep && !steps[n]?.classList.contains('touched')) return;
 
-  // Activate target slide
-  const isMobile = window.innerWidth <= 640;
-  const slide = slides[n];
-  if (slide) {
-    slide.classList.add('active');
-    if (isMobile) {
-      slide.classList.add(n > prev ? 'slide-enter-right' : 'slide-enter-left');
-    }
+  // Mark the step we're leaving as touched (user visited it)
+  if (prev !== n && steps[prev]) {
+    steps[prev].classList.add('touched');
+    _updateEnrichProgress();
   }
+
+  // Deactivate current, activate target
+  slides[prev]?.classList.remove('active');
+  steps[prev]?.classList.remove('active');
+  slides[n]?.classList.add('active');
   steps[n]?.classList.add('active');
 
   _currentEnrichStep = n;
 }
 
-function advanceEnrichStep() {
-  const steps = document.querySelectorAll('.stepper-step');
-  const current = steps[_currentEnrichStep];
-  if (current && !current.classList.contains('touched')) {
-    current.classList.add('touched');
-  }
-
-  // Show skip link once first step is touched
+function _updateEnrichProgress() {
+  const touchedCount = document.querySelectorAll('.stepper-step.touched').length;
   const skipWrap = document.querySelector('.phase2-skip-wrap');
-  if (skipWrap && !skipWrap.classList.contains('revealed')) {
+
+  // Show skip link once any step is touched
+  if (skipWrap && touchedCount > 0 && !skipWrap.classList.contains('revealed')) {
     skipWrap.classList.add('revealed');
   }
 
-  // Check if all steps are touched
-  const touchedCount = document.querySelectorAll('.stepper-step.touched').length;
-  if (_currentEnrichStep >= ENRICH_STEP_COUNT - 1 || touchedCount >= ENRICH_STEP_COUNT) {
-    // Mark last step touched
-    if (current) current.classList.add('touched');
-    const allTouched = document.querySelectorAll('.stepper-step.touched').length >= ENRICH_STEP_COUNT;
-    if (allTouched) {
-      const cta = document.querySelector('.phase2-actions');
-      if (cta) cta.classList.add('revealed');
-      if (skipWrap) skipWrap.style.display = 'none';
+  // When all steps touched — show score reveal, hide everything else
+  if (touchedCount >= ENRICH_STEP_COUNT) {
+    if (skipWrap) skipWrap.style.display = 'none';
+    const reveal = document.getElementById('score-reveal');
+    if (reveal && !reveal.classList.contains('active')) {
+      // Hide all slides
+      document.querySelectorAll('.enrich-slide').forEach(s => s.classList.remove('active'));
+      reveal.classList.add('active');
     }
-    if (_currentEnrichStep >= ENRICH_STEP_COUNT - 1) return;
   }
+}
+
+function advanceEnrichStep() {
+  const steps = document.querySelectorAll('.stepper-step');
+  const current = steps[_currentEnrichStep];
+  if (current) current.classList.add('touched');
+
+  _updateEnrichProgress();
+
+  // If on last step, don't advance further
+  if (_currentEnrichStep >= ENRICH_STEP_COUNT - 1) return;
 
   goToEnrichStep(_currentEnrichStep + 1);
 }
@@ -406,13 +407,13 @@ window.clearAndRestart = async function() {
   });
   document.querySelectorAll('.stepper-status').forEach(s => s.textContent = '');
   document.querySelectorAll('.enrich-slide').forEach((s, i) => {
-    s.classList.remove('active', 'slide-enter-left', 'slide-enter-right');
+    s.classList.remove('active');
     if (i === 0) s.classList.add('active');
   });
-  const ctaEl = document.querySelector('.phase2-actions');
-  if (ctaEl) ctaEl.classList.remove('revealed');
   const skipEl = document.querySelector('.phase2-skip-wrap');
   if (skipEl) { skipEl.classList.remove('revealed'); skipEl.style.display = ''; }
+  const revealEl = document.getElementById('score-reveal');
+  if (revealEl) revealEl.classList.remove('active');
 };
 
 window.exportProfile = async function() {

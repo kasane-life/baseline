@@ -98,8 +98,9 @@ export function dismissProtocol() {
 
 // ── Rendering ──
 
-export function renderBpTracker(container) {
+export function renderBpTracker(container, devices) {
   let protocol = loadProtocol();
+  const hasCuff = (devices || []).includes('bp_cuff');
 
   if (protocol?.completed) {
     const avg = getAverage(protocol);
@@ -109,7 +110,7 @@ export function renderBpTracker(container) {
   }
 
   if (!protocol) {
-    container.innerHTML = buildPromptHtml();
+    container.innerHTML = buildPromptHtml(hasCuff);
     wirePromptHandlers(container);
     return;
   }
@@ -118,7 +119,14 @@ export function renderBpTracker(container) {
   wireActiveHandlers(container);
 }
 
-function buildPromptHtml() {
+function buildPromptHtml(hasCuff) {
+  const title = hasCuff
+    ? 'Track blood pressure for 7 days'
+    : 'Get a BP cuff (~$40, Omron) — then track for 7 days';
+  const desc = hasCuff
+    ? 'A single reading is a snapshot. Seven days gives you a real average — the number that actually predicts outcomes.'
+    : 'A home cuff pays for itself in data. Seven days of readings gives you a real average — the number that actually predicts outcomes.';
+  const btnText = hasCuff ? 'Start protocol' : 'I have a cuff — start protocol';
   return `
     <div class="bp-tracker bp-prompt">
       <div class="bp-tracker-icon">
@@ -127,10 +135,10 @@ function buildPromptHtml() {
         </svg>
       </div>
       <div class="bp-tracker-body">
-        <div class="bp-tracker-title">Track blood pressure for 7 days</div>
-        <div class="bp-tracker-desc">A single reading is a snapshot. Seven days gives you a real average — the number that actually predicts outcomes.</div>
+        <div class="bp-tracker-title">${title}</div>
+        <div class="bp-tracker-desc">${desc}</div>
       </div>
-      <button class="bp-tracker-start" id="bp-start-btn">Start protocol</button>
+      <button class="bp-tracker-start" id="bp-start-btn">${btnText}</button>
     </div>
   `;
 }

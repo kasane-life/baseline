@@ -26,26 +26,20 @@
     <a href="../landing/" class="back-to-landing">about</a>
   </div>
 
-  <!-- Return visit banner -->
-  <div class="return-banner" id="return-banner">
-    <span>Welcome back. Your previous profile is saved. <strong>Update or start fresh?</strong></span>
-    <div style="display:flex;gap:8px;">
-      <button onclick="loadSavedProfile()">Load previous</button>
-      <button onclick="clearSaved()">Start fresh</button>
-    </div>
-  </div>
-
-  <!-- Passkey identity banner -->
-  <div class="passkey-banner" id="passkey-banner">
-    <span>Save your profile across devices?</span>
-    <button id="passkey-action-btn" onclick="handlePasskeyAction()">Set up passkey</button>
-  </div>
-
   <!-- Questionnaire: 3-Phase Converged Intake -->
   <div id="questionnaire">
 
     <!-- ═══ PHASE 1: About You — pick voice or form ═══ -->
     <div id="phase1">
+
+    <!-- Return visit banner -->
+    <div class="return-banner" id="return-banner">
+      <span>Welcome back. Your previous profile is saved. <strong>Update or start fresh?</strong></span>
+      <div style="display:flex;gap:8px;">
+        <button onclick="loadSavedProfile()">Load previous</button>
+        <button onclick="clearSaved()">Start fresh</button>
+      </div>
+    </div>
 
     <div class="intake-tabs" id="intake-tabs">
       <button class="intake-tab active" data-tab="voice" onclick="switchIntakeTab('voice')">Talk it out <span class="disclaimer-badge">Experimental</span></button>
@@ -197,16 +191,16 @@
 
     <!-- ═══ PHASE 2: Import & Enrich (shared screen — both voice and form land here) ═══ -->
     <div id="phase2" style="display:none;">
-      <div class="max-w-[600px] mx-auto pb-16">
+      <div class="mx-auto pb-16">
         <button class="phase2-back" onclick="goBackToPhase1()">&larr; Back</button>
 
-        <div class="text-center pt-5 pb-9 opacity-0 animate-[fadeSlideUp_0.5s_ease-out_0.05s_forwards]">
-          <h2 class="font-display text-[1.8rem] font-extrabold uppercase tracking-tight mb-1.5">Fill in the picture</h2>
-          <p class="text-sm text-text-dim max-w-[380px] mx-auto leading-relaxed">Add what you have, skip what you don't. Every bit sharpens your score.</p>
+        <div class="text-center pt-2 pb-6 opacity-0 animate-[fadeSlideUp_0.5s_ease-out_0.05s_forwards]">
+          <h2 class="font-display text-[1.6rem] font-extrabold uppercase tracking-tight mb-1">Fill in the picture</h2>
+          <p class="text-[0.82rem] text-text-dim max-w-[340px] mx-auto leading-relaxed">Add what you have, skip what you don't. Every bit sharpens your score.</p>
         </div>
 
         <!-- Stepper strip -->
-        <div class="flex gap-1 mb-3">
+        <div class="flex gap-1.5 mb-4">
           <button class="stepper-step active" data-step="0" onclick="goToEnrichStep(0)">
             <span class="stepper-num">1</span>
             <span class="stepper-icon">
@@ -245,21 +239,16 @@
           </button>
         </div>
 
-        <!-- Carousel container -->
-        <div class="enrich-carousel relative min-h-60 bg-bg-elevated border border-border rounded-[10px] overflow-hidden">
+        <!-- Step content (no carousel wrapper — slides flow as page content) -->
           <!-- Slide 0: Blood work -->
           <div class="enrich-slide active" data-slide="0">
-            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
-              <span class="text-[0.82rem] text-text-dim leading-snug">Upload, paste, or enter lab results</span>
-              <button class="enrich-next-btn" onclick="advanceEnrichStep()">Next &rarr;</button>
-            </div>
             <div class="field-group">
-              <div class="upload-zone flex items-center gap-3.5 px-5 py-4 text-left bg-white/[0.015] border-[1.5px] border-dashed border-white/12 rounded-md cursor-pointer transition-all hover:border-white/25 hover:bg-white/[0.03]" id="lab-drop" onclick="document.getElementById('lab-file-input').click()">
-                <div class="shrink-0 text-text-dim opacity-50">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+              <div class="upload-zone" id="lab-drop" onclick="document.getElementById('lab-file-input').click()">
+                <div class="text-text-dim opacity-40">
+                  <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
                 </div>
-                <div class="flex-1 min-w-0">
-                  <div class="font-body text-[0.88rem] text-text-muted mb-0.5">Upload lab report</div>
+                <div>
+                  <div class="font-body text-[0.92rem] text-text-muted font-medium mb-1">Upload lab report</div>
                   <div class="font-mono text-[0.7rem] text-text-dim">PDF or text &middot; Quest, LabCorp, any format</div>
                 </div>
               </div>
@@ -308,7 +297,7 @@
               </div>
             </div>
 
-            <button class="enrich-alt-btn" onclick="toggleManualLabs()" style="margin-top:8px;">
+            <button class="enrich-alt-btn" onclick="toggleManualLabs()">
               <span>Enter values individually</span>
               <span class="enrich-alt-arrow">&#9662;</span>
             </button>
@@ -363,15 +352,13 @@
                 </div>
               </div>
             </div>
+            <button class="enrich-next-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
 
           <!-- Slide 1: Equipment -->
           <div class="enrich-slide" data-slide="1">
-            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
-              <span class="text-[0.82rem] text-text-dim leading-snug">What can you measure between lab visits?</span>
-              <button class="enrich-next-btn" onclick="advanceEnrichStep()">Next &rarr;</button>
-            </div>
-            <div class="grid grid-cols-3 max-sm:grid-cols-2 gap-2 mb-2" id="device-selector">
+            <div class="slide-hint">What can you measure between lab visits?</div>
+            <div class="grid grid-cols-4 max-sm:grid-cols-2 gap-3 mb-4" id="device-selector">
               <div class="device-card" data-device="bp_cuff" onclick="toggleDevice(this)">
                 <div class="device-icon">&#9829;</div>
                 <div class="device-name">BP Cuff</div>
@@ -393,30 +380,26 @@
                 <div class="device-check"></div>
               </div>
             </div>
+            <button class="enrich-next-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
 
           <!-- Slide 2: Medications -->
           <div class="enrich-slide" data-slide="2">
-            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
-              <span class="text-[0.82rem] text-text-dim leading-snug">Type to search — we'll factor these into your picture.</span>
-              <button class="enrich-next-btn" onclick="advanceEnrichStep()">Next &rarr;</button>
-            </div>
-            <div class="relative mt-2">
+            <div class="slide-hint">Type to search — we'll factor these into your picture.</div>
+            <div class="relative">
               <input type="text" class="med-search-input" id="med-search" placeholder="e.g. tirzepatide, vitamin D, creatine..." autocomplete="off">
               <div class="med-dropdown" id="med-dropdown"></div>
             </div>
-            <div class="flex flex-wrap gap-1.5 mt-2" id="med-tags"></div>
+            <div class="flex flex-wrap gap-2 mt-5" id="med-tags"></div>
+            <button class="enrich-next-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
 
           <!-- Slide 3: Mental Health -->
           <div class="enrich-slide" data-slide="3" id="phq9-section">
-            <div class="slide-header flex items-center justify-between gap-3 mb-4 sticky top-0 bg-bg-elevated px-0 pt-0.5 pb-2.5 z-2">
-              <span class="text-[0.82rem] text-text-dim leading-snug">Quick mental health screen</span>
-              <button class="enrich-next-btn enrich-done-btn" onclick="advanceEnrichStep()">Done &rarr;</button>
-            </div>
-            <p class="text-[0.85rem] text-text-dim mb-3.5 leading-relaxed">Depression is an independent cardiovascular risk factor. A quick screen sharpens your picture.</p>
+            <div class="slide-hint">Quick mental health screen</div>
+            <p class="text-[0.85rem] text-text-dim mb-6 leading-relaxed">Depression is an independent cardiovascular risk factor. A quick screen sharpens your picture.</p>
 
-            <div class="flex items-center gap-3 mb-3">
+            <div class="flex items-center justify-center gap-3 mb-5">
               <label class="text-[0.88rem] text-text-muted">Already have a score?</label>
               <input type="number" class="field-input max-w-20 text-center" id="phq9-direct-input" placeholder="0–27" min="0" max="27" step="1">
             </div>
@@ -513,20 +496,23 @@
             </div>
 
             <div class="phq9-score-display" id="phq9-score-display"></div>
+            <button class="enrich-next-btn enrich-done-btn" onclick="advanceEnrichStep()">Continue &rarr;</button>
           </div>
-        </div><!-- /enrich-carousel -->
+        <!-- /step content -->
 
         <!-- Skip link (visible once first step is touched) -->
         <div class="phase2-skip-wrap">
-          <button class="phase2-skip bg-transparent border-none text-text-dim font-mono text-[0.68rem] p-2 cursor-pointer text-center tracking-wide opacity-60 transition-colors hover:text-text-muted hover:opacity-100" onclick="computeResults()">skip &mdash; score with what I have</button>
+          <button class="phase2-skip" onclick="computeResults()">Score with what I have &rarr;</button>
         </div>
 
-        <!-- Score CTA (revealed only after all steps walked through) -->
-        <div class="phase2-actions">
-          <button class="score-cta" onclick="computeResults()">
-            <span class="score-cta-text">See my score</span>
-            <span class="score-cta-arrow">&rarr;</span>
-          </button>
+        <!-- Score reveal — replaces everything when all steps are touched -->
+        <div class="score-reveal" id="score-reveal">
+          <div class="score-reveal-inner">
+            <div class="score-reveal-check">&#10003;</div>
+            <div class="score-reveal-headline">You're all set.</div>
+            <div class="score-reveal-sub">We have enough to build your picture.</div>
+            <button class="score-reveal-btn" onclick="computeResults()">See my score &rarr;</button>
+          </div>
         </div>
       </div>
     </div><!-- /phase2 -->
@@ -537,6 +523,8 @@
   <div id="results">
   <div class="results-layout">
   <div class="results-main">
+
+    <!-- HERO: Score rings -->
     <div class="results-header">
       <div class="dual-rings">
         <div class="ring-with-caption">
@@ -566,49 +554,66 @@
         </div>
       </div>
       <p class="score-context" id="r-context"></p>
-
-      <div class="tier-summary">
-        <div class="tier-block">
-          <div class="t-label">Foundation (T1)</div>
-          <div class="t-track"><div class="t-fill" id="r-t1-fill" style="width:0%"></div></div>
-          <div class="t-pct" id="r-t1-pct">0%</div>
-        </div>
-        <div class="tier-block">
-          <div class="t-label">Enhanced (T2)</div>
-          <div class="t-track"><div class="t-fill" id="r-t2-fill" style="width:0%"></div></div>
-          <div class="t-pct" id="r-t2-pct">0%</div>
-        </div>
-      </div>
     </div>
 
-    <!-- Action plan: moves + timeline + remaining gaps unified -->
+    <!-- ACTION: Next moves (most important interactive section) -->
     <div class="next-moves" id="r-moves"></div>
 
-    <!-- Post-score tracking modules -->
+    <!-- LOOP: Post-score tracking modules (BP protocol, tracking today) -->
     <div class="tracking-modules">
       <div id="bp-tracker-slot"></div>
       <div id="tracking-today"></div>
     </div>
 
-    <!-- Metric results -->
-    <div class="results-section" id="r-tier1"></div>
-    <div class="results-section" id="r-tier2"></div>
+    <!-- SAVE: Passkey prompt (post-score, when user has something worth saving) -->
+    <div class="passkey-prompt" id="passkey-banner">
+      <div class="passkey-prompt-inner">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" class="passkey-prompt-icon"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+        <div class="passkey-prompt-text">
+          <span class="passkey-prompt-title">Save your profile across devices</span>
+          <span class="passkey-prompt-sub">Your data stays on-device. A passkey lets you access it from any browser.</span>
+        </div>
+        <button id="passkey-action-btn" onclick="handlePasskeyAction()">Set up passkey</button>
+      </div>
+    </div>
 
-    <!-- Insights -->
+    <!-- ─── fold ─── -->
+    <div class="results-fold">
+      <div class="results-fold-line"></div>
+      <div class="results-fold-label">Detail</div>
+    </div>
+
+    <!-- DETAIL: Tier coverage bars -->
+    <div class="tier-summary">
+      <div class="tier-block">
+        <div class="t-label">Core</div>
+        <div class="t-track"><div class="t-fill" id="r-t1-fill" style="width:0%"></div></div>
+        <div class="t-pct" id="r-t1-pct">0%</div>
+      </div>
+      <div class="tier-block">
+        <div class="t-label">Advanced</div>
+        <div class="t-track"><div class="t-fill" id="r-t2-fill" style="width:0%"></div></div>
+        <div class="t-pct" id="r-t2-pct">0%</div>
+      </div>
+    </div>
+
+    <!-- DETAIL: Metric tables (collapsed by default) -->
+    <div class="results-section results-collapsible" id="r-tier1"></div>
+    <div class="results-section results-collapsible" id="r-tier2"></div>
+
+    <!-- LEARN: Evidence cards -->
     <div class="insights-section" id="r-insights"></div>
+
+    <!-- DISCOVER: What to build next -->
+    <div id="discovery-slot"></div>
+
+    <!-- UTILITY: Actions -->
+    <div class="results-utility">
+      <button onclick="startOver()">Update values</button>
+      <button onclick="clearAndRestart()">Start fresh</button>
+    </div>
   </div><!-- /results-main -->
 
-  <!-- Sticky sidebar — follows scroll on desktop -->
-  <aside class="results-sidebar" id="results-sidebar">
-    <button onclick="startOver()">Update values</button>
-    <button onclick="exportProfile()">Export JSON</button>
-    <button onclick="clearAndRestart()">Start fresh</button>
-    <div class="identity-sidebar" id="identity-sidebar" style="display:none;">
-      <div class="identity-divider"></div>
-      <span class="identity-status" id="identity-sidebar-status"></span>
-      <button id="identity-sidebar-btn" onclick="handlePasskeyAction()">Set up passkey</button>
-    </div>
-  </aside>
   </div><!-- /results-layout -->
 </div><!-- /results -->
 

@@ -3,8 +3,26 @@
 
 import { Standing, FRESHNESS_WINDOWS } from '../score.js';
 import { renderBpTracker } from './bp-tracker.js';
+import { renderDiscoveryForm } from './discovery.js';
 import { createLogger } from './logger.js';
 const log = createLogger('render');
+
+/** Animate a number counting up from start to end over duration ms */
+function animateValue(el, start, end, duration) {
+  const range = end - start;
+  if (range === 0) { el.textContent = end + '%'; return; }
+  const startTime = performance.now();
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease-out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + range * eased);
+    el.textContent = current + '%';
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 
 export function ordinal(n) {
   const s = ['th','st','nd','rd'];
@@ -32,32 +50,46 @@ export function renderResults(output, profile) {
   const resultsEl = document.getElementById('results');
   resultsEl.classList.add('active');
 
-  // Score ring — color by tier
+  // Score ring — color by tier + glow
   const circumference = 2 * Math.PI * 70;
   const offset = circumference - (output.coverageScore / 100) * circumference;
   const arc = document.getElementById('score-arc');
+  const scoreRingEl = arc.closest('.score-ring');
   arc.style.strokeDasharray = circumference;
   arc.classList.remove('score-low', 'score-mid', 'score-high');
-  if (output.coverageScore < 40) arc.classList.add('score-low');
-  else if (output.coverageScore < 75) arc.classList.add('score-mid');
-  else arc.classList.add('score-high');
-  setTimeout(() => { arc.style.strokeDashoffset = offset; }, 50);
+  scoreRingEl.classList.remove('glow-active', 'glow-low', 'glow-mid', 'glow-high', 'pulse-complete');
 
+  let glowTier;
+  if (output.coverageScore < 40) { arc.classList.add('score-low'); glowTier = 'glow-low'; }
+  else if (output.coverageScore < 75) { arc.classList.add('score-mid'); glowTier = 'glow-mid'; }
+  else { arc.classList.add('score-high'); glowTier = 'glow-high'; }
+
+  scoreRingEl.classList.add(glowTier);
+  setTimeout(() => {
+    arc.style.strokeDashoffset = offset;
+    scoreRingEl.classList.add('glow-active');
+  }, 50);
+  setTimeout(() => { scoreRingEl.classList.add('pulse-complete'); }, 1600);
+
+  // Score count-up animation
   const scoreEl = document.getElementById('r-score');
-  scoreEl.textContent = output.coverageScore + '%';
   if (output.coverageScore < 40) scoreEl.style.color = 'var(--red)';
   else if (output.coverageScore < 75) scoreEl.style.color = '#d4a24c';
   else scoreEl.style.color = 'var(--green)';
+  animateValue(scoreEl, 0, output.coverageScore, 1400);
 
-  // Context
+  // Context — framing line that tells the user what the score means
   const gapCount = output.gaps.length;
   let ctx = '';
   if (output.coverageScore >= 90) ctx = "Near-complete picture. Keep it fresh.";
+  else if (output.coverageScore < 30) ctx = `We're working with a rough sketch — ${gapCount} gaps to fill.`;
+  else if (output.coverageScore < 50) ctx = `You're missing more than half the picture. ${gapCount} gaps to close.`;
+  else if (output.coverageScore < 70) ctx = `Solid start — ${gapCount} gap${gapCount !== 1 ? 's' : ''} left to sharpen your score.`;
   else if (gapCount > 0) ctx = `${gapCount} gap${gapCount !== 1 ? 's' : ''} in your coverage.`;
   else ctx = "All metrics covered.";
   document.getElementById('r-context').innerHTML = ctx;
 
-  // Health ring
+  // Health ring — staggered reveal after score ring
   const healthArc = document.getElementById('health-arc');
   const healthEl = document.getElementById('r-health');
   const healthRing = document.getElementById('health-ring');
@@ -65,14 +97,27 @@ export function renderResults(output, profile) {
     const healthOffset = circumference - (output.avgPercentile / 100) * circumference;
     healthArc.style.strokeDasharray = circumference;
     healthArc.classList.remove('health-low', 'health-mid', 'health-high');
-    if (output.avgPercentile < 30) healthArc.classList.add('health-low');
-    else if (output.avgPercentile < 60) healthArc.classList.add('health-mid');
-    else healthArc.classList.add('health-high');
-    setTimeout(() => { healthArc.style.strokeDashoffset = healthOffset; }, 100);
-    healthEl.textContent = ordinal(output.avgPercentile);
+    healthRing.classList.remove('glow-active', 'glow-low', 'glow-mid', 'glow-high', 'pulse-complete');
+
+    let healthGlow;
+    if (output.avgPercentile < 30) { healthArc.classList.add('health-low'); healthGlow = 'glow-low'; }
+    else if (output.avgPercentile < 60) { healthArc.classList.add('health-mid'); healthGlow = 'glow-mid'; }
+    else { healthArc.classList.add('health-high'); healthGlow = 'glow-high'; }
+
+    healthRing.classList.add(healthGlow);
+    setTimeout(() => {
+      healthArc.style.strokeDashoffset = healthOffset;
+      healthRing.classList.add('glow-active');
+    }, 800);
+    setTimeout(() => { healthRing.classList.add('pulse-complete'); }, 2400);
+
     if (output.avgPercentile < 30) healthEl.style.color = 'var(--red)';
     else if (output.avgPercentile < 60) healthEl.style.color = '#d4a24c';
     else healthEl.style.color = 'var(--green)';
+    // Delay health ring text animation to match staggered ring
+    setTimeout(() => {
+      healthEl.textContent = ordinal(output.avgPercentile);
+    }, 800);
     healthRing.style.display = '';
   } else {
     healthRing.style.display = 'none';
@@ -87,21 +132,25 @@ export function renderResults(output, profile) {
   document.getElementById('r-t2-pct').textContent = `${output.tier2Pct}%`;
 
   // Action plan
-  renderMoves(output.gaps, output.coverageScore, output.results);
+  const devices = (profile._devices || []).filter(d => d !== 'none');
+  renderMoves(output.gaps, output.coverageScore, output.results, devices);
 
   // Post-score tracking modules
   const bpSlot = document.getElementById('bp-tracker-slot');
-  if (bpSlot) renderBpTracker(bpSlot);
+  if (bpSlot) renderBpTracker(bpSlot, devices);
 
   // "Start tracking today" based on equipment selections
   renderTrackingToday(profile);
 
   // Metric tables
-  renderTier('r-tier1', 'Tier 1: Foundation', output.results.filter(r => r.tier === 1));
-  renderTier('r-tier2', 'Tier 2: Enhanced', output.results.filter(r => r.tier === 2));
+  renderTier('r-tier1', 'Core tests', output.results.filter(r => r.tier === 1));
+  renderTier('r-tier2', 'Advanced tests', output.results.filter(r => r.tier === 2));
 
   // Insights carousel
   renderInsights(output, profile);
+
+  // Discovery form — "What should we build next?"
+  renderDiscoveryForm(document.getElementById('discovery-slot'));
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -214,25 +263,56 @@ export function renderTier(containerId, title, metrics) {
   const coveredMetrics = metrics.filter(r => r.hasData);
   const missingMetrics = metrics.filter(r => !r.hasData);
 
-  let html = `<h3>${title}<span class="count">${covered} of ${metrics.length} covered</span></h3>`;
-
-  coveredMetrics.forEach(r => { html += metricRowHtml(r); });
+  let inner = '';
+  coveredMetrics.forEach(r => { inner += metricRowHtml(r); });
 
   if (missingMetrics.length > 0) {
     if (coveredMetrics.length > 0) {
-      html += `<div class="missing-divider">${missingMetrics.length} not yet tracked</div>`;
+      inner += `<div class="missing-divider">${missingMetrics.length} not yet tracked</div>`;
     }
-    html += '<div class="missing-metrics-group">';
-    missingMetrics.forEach(r => { html += metricRowHtml(r); });
-    html += '</div>';
+    inner += '<div class="missing-metrics-group">';
+    missingMetrics.forEach(r => { inner += metricRowHtml(r); });
+    inner += '</div>';
   }
+
+  // Collapsed by default — toggle to expand
+  const toggleId = `${containerId}-toggle`;
+  let html = `<button class="tier-toggle" id="${toggleId}" onclick="document.getElementById('${toggleId}').classList.toggle('open');document.getElementById('${containerId}-content').classList.toggle('open')">
+    <span class="toggle-chevron">&#9654;</span>
+    ${title} <span class="count">${covered} of ${metrics.length} covered</span>
+  </button>`;
+  html += `<div class="tier-content" id="${containerId}-content"><div>${inner}</div></div>`;
 
   el.innerHTML = html;
 }
 
-export function renderMoves(gaps, currentScore, results) {
+/** Adjust gap costToClose text based on equipment the user owns */
+function equipmentAwareCost(gap, deviceSet) {
+  const name = gap.name?.toLowerCase() || '';
+  const metric = gap.metric || '';
+
+  // Blood pressure
+  if (metric === 'systolic' || metric === 'sbp' || name.includes('blood pressure')) {
+    if (deviceSet.has('bp_cuff')) return 'Start your 7-day BP protocol';
+    return 'Get a BP cuff (~$40, Omron) — then start your 7-day protocol';
+  }
+  // Waist circumference
+  if (metric === 'waist' || name.includes('waist')) {
+    if (deviceSet.has('tape_measure')) return 'Measure at your navel, standing, after a normal exhale';
+    return 'Get a tape measure (~$3) — measure at navel, standing, after a normal exhale';
+  }
+  // Weight trends
+  if (metric === 'weight_trends' || name.includes('weight')) {
+    if (deviceSet.has('scale')) return 'Weigh yourself first thing each morning';
+    return 'Get a scale (~$20-50) — weigh yourself first thing each morning';
+  }
+  return gap.costToClose;
+}
+
+export function renderMoves(gaps, currentScore, results, devices) {
   const el = document.getElementById('r-moves');
   const results_ = results || [];
+  const deviceSet = new Set(devices || []);
 
   const top3 = gaps.slice(0, 3);
   const remaining = gaps.slice(3);
@@ -256,11 +336,14 @@ export function renderMoves(gaps, currentScore, results) {
     </div>`;
 
     top3.forEach((g, i) => {
-      html += `<div class="move-card">
+      const isBp = g.metric === 'systolic' || g.metric === 'sbp' || g.name?.toLowerCase().includes('blood pressure');
+      const clickAttr = isBp ? ` onclick="document.getElementById('bp-tracker-slot')?.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor:pointer"` : '';
+      const detail = equipmentAwareCost(g, deviceSet);
+      html += `<div class="move-card"${clickAttr}>
         <div class="move-num">${i + 1}</div>
         <div class="move-body">
           <h4>${g.name}</h4>
-          <p class="move-detail">${g.note ? `<strong>${g.note}</strong> ` : ''}${g.costToClose}</p>
+          <p class="move-detail">${g.note ? `<strong>${g.note}</strong> ` : ''}${detail}</p>
         </div>
         <div class="move-tag">+${g.weight} pts</div>
       </div>`;
@@ -268,15 +351,17 @@ export function renderMoves(gaps, currentScore, results) {
 
     if (remaining.length > 0) {
       const totalRemaining = remaining.reduce((s, g) => s + g.weight, 0);
-      html += `<div class="remaining-gaps">`;
-      html += `<div class="remaining-gaps-label">Remaining ${remaining.length} gaps · +${totalRemaining} pts</div>`;
+      const rgId = 'remaining-gaps-toggle';
+      html += `<div class="remaining-gaps" id="${rgId}">`;
+      html += `<div class="remaining-gaps-label" onclick="document.getElementById('${rgId}').classList.toggle('open')">Remaining ${remaining.length} gaps · +${totalRemaining} pts</div>`;
+      html += `<div class="remaining-gap-rows"><div>`;
       remaining.forEach(g => {
         html += `<div class="remaining-gap-row">
           <span>${g.name}</span>
           <span class="gap-pts">+${g.weight}</span>
         </div>`;
       });
-      html += `</div>`;
+      html += `</div></div></div>`;
     }
   } else {
     html += `<div class="moves-section-label">Coverage</div>`;
@@ -329,16 +414,16 @@ function renderTrackingToday(profile) {
   if (devices.length === 0) { el.innerHTML = ''; return; }
 
   let html = '<div class="mb-8">';
-  html += '<div class="font-mono text-[0.72rem] font-medium text-text-dim tracking-wider uppercase mb-3">Start tracking today</div>';
-  html += '<div class="flex flex-col gap-2">';
+  html += '<div class="font-mono text-[0.72rem] font-medium text-text-dim tracking-wider uppercase mb-5">Start tracking today</div>';
+  html += '<div class="flex flex-col gap-3">';
   for (const d of devices) {
     const s = TRACKING_SUGGESTIONS[d];
     if (!s) continue;
-    html += `<div class="flex items-center gap-3.5 px-4 py-3.5 bg-white/[0.015] border border-white/[0.04] rounded-lg">
+    html += `<div class="tracking-suggestion-card">
       <div class="text-xl opacity-40 shrink-0">${s.icon}</div>
       <div>
-        <div class="text-[0.85rem] text-text-muted font-medium">${s.name}</div>
-        <div class="text-[0.78rem] text-text-dim leading-relaxed">${s.instruction}</div>
+        <div class="text-[0.88rem] text-text-muted font-medium">${s.name}</div>
+        <div class="text-[0.8rem] text-text-dim leading-relaxed mt-0.5">${s.instruction}</div>
       </div>
     </div>`;
   }

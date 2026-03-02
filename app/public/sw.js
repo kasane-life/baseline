@@ -60,8 +60,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Everything else (HTML, nhanes JSON, manifest, icons) — stale-while-revalidate
-  // Serve cached version immediately, fetch fresh copy in background
+  // HTML — network-first (always get the latest, fall back to cache offline)
+  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      }).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Everything else (nhanes JSON, manifest, icons) — stale-while-revalidate
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request).then((response) => {
