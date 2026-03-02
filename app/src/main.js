@@ -10,7 +10,7 @@ import { initToggleButtons, toggleDevice, showStep, buildProfile, populateForm, 
 import { initLabDrop, handleLabFileInput, parseLabText, togglePasteLabs, toggleManualLabs } from './lab-import.js';
 import { initWearableDrop, handleWearableFileInput } from './wearable-import.js';
 import { renderResults } from './render.js';
-import { toggleFullVoice, toggleVoice, submitVoiceIntake, hasSpeechSupport, hideSpeechUI, resetVoiceState, checklistLocked, applyExtraction, expandTranscript } from './intake.js';
+import { toggleFullVoice, toggleVoice, submitVoiceIntake, hasSpeechSupport, hideSpeechUI, resetVoiceState, checklistLocked, applyExtraction, expandTranscript, updateVoiceChecklist } from './intake.js';
 import { initMedSearch, removeMedTag, resetMeds } from './meds.js';
 import { initPhq9, getPhq9Score, resetPhq9 } from './phq9.js';
 import { initErrorBoundary, initBreadcrumbTracking, initFeatureFlags, initVoiceFallback, initFeedbackButton, addBreadcrumb } from './feedback.js';
@@ -185,7 +185,7 @@ async function computeResults() {
   interstitial.classList.add('active');
   window.scrollTo({ top: 0 });
 
-  await new Promise(resolve => setTimeout(resolve, 700));
+  await new Promise(resolve => setTimeout(resolve, 2200));
 
   interstitial.classList.remove('active');
   renderResults(output, formProfile);
@@ -468,6 +468,23 @@ window.loadSavedProfile = async function() {
     if (obs.length > 0) flat[metric] = obs[0].value;
   }
   populateForm(flat);
+
+  // Pre-populate voice checklist so return visitors see what's already captured
+  const d = tsProfile.demographics || {};
+  const o = tsProfile.observations || {};
+  const hasAnyLab = ['ldl_c','hdl_c','triglycerides','fasting_glucose','hba1c','apob'].some(k => o[k]?.length > 0);
+  updateVoiceChecklist({
+    age: d.age || null,
+    sex: d.sex || null,
+    heightFt: d.height_ft || null,
+    weight: flat.weight_lbs || null,
+    systolic: flat.systolic || null,
+    waist: flat.waist_circumference || null,
+    familyHistory: flat.has_family_history ?? null,
+    hasLabs: hasAnyLab || false,
+    noLabs: !hasAnyLab && Object.keys(o).length > 0,
+  }, 'ai');
+
   log.info('loaded saved profile', { metrics: Object.keys(tsProfile.observations).length });
 };
 
