@@ -383,8 +383,8 @@ a:hover { @apply text-text; }
 
 /* Gap cards */
 
-/* Next moves — floating section, no container box */
-.next-moves { @apply mb-8 pt-8 pb-6 px-6 -mx-6 rounded-2xl; background: rgba(var(--surface),0.02); border: 1px solid rgba(var(--surface),0.04); }
+/* Next moves — no container box, matches Health/Evidence pattern */
+.next-moves { @apply mb-8 pt-8; }
 .next-moves h3 { @apply font-display text-[1.5rem] font-bold uppercase tracking-wide mb-6 text-center; }
 .moves-projection {
   @apply flex items-center gap-3 mb-5 font-mono text-center justify-center py-3.5 rounded-lg;
@@ -439,7 +439,7 @@ a:hover { @apply text-text; }
 }
 
 /* Action plan — unified moves + timeline + remaining gaps */
-.action-plan { @apply mb-8; }
+.action-plan { @apply mb-8 mt-8; }
 .moves-section-label { @apply font-display text-[1.1rem] font-bold uppercase tracking-wide text-text mb-3; }
 .moves-section-meta { @apply font-mono text-[0.65rem] font-normal text-text-dim tracking-wide ml-2 normal-case; }
 .remaining-gaps { @apply mt-5; }
@@ -1535,4 +1535,15 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   color: var(--text-muted);
   margin: 4px 0 0;
   opacity: 0.7;
+}
+.insights-vertical {
+  margin: 20px 0 8px;
+}
+.insights-vertical .insight-card {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.insights-vertical .insights-grid {
+  display: flex;
+  flex-direction: column;
 }

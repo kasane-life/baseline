@@ -335,6 +335,8 @@ function _updateEnrichProgress() {
   // When all steps touched — show score reveal, hide everything else
   if (touchedCount >= ENRICH_STEP_COUNT) {
     if (skipWrap) skipWrap.style.display = 'none';
+    const contBtn = document.getElementById('stepper-continue');
+    if (contBtn) contBtn.style.display = 'none';
     const reveal = document.getElementById('score-reveal');
     if (reveal && !reveal.classList.contains('active')) {
       // Hide all slides
@@ -781,7 +783,7 @@ function _resetIntakeUI() {
   const revealEl = document.getElementById('score-reveal');
   if (revealEl) revealEl.classList.remove('active');
   const contBtn = document.getElementById('stepper-continue');
-  if (contBtn) contBtn.classList.remove('has-data');
+  if (contBtn) { contBtn.classList.remove('has-data'); contBtn.style.display = ''; }
 }
 
 window.startOver = function() {

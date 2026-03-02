@@ -1,8 +1,8 @@
-# Checkpoint — March 2, 2026 (evening session #2)
+# Checkpoint — March 2, 2026 (evening session #3)
 
 ## Current State
-27 commits pushed to origin. 2 uncommitted files (score.js SDNN fix, dashboard/cut_tracker.html).
-Build clean. Results page insights redesign scoped and ready. Content follow-on posts scoped.
+31 commits pushed to origin. 7 uncommitted files (UI polish, favicon, privacy page, dashboard).
+Results page insights redesign complete (Agents O–R all landed). Content posts live on LinkedIn + X.
 
 ## This Session
 
@@ -20,27 +20,29 @@ Build clean. Results page insights redesign scoped and ready. Content follow-on 
 - Beyond HRV: Heart rate recovery (HRR) is a strong mortality predictor — future metric candidate
 - Other ESC metrics (RHR, BP, VO2) already align with our NHANES-based scoring
 
-### Results Page Insights Redesign (scoped, not started)
-Full design in `docs/handoff-results-insights.md`. User feedback:
-1. Health flags need intervention levers (what to DO about it)
-2. Gap cards need "why this matters" context
-3. Evidence section should be personal, not generic — roll into gap cards
-4. Celebrate wins — tell users what they're doing right
-5. Core vs Advanced is confusing — needs explainer or rethink
-6. Tier tables are low-signal in main flow — shrink/link to detail view
+### Results Page Insights Redesign — COMPLETE
+Full design in `docs/handoff-results-insights.md`. All 4 agents landed.
 
-**Agents:**
 | Agent | Task | Files | Status |
 |-------|------|-------|--------|
 | **O** | METRIC_INTERVENTIONS data module (20 metrics) | NEW `interventions.js` | **Done** |
-| **P** | Health flags + wins enhancement | `render.js` (renderHealthFlags) | **Done** |
-| **Q** | Enhanced gap cards ("why this matters") | `render.js` (renderMoves) | Fired |
-| **R** | Evidence removal + tier table cleanup | `render.js`, `index.html` | After Q |
-| **Content** | Follow-on LinkedIn + X posts (wearable angle + sleep regularity) | docs only | **Wearable post LIVE** (LinkedIn + X, Mar 2 ~12:30 ET) |
+| **P** | Health flags + wins + gap card context | `render.js` | **Done** (also covered Q's scope) |
+| **Q** | Enhanced gap cards ("why this matters") | `render.js` | **Done** (P already implemented) |
+| **R** | Evidence personalization | `render.js` (renderInsights) | **Done** |
+| **Content** | Follow-on LinkedIn + X posts | docs only | **Wearable post LIVE** (LinkedIn + X, Mar 2 ~12:30 ET) |
 
-Agent O notes: Keys match CUTOFF_TABLES keys in score.js. Header comment documents Result name → key mapping. BMI not in score.js (uses waist). Composite panels split into sub-metric entries.
+### Inline UI Polish (after agents)
+- Evidence moved from Act 3 carousel to vertical stack inside Health section
+- "Your next moves" section title changed from `<h3>` to `moves-section-label` for consistency
+- Removed card wrapper (background/border) from `.next-moves` container
+- Continue button hidden when "See my score" appears in Phase 2
+- Wins block spacing increased (margin 8px → 28px)
+- Oxford comma fix for 3+ wins
+- `mt-8` added to `.action-plan` for breathing room
 
-Parallelization: P + Q fire now (parallel, different functions in render.js) → R after Q.
+### Landing Page
+- Favicon (`landing/favicon.svg`) added to landing page and privacy page
+- Privacy page already comprehensive from earlier work
 
 ## Previous Session (committed)
 
@@ -103,8 +105,11 @@ Lipid Panel + ApoB and Metabolic Panel are composite results in score.js. interv
 ### Nested parens on composite flag cards (from Agent P)
 Composites like "Lipid Panel + ApoB" have unit "mg/dL (ApoB)" → flag shows "(85 mg/dL (ApoB))". Strip inner parens for display. Minor polish.
 
-### Oxford comma in wins block (from Agent P)
-3 wins joined as "A and B and C" — should be "A, B, and C". Minor polish.
+### Oxford comma in wins block — RESOLVED
+Fixed inline. 3+ wins now joined with Oxford comma.
+
+### "Load previous" doesn't restore wearable/lab uploads
+When restarting the flow and clicking "load previous," wearable CSV and lab data aren't preloaded — user has to re-upload every time. Profile fields (form inputs) persist in localStorage but file-based imports don't. Needs either: (a) persist parsed metrics in localStorage so they auto-populate, or (b) show a summary of previously imported data with option to re-import.
 
 ### NAME_TO_METRIC_KEY is manual (from Agent P)
 Results don't have a `metric` field. Agent P built a name-to-key mapping in render.js. If new metrics are added to score.js, this mapping needs updating. Future fix: add metric key to each result object in score.js.
@@ -127,13 +132,14 @@ Results don't have a `metric` field. Agent P built a name-to-key mapping in rend
 
 ## Still On Deck
 
-1. **Commit** — SDNN + interventions + results enhancements + docs
-2. **Agent R** — evidence removal + tier table cleanup (optional, evaluate after visual review)
-3. **Build Apple Shortcut on iPhone** — Andrew builds per `docs/apple-shortcut-bridge.md`
-4. **End-to-end wearable flow test** — Garmin CSV + paste JSON
-5. **Garmin approval check** — submitted March 2, expected ~March 4
-6. **Push to production + test with Paul**
-7. **Reddit posts** — per content calendar schedule
+1. ~~**Commit + push**~~ — UI polish, favicon, privacy page → **doing now**
+2. **Build Apple Shortcut on iPhone** — Andrew builds per `docs/apple-shortcut-bridge.md`
+3. **End-to-end wearable flow test** — Garmin CSV + paste JSON
+4. **Garmin approval check** — submitted March 2, expected ~March 4
+5. **Push to production + test with Paul**
+6. **Reddit posts** — per content calendar schedule
+7. **Sleep regularity post** — drafted in `docs/draft-sleep-regularity-post.md`, schedule Thu/Fri
+8. **Quote-tweet schedule** — wearable post QTs: +2d (RHR), +3d (sleep), +5d (steps+RHR), +7d (60%)
 
 ## Resume Prompt
 
@@ -142,22 +148,22 @@ After /clear, paste this to resume as orchestrator:
 ```
 You are the orchestrator. Read these files before doing anything:
 1. docs/checkpoint-2026-03-02.md (full state, what's done, what's next)
-2. docs/handoff-results-insights.md (results insights redesign — 4 agents scoped)
-3. git log --oneline -5 and git diff --stat
+2. git log --oneline -10 and git diff --stat
 
 Summary of where we are:
-- Agent N landed SDNN HRV scoring (build fix applied, uncommitted)
-- Results page insights redesign fully scoped: 4 agents (O → P+Q → R)
-  - O: METRIC_INTERVENTIONS data module (blocker)
-  - P: Health flags + wins (parallel with Q after O)
-  - Q: Enhanced gap cards with "why this matters" (parallel with P after O)
-  - R: Evidence removal + tier cleanup (after Q)
-- See handoff doc for full design, agent prompts, and file scopes
+- 14 agents (E through R) all landed and committed
+- Results page insights redesign complete: interventions, health flags + wins,
+  gap card context, evidence personalization, UI polish
+- Content: wearable post live on LinkedIn + X, sleep regularity post drafted
+- Landing page: favicon added, privacy page comprehensive
 
 Next immediate:
-- Commit SDNN fix
-- Write and fire Agent O prompt (blocker for the rest)
-- While O runs: Apple Shortcut build (Andrew) or e2e wearable test
+1. Build Apple Shortcut on iPhone (Andrew, per docs/apple-shortcut-bridge.md)
+2. End-to-end wearable flow test (Garmin CSV + paste JSON)
+3. Garmin approval check (~March 4)
+4. Push to production + test with Paul
+5. Reddit posts per content calendar
+6. Sleep regularity post Thu/Fri
 
 NEVER use the Agent tool to spawn workers. Write kickoff prompts as text, user spawns them.
 Small inline fixes (< 15 lines) are OK to do directly.

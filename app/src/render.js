@@ -145,9 +145,10 @@ export function renderResults(output, profile) {
   document.getElementById('r-t1-pct').textContent = `${output.tier1Pct}%`;
   document.getElementById('r-t2-pct').textContent = `${output.tier2Pct}%`;
 
-  // ACT 1: Health flags (rendered into dedicated slot, above moves)
+  // ACT 1: Health flags + insights (rendered into dedicated slot, above moves)
   const results_ = output.results || [];
   renderHealthFlags(results_, document.getElementById('health-flags-slot'));
+  renderInsights(output, profile, document.getElementById('health-flags-slot'));
 
   // ACT 2: Action plan (moves)
   const devices = (profile._devices || []).filter(d => d !== 'none');
@@ -164,9 +165,6 @@ export function renderResults(output, profile) {
   // Metric tables
   renderTier('r-tier1', 'Core tests', output.results.filter(r => r.tier === 1));
   renderTier('r-tier2', 'Advanced tests', output.results.filter(r => r.tier === 2));
-
-  // Insights carousel
-  renderInsights(output, profile);
 
   // Discovery form — "What should we build next?"
   renderDiscoveryForm(document.getElementById('discovery-slot'));
@@ -456,7 +454,7 @@ export function renderMoves(gaps, currentScore, results, devices) {
   const projectedScore = Math.min(100, currentScore + Math.round(top3Pts / 85 * 100));
 
   let html = `<div class="action-plan">`;
-  html += `<h3>Your next moves</h3>`;
+  html += `<div class="moves-section-label">Your next moves</div>`;
 
   if (gaps.length > 0) {
     // Estimate total cost from top-3 costToClose strings
@@ -633,8 +631,8 @@ const INSIGHTS = [
   },
 ];
 
-export function renderInsights(output, profile) {
-  const el = document.getElementById('r-insights');
+export function renderInsights(output, profile, container) {
+  if (!container) return;
 
   // Build lookup for result by metricKey
   const resultByKey = {};
@@ -649,7 +647,6 @@ export function renderInsights(output, profile) {
     const result = resultByKey[ins.metricKey];
     const hasData = result && result.hasData;
     const isGap = gapKeys.has(ins.metricKey);
-    // relevance: 2 = has data, 1 = gap (actionable), 0 = unrelated
     const relevance = hasData ? 2 : isGap ? 1 : 0;
 
     let stat, body;
@@ -674,13 +671,9 @@ export function renderInsights(output, profile) {
 
   scored.sort((a, b) => b.relevance - a.relevance);
   const shown = scored.slice(0, 6);
-  const personalCount = shown.filter(s => s.hasData).length;
 
-  const insId = 'insights-toggle';
-  let html = `<div class="remaining-gaps open" id="${insId}">`;
-  html += `<div class="remaining-gaps-label" onclick="document.getElementById('${insId}').classList.toggle('open')">Evidence · personalized · ${personalCount} of ${shown.length} matched</div>`;
-  html += `<div class="remaining-gap-rows"><div>`;
-  html += `<div class="insights-grid">`;
+  let html = `<div class="insights-vertical">`;
+  html += `<div class="moves-section-label">Evidence <span class="moves-section-meta">personalized</span></div>`;
   shown.forEach(ins => {
     const relevanceLabel = ins.hasData ? 'Your data' : ins.relevance === 1 ? 'Closes a gap' : '';
     const relevanceBadge = relevanceLabel ? `<span class="insight-relevance insight-rel-${ins.hasData ? 'match' : 'gap'}">${relevanceLabel}</span>` : '';
@@ -692,7 +685,10 @@ export function renderInsights(output, profile) {
     </div>`;
   });
   html += '</div>';
-  html += `</div></div></div>`;
 
-  el.innerHTML = html;
+  container.insertAdjacentHTML('beforeend', html);
+
+  // Clear the old insights slot if it exists
+  const oldSlot = document.getElementById('r-insights');
+  if (oldSlot) oldSlot.innerHTML = '';
 }
