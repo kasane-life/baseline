@@ -106,10 +106,13 @@ Use this as a complexity check. If a feature drops below 5K, ask whether it belo
 ## How Workstreams Stay in Sync
 
 Each agent should:
-1. Read this doc + their specific handoff doc before starting
+1. Read `CLAUDE.md` (session hygiene rules) + this doc + their specific handoff doc before starting
 2. Work within their scope — don't modify files owned by another workstream without flagging it
 3. If you need to touch a shared file (like `index.html` or `main.js`), document what you changed and why
 4. When done, update your handoff doc with what was built, what changed, and any open items
+5. Follow the handoff protocol in `docs/dev-workflow.md` — build, screenshot, document, hand off
+
+See `CLAUDE.md` → "Session Hygiene" and `docs/dev-workflow.md` → "Session Management" for the full rules on task isolation, file coordination, and when to start fresh sessions.
 
 ---
 

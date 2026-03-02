@@ -151,16 +151,28 @@ This is the 5,000 ft → 1,000 ft bridge from the altitude framework — but dri
 
 These are the bets. Each one needs a proof point before we invest deeply.
 
-| # | Assumption | How We Validate | Status |
-|---|-----------|----------------|--------|
-| 1 | **People will enter their health data into a web form** | Paul completes the full flow on his iPhone | Not tested |
-| 2 | **The coverage score is motivating, not depressing** | Post-score behavior: do they take an action or close the tab? | Not tested |
-| 3 | **"What's missing" is more valuable than "what you have"** | Do users click gap cards more than tier details? | Not tested |
-| 4 | **Passkeys are understood by the target audience** | Registration rate when prompted post-score | Not tested |
-| 5 | **Voice intake is a differentiator, not a gimmick** | Voice vs form tab usage split on desktop | Not tested |
-| 6 | **iOS users will Add to Home Screen** | PWA install rate on iOS Safari | Not tested |
-| 7 | **People come back after the first score** | Return visit rate at 7 and 30 days | Not tested |
-| 8 | **The audience will pay for this** | Willingness-to-pay signal from engaged users | Not tested |
+| # | Assumption | How We Validate | Validates | Status |
+|---|-----------|----------------|-----------|--------|
+| 1 | **People will enter their health data into a web form** | Paul completes the full flow on his iPhone | Onramp | Not tested |
+| 2 | **The coverage score is motivating, not depressing** | Post-score behavior: do they take an action or close the tab? | Onramp + Loop | Not tested |
+| 3 | **"What's missing" is more valuable than "what you have"** | Do users click gap cards more than tier details? | Onramp + Loop | Not tested |
+| 4 | **Passkeys are understood by the target audience** | Registration rate when prompted post-score | Record | Not tested |
+| 5 | **Voice intake is a differentiator, not a gimmick** | Voice vs form tab usage split on desktop | UX | Not tested |
+| 6 | **iOS users will Add to Home Screen** | PWA install rate on iOS Safari | UX | Not tested |
+| 7 | **People come back after the first score** | Return visit rate at 7 and 30 days | Record + Loop | Not tested |
+| 8 | **The audience will pay for this** | Willingness-to-pay signal from engaged users | Business | Not tested |
+
+### How These Map to the B+C Thesis
+
+**Assumptions 1-3 validate the onramp (Score).** If people won't enter data (#1), or the score doesn't motivate (#2), or "what's missing" doesn't resonate (#3) — there's no record and no loop. These are existential. They gate everything.
+
+**Assumptions 4 and 7 validate the Record (B).** Passkeys (#4) are how the record persists across devices. Return visits (#7) are proof the record matters enough to come back to. If neither works, the record never gets built.
+
+**Assumptions 2 and 3 also validate the Loop (C).** If people take action after scoring (#2) and engage with gaps (#3), the loop has legs. The gap cards ARE the loop's first touchpoint — "here's what's missing" is the first "what to do this week."
+
+**Assumptions 5, 6, and 8 are secondary.** Voice (#5) and PWA install (#6) are channel/UX questions, not thesis questions. Willingness to pay (#8) matters eventually but not until the loop is working.
+
+**Validation priority order: 1 → 2 → 3 → 7 → 4 → then everything else.** Does someone care enough to enter data? Does the score make them act? Do the gaps pull them forward? Do they come back? Do they save it?
 
 **The honest truth:** Every assumption is untested. The next milestone isn't building more features. It's getting 5-10 people through the flow and watching what they do.
 
@@ -175,20 +187,27 @@ How we decide what to build next, without over-planning or rabbit-holing.
 Before building anything, ask:
 
 1. **Altitude check** — What altitude is this? (from `altitude-framework.md`)
-   - If it's below 5,000 ft, it's premature unless it's Andrew's personal R&D
-   - If it's at 5,000 ft, it belongs in the product
-   - If it's at 10,000 ft, it belongs in content/landing page
+   - Below 5,000 ft (protocols, personalized coaching) → premature unless it's Andrew's personal R&D
+   - At 5,000 ft (scoring, benchmarking, gap analysis) → belongs in the product
+   - At 10,000 ft (signal detection, "do you even have labs?") → belongs in content/landing page
+   - This is the **scope creep filter.** "What if Baseline recommended supplements?" — that's 1,000 ft. Not now.
 
 2. **Proof point check** — Do we have evidence this matters?
-   - If no users have seen the score yet, don't build post-score features based on assumptions
-   - If nobody has asked for wearable connections, don't build integrations
+   - No users have seen the score → don't build post-score features on assumptions
+   - Nobody has asked for wearable connections → don't build integrations
+   - Paul says "I wish I could save this" → passkey prompt is justified
    - Content and conversations count as evidence. So do Paul's reactions.
+   - This is the **rabbit hole filter.** "It would be cool if..." is not a proof point.
 
 3. **Reversibility check** — Can we undo this easily?
-   - CSS change? Ship it, see what happens.
-   - New database schema? Think harder.
-   - New dependency? Think even harder.
-   - Architectural commitment (cloud sync, native app)? Need strong signal first.
+   - CSS change → ship it, watch what happens
+   - New module (bp-tracker.js) → low risk, can delete
+   - New dependency → think harder, it's in the lockfile forever
+   - New database schema → think even harder, migration pain
+   - Architectural commitment (cloud sync, native app) → need strong signal, one-way door
+   - This is the **speed filter.** Reversible things move fast. Irreversible things move slow.
+
+**How this ties to B+C:** The record (B) involves irreversible decisions — data model, storage schema, sync architecture. Those need strong signal. The loop (C) is mostly reversible — post-score cards, action prompts, queue UI. Those can ship fast and iterate. Build the loop first, learn from it, then harden the record.
 
 ### The Decision Log
 
@@ -222,30 +241,70 @@ The next push isn't more features. It's discovery through the product.
 - Paul tests on iPhone
 - 3-5 more people via landing page email list or direct outreach
 
-**What we learn:**
-- Does the flow make sense? Where do people get stuck?
-- What do they do after seeing the score? (Close tab? Click a gap? Start BP protocol?)
-- Is the coverage score concept intuitive or confusing?
-- Voice vs form — does anyone use voice?
+**What we're learning (mapped to assumptions):**
+- Does anyone finish the flow? → Assumption #1
+- What do they do after the score? Close tab, click a gap, start BP protocol? → Assumptions #2 and #3
+- Does voice get used on desktop? → Assumption #5
+- Does Paul's iPhone experience work? → Assumption #6
+
+**What we're NOT building for Push 1:**
+- No new features. Ship what exists.
+- No passkey prompt yet (need the score to land first)
+- No wearable connections
+- No new post-score actions beyond what's already there (BP protocol, gap cards, next 3 moves)
+
+**Tie to B+C:** Push 1 validates the onramp. If the score doesn't land, B and C don't matter.
 
 ### Push 2: Post-Score Discovery (March-April)
 
-Based on what we learn from Push 1, build the post-score experience:
+**Goal:** Based on Push 1 signals, build the first real loop touchpoints.
 
-- **If people close the tab after scoring:** The score isn't sticky enough. Fix the results page first. Maybe add "share your score" or "email me my results."
-- **If people click gap cards:** Build the gap → action pipeline. "Order this test" → link to Quest/LabCorp. "Connect this device" → Oura PAT integration.
-- **If people start BP protocol:** Build out more measurement protocols. The queue model is validated.
-- **If people want to save their data:** Passkey prompt is justified. Wire it up.
+**If/then branching:**
+- **If people close the tab after scoring** → the score isn't sticky. Fix the results page. Maybe "share your score" or "email me my results." The onramp is broken — don't build the loop yet.
+- **If people click gap cards** → build the gap → action pipeline. "Order this test" with a Quest/LabCorp link. "Connect this device" with Oura PAT. The loop has legs.
+- **If people start BP protocol** → build more measurement protocols. The queue model is validated. This is the loop working.
+- **If people say "I want to save this"** → passkey prompt is justified. Wire it up post-score. The record earns its place.
 
-### Push 3: Content-Driven Growth (March-April, Parallel)
+**What we're learning:**
+- Which loop entry point resonates? (tracking, ordering, connecting) → shapes what C looks like
+- Do people want to persist their data? → validates B
+- Return visit rate → Assumption #7
 
-The content calendar (`docs/content-calendar.md`) is ready. Launch:
-- X thread (drafted)
-- Reddit r/bloodwork post (drafted)
+**Tie to B+C:** Push 2 is where the loop (C) starts to take shape based on real behavior. And if people want to save, the record (B) earns its place.
+
+### Push 3: Content-Driven Growth (Parallel with 1 and 2)
+
+**Goal:** Drive traffic to the landing page → app → proof points.
+
+**What we ship:**
+- X thread (drafted, ready)
+- Reddit r/bloodwork post (drafted, ready)
 - LinkedIn cross-post
-- Cost comparison thread (drafted)
+- Cost comparison thread (drafted, ready)
 
-Content drives people to the landing page. Landing page drives them to the app. App generates proof points. Proof points inform what we build next.
+**What we're learning:**
+- Which content hooks drive clicks to the landing page?
+- Which channels convert to app usage?
+- What language do people use when they talk about their health data? (this feeds messaging)
+
+**Tie to B+C:** Content fills the top of the funnel. More people through the score → more signal on whether the loop works → faster validation of the thesis.
+
+### Definition of Done
+
+After Push 1, we can answer:
+1. Do people finish the intake? (yes/no, where do they drop?)
+2. Is the coverage score motivating or confusing?
+3. What do people do immediately after seeing their score?
+4. Does the iOS experience work for Paul?
+
+After Push 2, we can answer:
+5. Which post-score action resonates most? (track, order, connect, save)
+6. Do people come back?
+7. Is passkey identity worth investing in further?
+
+**Each answer directly informs the B+C thesis.** If people don't come back (#6), the loop is broken — understand why before building more. If people don't want to save (#7), the record isn't earning its place. If the score doesn't motivate (#2), nothing else matters.
+
+The features are built. The question is whether they matter. The next phase is people, not code.
 
 ---
 
