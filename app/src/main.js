@@ -8,6 +8,7 @@ import { createLogger } from './logger.js';
 
 import { initToggleButtons, toggleDevice, showStep, buildProfile, populateForm, switchIntakeTab, addParsedLabValues, clearPendingImports, getPendingImports, resetState } from './form.js';
 import { initLabDrop, handleLabFileInput, parseLabText, togglePasteLabs, toggleManualLabs } from './lab-import.js';
+import { initWearableDrop, handleWearableFileInput } from './wearable-import.js';
 import { renderResults } from './render.js';
 import { toggleFullVoice, toggleVoice, submitVoiceIntake, hasSpeechSupport, hideSpeechUI, resetVoiceState, checklistLocked, applyExtraction, expandTranscript } from './intake.js';
 import { initMedSearch, removeMedTag, resetMeds } from './meds.js';
@@ -28,6 +29,7 @@ await loadNhanes();
 const persisted = await initStorage();
 initToggleButtons();
 initLabDrop();
+initWearableDrop();
 initMedSearch();
 initPhq9();
 await checkReturnVisit();
@@ -98,8 +100,9 @@ function showPhase2() {
   const phase2 = document.getElementById('phase2');
   phase2.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  // Re-init lab drop zone in case it moved DOM
+  // Re-init drop zones in case they moved DOM
   initLabDrop();
+  initWearableDrop();
   // Reset carousel to step 0
   _currentEnrichStep = 0;
   phase2.querySelectorAll('.stepper-step').forEach((s, i) => {
@@ -364,6 +367,7 @@ function _slideHasData(slideIndex) {
       for (const id of manualIds) { if (document.getElementById(id)?.value) return true; }
       const paste = document.getElementById('lab-paste');
       if (paste?.value?.trim()) return true;
+      if (document.getElementById('wearable-import-summary')?.classList?.contains('active')) return true;
       return false;
     }
     case 1: // Equipment — any device card selected
@@ -397,6 +401,10 @@ function _initContinueWatchers() {
   const parseSummary = document.getElementById('parse-summary');
   if (parseSummary) {
     new MutationObserver(() => _updateContinueButton(0)).observe(parseSummary, { childList: true, characterData: true, subtree: true });
+  }
+  const wearableSummary = document.getElementById('wearable-import-summary');
+  if (wearableSummary) {
+    new MutationObserver(() => _updateContinueButton(0)).observe(wearableSummary, { childList: true, characterData: true, subtree: true, attributes: true });
   }
   const labFileList = document.getElementById('lab-file-list');
   if (labFileList) {
@@ -437,6 +445,7 @@ window.parseLabText = parseLabText;
 window.togglePasteLabs = togglePasteLabs;
 window.toggleManualLabs = toggleManualLabs;
 window.handleLabFileInput = handleLabFileInput;
+window.handleWearableFileInput = handleWearableFileInput;
 window.expandTranscript = expandTranscript;
 window.removeMedTag = removeMedTag;
 window.showPhase2 = showPhase2;
@@ -491,6 +500,8 @@ function _resetIntakeUI() {
   if (labSummary) labSummary.textContent = '';
   const parseSummary = document.getElementById('parse-summary');
   if (parseSummary) parseSummary.textContent = '';
+  const wearableSummary = document.getElementById('wearable-import-summary');
+  if (wearableSummary) { wearableSummary.textContent = ''; wearableSummary.classList.remove('active'); }
   document.querySelectorAll('.manual-fields').forEach(f => f.classList.remove('open'));
   // Clear device selections
   document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));

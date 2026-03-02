@@ -365,6 +365,21 @@
                 </div>
               </div>
             </div>
+
+            <div class="enrich-divider"><span>or</span></div>
+
+            <!-- Wearable import -->
+            <div class="upload-zone" id="wearable-drop" onclick="document.getElementById('wearable-file-input').click()">
+              <div class="text-text-dim opacity-40">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+              </div>
+              <div>
+                <div class="font-body text-[0.92rem] text-text-muted font-medium mb-1">Upload wearable export</div>
+                <div class="font-mono text-[0.7rem] text-text-dim">Garmin CSV, Apple Health XML, or Oura JSON</div>
+              </div>
+            </div>
+            <input type="file" id="wearable-file-input" accept=".csv,.xml,.json" multiple style="display:none" onchange="handleWearableFileInput(event)">
+            <div class="parse-summary" id="wearable-import-summary"></div>
           </div>
 
           <!-- Slide 1: Equipment -->
