@@ -39,7 +39,8 @@ Andrew logs 4 things daily (~30 seconds):
 ## Common Foods (macros Andrew uses regularly)
 | Food | P | C | F | Cal |
 |------|---|---|---|-----|
-| Pro Advanced Shake | 30g | 5g | 2g | 154 |
+| Premier Protein shake (30g) | 30g | 5g | 3g | 160 |
+| Pro Advanced Shake (discontinued use) | 30g | 5g | 2g | 154 |
 | RX Bar | 12g | 23g | 9g | 210 |
 | Chipotle bowl (steak + extra chicken, rice, beans, fajitas, pico — NO cheese/sour cream) | ~65g | ~67g | ~18g | ~715 |
 | Chipotle tortilla chips | ~8g | ~73g | ~27g | ~570 |
