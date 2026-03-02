@@ -325,6 +325,14 @@ a:hover { @apply text-text; }
 .ring-caption { @apply absolute -bottom-[18px] left-0 right-0 font-mono text-[0.6rem] text-text-dim tracking-wide text-center; }
 
 /* Tier bars */
+.tier-summary-heading {
+  font-size: 0.72rem;
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim, #888);
+  margin-bottom: 8px;
+}
 .tier-summary { @apply flex gap-8 justify-center mb-8 opacity-70; }
 .tier-block { @apply text-center; }
 .tier-block .t-label { @apply font-mono text-[0.65rem] text-text-dim tracking-wider mb-2; }
@@ -376,7 +384,7 @@ a:hover { @apply text-text; }
 /* Gap cards */
 
 /* Next moves — floating section, no container box */
-.next-moves { @apply mb-6 pt-8 pb-6 px-6 -mx-6 rounded-2xl; background: rgba(var(--surface),0.02); border: 1px solid rgba(var(--surface),0.04); }
+.next-moves { @apply mb-8 pt-8 pb-6 px-6 -mx-6 rounded-2xl; background: rgba(var(--surface),0.02); border: 1px solid rgba(var(--surface),0.04); }
 .next-moves h3 { @apply font-display text-[1.5rem] font-bold uppercase tracking-wide mb-6 text-center; }
 .moves-projection {
   @apply flex items-center gap-3 mb-5 font-mono text-center justify-center py-3.5 rounded-lg;
@@ -388,7 +396,7 @@ a:hover { @apply text-text; }
 .proj-target { @apply text-success font-bold text-[1.3rem]; }
 .proj-label { @apply text-text-dim text-[0.72rem] tracking-wide ml-1; }
 .move-card {
-  @apply py-5 px-6 rounded-xl mb-3.5 flex gap-4 items-start;
+  @apply py-6 px-7 rounded-xl mb-3.5 flex gap-4 items-start;
   background: rgba(var(--surface),0.035);
   border: 1px solid rgba(var(--surface),0.06);
   border-left: 3px solid rgba(60, 140, 92, 0.5);
@@ -405,6 +413,7 @@ a:hover { @apply text-text; }
 .move-body h4 { @apply font-display text-[1.15rem] font-bold uppercase mb-1.5; }
 .move-body .move-detail { @apply text-[0.85rem] text-text-muted leading-relaxed; }
 .move-body .move-detail strong { @apply text-text; }
+.move-tracking { font-size: 0.8rem; color: var(--text-dim); margin-top: 4px; }
 .move-tag {
   @apply font-mono text-[0.92rem] font-extrabold px-4 py-2 whitespace-nowrap shrink-0 self-center;
   color: #5cb85c;
@@ -423,7 +432,7 @@ a:hover { @apply text-text; }
 }
 
 /* Action plan — unified moves + timeline + remaining gaps */
-.action-plan { @apply mb-12; }
+.action-plan { @apply mb-8; }
 .moves-section-label { @apply font-display text-[1.1rem] font-bold uppercase tracking-wide text-text mb-3; }
 .moves-section-meta { @apply font-mono text-[0.65rem] font-normal text-text-dim tracking-wide ml-2 normal-case; }
 .remaining-gaps { @apply mt-5; }
@@ -453,6 +462,17 @@ a:hover { @apply text-text; }
 .remaining-gap-row:last-child { @apply border-b-0; }
 .remaining-gap-row .gap-pts { @apply font-mono text-[0.72rem] text-text-muted; }
 .remaining-gap-equip { @apply block text-[0.72rem] text-text-dim mt-0.5; }
+/* Fold line inside moves — separates top 3 from remaining/health flags */
+.moves-fold { @apply my-6; }
+.moves-fold-line {
+  @apply h-px mx-auto max-w-[200px];
+  background: linear-gradient(90deg, transparent, rgba(var(--surface),0.10), transparent);
+}
+.moves-fold-text {
+  @apply font-mono text-[0.62rem] text-text-dim tracking-wide text-center mt-2.5;
+  opacity: 0.5;
+}
+
 .freshness-note { @apply mt-5 font-mono text-[0.68rem] text-text-dim leading-relaxed; }
 .moves-divider { @apply h-px my-8; background: rgba(var(--surface),0.06); }
 .health-flag-card { border-left: 2px solid var(--red); }
@@ -487,7 +507,7 @@ a:hover { @apply text-text; }
 
 /* ── Insights carousel ── */
 .insights-section {
-  @apply mt-6 pt-4 opacity-65 transition-opacity duration-400;
+  @apply mt-8 pt-4 opacity-65 transition-opacity duration-400;
 }
 .insights-section:hover { @apply opacity-95; }
 .insights-section h3 { @apply font-display font-semibold text-[0.85rem] uppercase tracking-wider text-center text-text-dim mb-4; }
@@ -542,7 +562,7 @@ a:hover { @apply text-text; }
 }
 
 /* Collapsible tier tables — collapsed by default */
-.results-collapsible { @apply mb-6; }
+.results-collapsible { @apply mb-8; }
 .results-collapsible .tier-toggle {
   @apply flex items-center gap-2 bg-transparent border-none text-text-dim font-mono text-[0.72rem] tracking-wide cursor-pointer py-2 transition-colors duration-200;
 }
@@ -561,7 +581,7 @@ a:hover { @apply text-text; }
 
 /* Utility actions at bottom of results */
 .results-utility {
-  @apply flex gap-3 justify-center mt-8 pt-5;
+  @apply flex gap-3 justify-center mt-8 pt-4;
   border-top: 1px solid rgba(var(--surface),0.04);
 }
 .results-utility button {
@@ -1143,7 +1163,7 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 .med-tag-remove:hover { @apply text-accent; }
 
 /* ── BP Tracker (post-score tracking module) ── */
-.tracking-modules { @apply mt-10 mb-8; }
+.tracking-modules { @apply mt-8 mb-8; }
 .tracking-suggestion-card {
   @apply flex items-center gap-4 px-5 py-4 rounded-lg cursor-pointer transition-all duration-200;
   background: rgba(var(--surface), 0.015);
@@ -1370,7 +1390,7 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 
 /* ══ Discovery form — "What should we build next?" ══ */
 .discovery-form {
-  @apply mt-12 mb-8 py-8 px-6 border border-border rounded-xl;
+  @apply mt-8 mb-8 py-8 px-6 border border-border rounded-xl;
   background: linear-gradient(135deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
 }
 .discovery-title {

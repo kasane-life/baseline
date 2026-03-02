@@ -155,7 +155,6 @@ export function renderResults(output, profile) {
   if (tierSummary && !tierSummary.querySelector('.tier-summary-heading')) {
     const heading = document.createElement('div');
     heading.className = 'tier-summary-heading';
-    heading.style.cssText = 'font-size:0.72rem;font-family:var(--font-mono,monospace);text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim,#888);margin-bottom:8px;';
     heading.textContent = 'Test coverage';
     tierSummary.prepend(heading);
   }
@@ -395,6 +394,14 @@ export function renderMoves(gaps, currentScore, results, devices) {
         html += `<div id="bp-tracker-inline"></div>`;
       }
     });
+
+    // Fold line — signals "you got the snapshot, details below are optional"
+    if (remaining.length > 0 || healthFlags.length > 0) {
+      html += `<div class="moves-fold">
+        <div class="moves-fold-line"></div>
+        <div class="moves-fold-text">That's your snapshot. Details below.</div>
+      </div>`;
+    }
 
     if (remaining.length > 0) {
       const totalRemaining = remaining.reduce((s, g) => s + g.weight, 0);
