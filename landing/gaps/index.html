@@ -43,15 +43,22 @@ a { color: inherit; text-decoration: none; }
   padding: 0 28px;
 }
 
-/* Header */
+/* Header — sticky nav bar */
 .header {
-  padding: 48px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  background: var(--bg);
 }
 
 .header .logo-mark {
-  display: inline-block;
-  width: 36px;
-  height: 36px;
+  display: block;
+  width: 32px;
+  height: 32px;
   transition: opacity 0.2s;
 }
 
@@ -61,8 +68,6 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--text-dim);
-  display: inline-block;
-  margin-top: 12px;
   transition: color 0.2s;
 }
 
@@ -198,8 +203,8 @@ footer p {
 
 <div class="container">
   <div class="header">
-    <a href="../" class="logo-mark"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="6" fill="#08080a" stroke="#2a2a35" stroke-width="0.5"/><text x="5" y="25" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="26" fill="#fff" letter-spacing="-0.5">b</text><circle cx="24" cy="24" r="3" fill="#c83c3c"/></svg></a>
-    <a href="../#comparison" class="back-link">&larr; Back to home</a>
+    <a href="../#comparison" class="back-link">&larr; Back</a>
+    <a href="../" class="logo-mark"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="6" fill="#f0f0f0"/><text x="5" y="25" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="26" fill="#08080a" letter-spacing="-0.5">b</text><circle cx="24" cy="24" r="3" fill="#c83c3c"/></svg></a>
   </div>
 
   <div class="page-hero">
