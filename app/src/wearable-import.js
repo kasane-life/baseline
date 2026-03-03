@@ -26,6 +26,9 @@ export function handleWearableFileInput(e) {
 export async function handleWearableFiles(fileList) {
   const summaryEl = document.getElementById('wearable-import-summary');
 
+  // Accumulate metrics across multiple Garmin CSVs
+  let garminMerged = null;
+
   for (const file of fileList) {
     try {
       const text = await file.text();
@@ -36,6 +39,18 @@ export async function handleWearableFiles(fileList) {
         summaryEl.className = 'parse-summary active';
         log.warn('unrecognized wearable format', { file: file.name });
         continue;
+      }
+
+      // Merge multiple Garmin CSVs into one result
+      if (result.source === 'Garmin') {
+        if (!garminMerged) {
+          garminMerged = { source: 'Garmin', days: result.days, metrics: { ...result.metrics } };
+        } else {
+          Object.assign(garminMerged.metrics, result.metrics);
+          garminMerged.days = Math.max(garminMerged.days, result.days);
+        }
+        populateFields(result.metrics);
+        continue; // show merged summary after all files
       }
 
       populateFields(result.metrics);
@@ -52,6 +67,15 @@ export async function handleWearableFiles(fileList) {
       summaryEl.textContent = `Error reading ${file.name}: ${err.message}`;
       summaryEl.className = 'parse-summary active';
     }
+  }
+
+  // Show merged Garmin summary
+  if (garminMerged) {
+    showSummary(summaryEl, garminMerged);
+    if (!window.__selectedDevice) {
+      window.__selectedDevice = { brand: 'garmin', model: null };
+    }
+    log.info('imported garmin files', { days: garminMerged.days, metrics: Object.keys(garminMerged.metrics) });
   }
 }
 
@@ -71,18 +95,132 @@ export function detectAndParse(text, filename) {
     return parseAppleHealthXML(text);
   }
 
-  // Garmin CSV — has typical Garmin headers
-  const firstLine = text.split('\n')[0] || '';
-  if (firstLine.includes('Total Steps') || firstLine.includes('Sleep Hours') || firstLine.includes('Resting Heart Rate')) {
-    return parseGarminCSV(text);
-  }
+  // Garmin per-metric CSVs (from Health & Fitness reports)
+  const clean = text.replace(/^\uFEFF/, ''); // strip BOM
+  const firstLine = clean.split('\n')[0] || '';
+  const secondLine = clean.split('\n')[1] || '';
+
+  // Steps CSV: header ",Actual,Goal"
+  if (firstLine.includes(',Actual,Goal')) return parseGarminStepsCSV(clean);
+
+  // Sleep CSV: header starts with "Sleep Score"
+  if (firstLine.includes('Sleep Score')) return parseGarminSleepCSV(clean);
+
+  // HRV CSV: header "Date,Overnight HRV,Baseline,7d Avg"
+  if (firstLine.includes('Overnight HRV')) return parseGarminHRVCSV(clean);
+
+  // Resting Heart Rate CSV: header ",Resting Heart Rate"
+  if (firstLine.includes('Resting Heart Rate') && firstLine.includes(',')) return parseGarminRHRCSV(clean);
+
+  // Legacy combined Garmin CSV (Total Steps, Sleep Hours, etc.)
+  if (firstLine.includes('Total Steps') || firstLine.includes('Sleep Hours')) return parseGarminLegacyCSV(clean);
 
   return null;
 }
 
-// ── Garmin CSV ──
+// ── Garmin Steps CSV ──
+// Format: date (MM/DD/YYYY), Actual, Goal
 
-function parseGarminCSV(text) {
+function parseGarminStepsCSV(text) {
+  const lines = text.trim().split('\n');
+  const steps = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim());
+    const v = Number(cols[1]);
+    if (!isNaN(v) && v > 0) steps.push(v);
+  }
+  if (!steps.length) return null;
+  return { source: 'Garmin', days: steps.length, metrics: { daily_steps_avg: Math.round(avg(steps)) } };
+}
+
+// ── Garmin Sleep CSV ──
+// Format: date, Score, Resting Heart Rate, Body Battery, Pulse Ox, Respiration, [Skin Temp Change,] HRV Status, Quality, Duration, ...
+// Duration is "5h 18min" format. RHR and HRV Status are plain numbers. "--" means no data.
+
+function parseGarminSleepCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return null;
+
+  const headers = lines[0].split(',').map(h => h.trim());
+  const iRHR = headers.findIndex(h => h === 'Resting Heart Rate');
+  const iHRV = headers.findIndex(h => h === 'HRV Status');
+  const iDuration = headers.findIndex(h => h === 'Duration');
+
+  const rhrs = [], hrvs = [], sleepHrs = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim());
+
+    if (iRHR >= 0 && cols[iRHR] && cols[iRHR] !== '--') {
+      const v = Number(cols[iRHR]);
+      if (!isNaN(v) && v > 0) rhrs.push(v);
+    }
+    if (iHRV >= 0 && cols[iHRV] && cols[iHRV] !== '--') {
+      const v = Number(cols[iHRV]);
+      if (!isNaN(v) && v > 0) hrvs.push(v);
+    }
+    if (iDuration >= 0 && cols[iDuration] && cols[iDuration] !== '--') {
+      const hours = parseDuration(cols[iDuration]);
+      if (hours > 0) sleepHrs.push(hours);
+    }
+  }
+
+  const days = Math.max(rhrs.length, sleepHrs.length, hrvs.length);
+  if (days === 0) return null;
+
+  const metrics = {};
+  if (sleepHrs.length) metrics.sleep_duration_avg = round1(avg(sleepHrs));
+  if (rhrs.length)     metrics.resting_hr         = Math.round(avg(rhrs));
+  if (hrvs.length)     metrics.hrv_rmssd_avg      = Math.round(avg(hrvs));
+
+  return { source: 'Garmin', days, metrics };
+}
+
+// Parse "5h 18min" or "9h 58min" → decimal hours
+function parseDuration(str) {
+  const hMatch = str.match(/(\d+)h/);
+  const mMatch = str.match(/(\d+)min/);
+  const h = hMatch ? Number(hMatch[1]) : 0;
+  const m = mMatch ? Number(mMatch[1]) : 0;
+  return h + m / 60;
+}
+
+// ── Garmin HRV CSV ──
+// Format: Date, Overnight HRV, Baseline, 7d Avg — values like "82ms"
+
+function parseGarminHRVCSV(text) {
+  const lines = text.trim().split('\n');
+  const hrvs = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim());
+    if (cols[1] && cols[1] !== '--') {
+      const v = parseInt(cols[1]);
+      if (!isNaN(v) && v > 0) hrvs.push(v);
+    }
+  }
+  if (!hrvs.length) return null;
+  return { source: 'Garmin', days: hrvs.length, metrics: { hrv_rmssd_avg: Math.round(avg(hrvs)) } };
+}
+
+// ── Garmin Resting Heart Rate CSV ──
+
+function parseGarminRHRCSV(text) {
+  const lines = text.trim().split('\n');
+  const rhrs = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim());
+    if (cols[1] && cols[1] !== '--') {
+      const v = Number(cols[1]);
+      if (!isNaN(v) && v > 0) rhrs.push(v);
+    }
+  }
+  if (!rhrs.length) return null;
+  return { source: 'Garmin', days: rhrs.length, metrics: { resting_hr: Math.round(avg(rhrs)) } };
+}
+
+// ── Garmin Legacy combined CSV ──
+
+function parseGarminLegacyCSV(text) {
   const lines = text.trim().split('\n');
   if (lines.length < 2) return null;
 
