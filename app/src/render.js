@@ -404,10 +404,23 @@ function renderHealthFlags(results, container) {
       const key = metricKeyFor(r);
       const interv = key ? getIntervention(key) : null;
       const valueStr = r.value != null ? ` (${r.value}${r.unit ? ' ' + r.unit : ''})` : '';
+      // BP-specific context
+      let bpNote = '';
+      if (/blood pressure/i.test(r.name) && r.subMetrics) {
+        const sys = r.subMetrics.find(s => /systolic/i.test(s.name));
+        const dia = r.subMetrics.find(s => /diastolic/i.test(s.name));
+        if (sys?.value && dia?.value) {
+          const s = Number(sys.value), d = Number(dia.value);
+          if (s >= 140 || d >= 90) bpNote = 'Stage 2 hypertension range. Talk to your doctor — medication may be warranted.';
+          else if (s >= 130 || d >= 80) bpNote = 'Stage 1 hypertension range. Lifestyle changes (sodium, exercise, stress) can move this.';
+          else if (s >= 120) bpNote = 'Elevated range. Not urgent, but trending in the wrong direction.';
+        }
+      }
       html += `<div class="move-card health-flag-card">
         <div class="move-body">
           <h4>${r.name}</h4>
           <p class="move-detail">${r.standing === 'Concerning' ? 'Needs attention' : 'Room to improve'} — ${ordinal(r.percentile)} percentile${valueStr}</p>
+          ${bpNote ? `<p class="flag-bp-note">${bpNote}</p>` : ''}
           ${interv ? `<p class="flag-lever">${interv.lever}</p>` : ''}
         </div>
         <div class="move-tag" style="background:${color}20;color:${color};">${r.standing === 'Concerning' ? 'Flag' : 'Watch'}</div>

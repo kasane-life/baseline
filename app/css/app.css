@@ -313,6 +313,18 @@ a:hover { @apply text-text; }
 .score-number { @apply absolute inset-0 flex flex-col items-center justify-center; }
 .score-number .pct { @apply font-display text-[3.8rem] font-extrabold leading-none -tracking-wider; }
 .score-number .label { @apply font-mono text-[0.65rem] text-text-dim tracking-widest uppercase mt-1; }
+.score-explain-toggle {
+  @apply font-mono text-[0.58rem] text-text-dim tracking-wide uppercase mt-1.5 cursor-pointer bg-transparent border-none underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+.score-explain-toggle.open { text-decoration-style: solid; }
+.score-explain {
+  @apply text-[0.72rem] text-text-muted leading-snug mt-1 px-3;
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+.score-explain.open { max-height: 80px; opacity: 1; }
 .score-context { @apply text-[0.88rem] text-text-muted mb-4 leading-relaxed; }
 
 .score-context strong { @apply text-text; }
@@ -1564,6 +1576,13 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 }
 
 /* Health flag levers + wins celebration */
+.flag-bp-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 6px 0 2px;
+  line-height: 1.4;
+  font-style: italic;
+}
 .flag-lever {
   font-size: 0.82rem;
   color: var(--text-muted);
