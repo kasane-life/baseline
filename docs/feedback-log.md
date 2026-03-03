@@ -36,6 +36,33 @@ Format: Date, tester, context, then raw feedback organized by area.
 
 ---
 
+## 2026-03-03 — D (friend)
+
+**Context:** Verbal conversation with Andrew about the Baseline concept. Not a product walkthrough — more philosophical/framing discussion.
+
+### Framing & Philosophy
+- Wants to focus on health relative to **immediate circumstances**, not longevity — "longevity is separate"
+- Tracking metrics introduces **high cognitive load and frustration** — the paradigm itself is a burden
+- **"The map is not the terrain"** — metrics approximate health but don't equate to it
+- Don't confuse measurement for the thing being measured
+
+### Mental Model
+- Health as a **plant with scaffolding**: orient and stabilize first, start growing, then the scaffolding comes off and you self-evolve
+- Implies Baseline should be temporary structure, not a permanent dashboard
+- Gen population data works as an **anchor with tunables** for the individual — validates the NHANES percentile approach
+
+### Product Interest
+- Possible interest in **cut tracker** — a concrete, immediate, "how do I feel now" use case
+- Bridges gap between "immediate circumstances" preference and the tracking paradigm
+
+### Implications for Product
+- Results page may feel too definitive — could soften from "this is your health" to "this is what we can see"
+- Onboarding/first-run should orient and stabilize, not overwhelm with 40 metrics
+- The "scaffolding" metaphor aligns with coverage score: you're building the scaffold, not grading yourself
+- Cut tracker could be a compelling entry point for users who resist the full health-mapping paradigm
+
+---
+
 ## Template
 
 ```
