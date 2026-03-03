@@ -851,13 +851,14 @@ window.editValues = function() {
   document.getElementById('questionnaire').style.display = 'block';
   document.getElementById('phase1').style.display = 'none';
   document.getElementById('phase2').style.display = 'block';
-  // Reset stepper touched state + score reveal so "You're all set" doesn't show
+  // Reset stepper state fully — undo everything _updateEnrichProgress did
   document.querySelectorAll('.stepper-step').forEach(s => s.classList.remove('touched'));
-  document.querySelectorAll('.stepper-check').forEach(c => c.style.display = '');
+  const contBtn = document.getElementById('stepper-continue');
+  if (contBtn) { contBtn.style.display = ''; contBtn.classList.remove('has-data'); }
   const revealEl = document.getElementById('score-reveal');
   if (revealEl) revealEl.classList.remove('active');
   const skipEl = document.querySelector('.phase2-skip-wrap');
-  if (skipEl) { skipEl.classList.remove('revealed'); skipEl.style.display = ''; }
+  if (skipEl) { skipEl.classList.remove('revealed'); skipEl.style.display = 'none'; }
   goToEnrichStep(0);
   initLabDrop();
   initWearableDrop();
