@@ -222,6 +222,7 @@ async function computeResults() {
   interstitial.classList.remove('active');
   renderResults(output, formProfile);
   clearDraft();
+  _isEditMode = false;
   track('score_calculated', { score: Math.round(output.coverageScore) });
   log.info('results computed', { score: output.coverageScore });
 }
@@ -332,7 +333,14 @@ window.__baseline_identity = {
 
 // ── Enrich carousel navigation ──
 let _currentEnrichStep = 0;
+let _isEditMode = false;
 const ENRICH_STEP_COUNT = 6;
+
+// Make stepper steps clickable — jump to that slide
+document.querySelectorAll('.stepper-step').forEach((step, i) => {
+  step.style.cursor = 'pointer';
+  step.addEventListener('click', () => goToEnrichStep(i));
+});
 
 function goToEnrichStep(n) {
   if (n < 0 || n >= ENRICH_STEP_COUNT) return;
@@ -374,14 +382,13 @@ function _updateEnrichProgress() {
     skipWrap.classList.add('revealed');
   }
 
-  // When all steps touched — show score reveal, hide everything else
-  if (touchedCount >= ENRICH_STEP_COUNT) {
+  // When all steps touched — show score reveal (skip in edit mode)
+  if (touchedCount >= ENRICH_STEP_COUNT && !_isEditMode) {
     if (skipWrap) skipWrap.style.display = 'none';
     const contBtn = document.getElementById('stepper-continue');
     if (contBtn) contBtn.style.display = 'none';
     const reveal = document.getElementById('score-reveal');
     if (reveal && !reveal.classList.contains('active')) {
-      // Hide all slides
       document.querySelectorAll('.enrich-slide').forEach(s => s.classList.remove('active'));
       reveal.classList.add('active');
     }
@@ -759,6 +766,7 @@ window.clearSaved = async function() {
 
 // ── Shared intake reset — used by startOver and clearAndRestart ──
 function _resetIntakeUI() {
+  _isEditMode = false;
   sessionStorage.clear();
   resetState();
   resetPhq9();
@@ -847,6 +855,7 @@ function _resetIntakeUI() {
 }
 
 window.editValues = function() {
+  _isEditMode = true;
   document.getElementById('results').classList.remove('active');
   document.getElementById('questionnaire').style.display = 'block';
   document.getElementById('phase1').style.display = 'none';
@@ -857,8 +866,11 @@ window.editValues = function() {
   if (contBtn) { contBtn.style.display = ''; contBtn.classList.remove('has-data'); }
   const revealEl = document.getElementById('score-reveal');
   if (revealEl) revealEl.classList.remove('active');
+  // In edit mode, show subtle re-score link instead of hiding skip
   const skipEl = document.querySelector('.phase2-skip-wrap');
-  if (skipEl) { skipEl.classList.remove('revealed'); skipEl.style.display = 'none'; }
+  if (skipEl) { skipEl.classList.add('revealed'); skipEl.style.display = ''; }
+  const skipBtn = skipEl?.querySelector('.phase2-skip');
+  if (skipBtn) skipBtn.textContent = 'Update my score →';
   goToEnrichStep(0);
   initLabDrop();
   initWearableDrop();
