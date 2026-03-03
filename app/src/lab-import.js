@@ -204,6 +204,19 @@ export function togglePasteLabs() {
   }
 }
 
+export function showRetainedLabSummary() {
+  const labIds = ['f-ldl','f-hdl','f-trig','f-glucose','f-hba1c','f-insulin','f-lpa','f-hscrp','f-alt','f-ggt','f-hemoglobin','f-wbc','f-platelets','f-tsh','f-vitd','f-ferritin','f-apob'];
+  let count = 0;
+  for (const id of labIds) {
+    if (document.getElementById(id)?.value) count++;
+  }
+  if (count === 0) return;
+  const summaryEl = document.getElementById('lab-import-summary');
+  if (!summaryEl || summaryEl.textContent.trim()) return; // don't overwrite fresh import summary
+  summaryEl.innerHTML = `<span class="count">\u2713 ${count} biomarker${count !== 1 ? 's' : ''}</span> from previous session`;
+  summaryEl.classList.add('active');
+}
+
 export function toggleManualLabs() {
   const el = document.getElementById('manual-labs');
   el.classList.toggle('open');

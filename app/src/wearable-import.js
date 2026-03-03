@@ -389,6 +389,16 @@ function showSummary(el, result) {
   el.className = 'parse-summary active';
 }
 
+export function showRetainedWearableSummary() {
+  const wearableIds = ['f-rhr', 'f-steps', 'f-hrv', 'f-sleep-hours'];
+  const hasData = wearableIds.some(id => document.getElementById(id)?.value);
+  if (!hasData) return;
+  const summaryEl = document.getElementById('wearable-import-summary');
+  if (!summaryEl || summaryEl.textContent.trim()) return; // don't overwrite fresh import summary
+  summaryEl.innerHTML = '\u2713 Wearable data from previous session';
+  summaryEl.className = 'parse-summary active';
+}
+
 // ── Helpers ──
 
 function avg(arr) { return arr.reduce((a, b) => a + b, 0) / arr.length; }

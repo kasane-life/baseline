@@ -1008,19 +1008,17 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 .stepper-continue {
   @apply flex items-center justify-center gap-2 mt-3 mb-2 px-8 py-2.5 rounded-lg font-display text-[0.82rem] font-bold uppercase tracking-wide cursor-pointer transition-all duration-300 select-none border mx-auto;
   width: fit-content;
-  background: rgba(var(--surface), 0.03);
-  border-color: rgba(var(--surface), 0.06);
-  color: var(--color-text-dim);
-  opacity: 0.4;
+  background: rgba(var(--surface), 0.05);
+  border-color: rgba(var(--surface), 0.12);
+  color: var(--color-text-muted);
 }
 .stepper-continue:hover {
-  opacity: 0.6;
-  background: rgba(var(--surface), 0.06);
-  border-color: rgba(var(--surface), 0.1);
+  background: rgba(var(--surface), 0.1);
+  border-color: rgba(var(--surface), 0.2);
+  color: var(--color-text);
 }
 /* Activated — data entered on current slide */
 .stepper-continue.has-data {
-  opacity: 1;
   background: rgba(200, 60, 60, 0.12);
   border-color: rgba(200, 60, 60, 0.35);
   color: var(--color-accent);

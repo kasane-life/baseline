@@ -8,8 +8,8 @@ import { createLogger } from './logger.js';
 import { BRANDS, getModelsByBrand, getDeviceCapabilities } from './device-db.js';
 
 import { initToggleButtons, toggleDevice, showStep, buildProfile, populateForm, switchIntakeTab, addParsedLabValues, clearPendingImports, getPendingImports, resetState, saveDraft, restoreDraft, applyDraft, clearDraft, initDraftAutoSave } from './form.js';
-import { initLabDrop, handleLabFileInput, parseLabText, togglePasteLabs, toggleManualLabs } from './lab-import.js';
-import { initWearableDrop, handleWearableFileInput, detectAndParse, populateFields } from './wearable-import.js';
+import { initLabDrop, handleLabFileInput, parseLabText, togglePasteLabs, toggleManualLabs, showRetainedLabSummary } from './lab-import.js';
+import { initWearableDrop, handleWearableFileInput, detectAndParse, populateFields, showRetainedWearableSummary } from './wearable-import.js';
 import { renderResults } from './render.js';
 import { toggleFullVoice, toggleVoice, submitVoiceIntake, hasSpeechSupport, hideSpeechUI, resetVoiceState, checklistLocked, applyExtraction, expandTranscript, updateVoiceChecklist } from './intake.js';
 import { initMedSearch, removeMedTag, resetMeds } from './meds.js';
@@ -55,6 +55,8 @@ if (draft) {
       showPhase2();
       if (draft.enrichStep > 0) goToEnrichStep(draft.enrichStep);
     }
+    showRetainedLabSummary();
+    showRetainedWearableSummary();
     log.info('restored draft from sessionStorage');
   }
 }
@@ -852,6 +854,8 @@ window.editValues = function() {
   goToEnrichStep(0);
   initLabDrop();
   initWearableDrop();
+  showRetainedLabSummary();
+  showRetainedWearableSummary();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   log.info('editing values from results (Phase 2)');
 };
