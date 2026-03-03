@@ -71,62 +71,56 @@ a { color: inherit; text-decoration: none; }
 
 .back-link:hover { color: var(--text-muted); }
 
-.page-title {
-  padding: 64px 0 48px;
+/* ── Hero ── */
+.story-hero {
+  padding: 100px 0 120px;
+  text-align: center;
 }
 
-.page-title h1 {
+.story-hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: -0.5px;
-  line-height: 1.05;
-  margin-bottom: 16px;
+  line-height: 1.0;
+  opacity: 0;
+  transform: scale(0.96);
+  animation: heroIn 1.2s ease forwards 0.2s;
 }
 
-.page-title .subtitle {
-  font-size: 1rem;
+@keyframes heroIn {
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ── Story prose ── */
+.story-body {
+  padding-bottom: 80px;
+}
+
+.story-body p {
+  font-size: 0.94rem;
   color: var(--text-muted);
-  max-width: 560px;
-  line-height: 1.65;
+  line-height: 1.8;
+  margin-bottom: 32px;
 }
 
-.about-section {
-  padding: 48px 0;
-  border-top: 1px solid var(--border);
+.story-body p strong {
+  color: var(--text);
 }
 
-.about-section h2 {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.3px;
-  margin-bottom: 24px;
-}
-
-.about-section p {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  line-height: 1.75;
-  margin-bottom: 16px;
-}
-
-.about-section p:last-child { margin-bottom: 0; }
-.about-section strong { color: var(--text); }
-
+/* The trend callout — only visual break in the prose */
 .trend-line {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 28px 0;
+  gap: 16px;
+  margin: 8px 0 32px;
   padding: 20px 24px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
 }
 
 .trend-label {
@@ -140,8 +134,9 @@ a { color: inherit; text-decoration: none; }
 .trend-values {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: var(--text);
+  font-weight: 500;
 }
 
 .trend-values .arrow {
@@ -149,39 +144,29 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.72rem;
 }
 
-.about-cta {
-  padding: 80px 0;
-  text-align: center;
-  border-top: 1px solid var(--border);
+/* Sign-off */
+.sign-off {
+  text-align: right;
+  padding-bottom: 64px;
 }
 
-.about-cta h2 {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  margin-bottom: 12px;
+.sign-off p {
+  font-size: 0.92rem;
+  color: var(--text);
+  font-weight: 500;
 }
 
-.about-cta p {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-bottom: 28px;
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-.about-cta .cta-btn {
-  display: inline-block;
-  padding: 13px 28px;
-  background: var(--text);
-  color: var(--bg);
-  border-radius: 5px;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.85rem;
-  transition: opacity 0.2s;
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
-
-.about-cta .cta-btn:hover { opacity: 0.85; }
 
 footer {
   padding: 48px 0;
@@ -197,8 +182,8 @@ footer p {
 }
 
 @media (max-width: 600px) {
-  .page-title { padding: 48px 0 32px; }
-  .about-section { padding: 36px 0; }
+  .story-hero { padding: 72px 0 80px; }
+  .story-body p { margin-bottom: 28px; }
 }
 </style>
 </head>
@@ -212,54 +197,54 @@ footer p {
 </div>
 
 <div class="container">
-  <div class="page-title">
-    <h1>Reason knows no authority.</h1>
+  <div class="story-hero">
+    <h1><span style="color:var(--red)">Reason</span> knows<br>no authority</h1>
   </div>
 </div>
 
 <div class="container">
+  <div class="story-body">
 
-  <div class="about-section">
-    <p>My greatest blessing came to me through school. When I first heard that line, I thought it was cool. Then I went through the process. You read the original texts. Plato, Euclid, Kant. Sit across from a peer and defend your thinking. If your argument doesn't hold, you know immediately. It stops being a phrase and becomes how you think.</p>
-    <p>That shaped everything. Including, eventually, my own health.</p>
-  </div>
+    <p class="reveal">My greatest blessing came to me through school. When I first heard that line, I thought it was cool. Then I went through the process. You read the original texts. Plato, Euclid, Kant. Sit across from a peer and defend your thinking. If your argument doesn't hold, you know immediately. It stops being a phrase and becomes how you think.</p>
 
-  <div class="about-section">
-    <p>I was a personal trainer for years. Ran a gym. Fitness I understood. The inputs and outputs were clear. Lift more, eat better, sleep enough, track the results. But at some point the question I was actually trying to answer changed. It wasn't "am I fit?" anymore. It was <strong>"how do I know if I'm healthy?"</strong></p>
-    <p>And I didn't know. Which was uncomfortable, because I was supposed to be the guy who knew.</p>
-  </div>
+    <p class="reveal">That shaped everything. Including, eventually, my own health.</p>
 
-  <div class="about-section">
-    <p>So I leaned into the one thing my education actually gave me. Go to the source and work it out. Not articles, not wellness influencers. The actual research. Population studies. NHANES. Peer-reviewed reference ranges. I wanted to know: what do we know definitively today? Not correlated. Causal. Where is the evidence strong enough to act on?</p>
-    <p>I landed on about 40 metrics. Blood pressure. ApoB. Fasting insulin. Sleep regularity. Resting heart rate. Biomarkers where the science is clear, validated across large populations, replicated across decades. That's the boundary of what we know right now. It'll expand. The line between causation and correlation keeps moving. But today, those 40 are the signal.</p>
-    <p>Not 400. Not "track everything and hope a pattern emerges." Forty. The wellness industry wants to sell you more data. More panels, more metrics, more dashboards. But more data isn't more clarity. Most of it is noise. The hard part was never collecting data. It was knowing which data matters.</p>
-  </div>
+    <p class="reveal">I was a personal trainer for years. Ran a gym. Fitness I understood. The inputs and outputs were clear. Lift more, eat better, sleep enough, track the results. But at some point the question I was actually trying to answer changed. It wasn't "am I fit?" anymore. It was <strong>"how do I know if I'm healthy?"</strong></p>
 
-  <div class="about-section">
-    <p>When I scored myself against those 40, two things happened.</p>
-    <p>First, I found a trend nobody had flagged. My fasting insulin, drifting upward over a few years:</p>
+    <p class="reveal">And I didn't know. Which was uncomfortable, because I was supposed to be the guy who knew.</p>
 
-    <div class="trend-line">
+    <p class="reveal">So I leaned into the one thing my education actually gave me. Go to the source and work it out. Not articles, not wellness influencers. The actual research. Population studies. NHANES. Peer-reviewed reference ranges. I wanted to know: what do we know definitively today? Not correlated. Causal. Where is the evidence strong enough to act on?</p>
+
+    <p class="reveal">I landed on about <strong>40 metrics</strong>. Blood pressure. ApoB. Fasting insulin. Sleep regularity. Resting heart rate. Biomarkers where the science is clear, validated across large populations, replicated across decades. That's the boundary of what we know right now. It'll expand. The line between causation and correlation keeps moving. But today, those 40 are the signal.</p>
+
+    <p class="reveal">Not 400. Not "track everything and hope a pattern emerges." <strong>Forty.</strong> The wellness industry wants to sell you more data. More panels, more metrics, more dashboards. But more data isn't more clarity. Most of it is noise. The hard part was never collecting data. It was knowing which data matters.</p>
+
+    <p class="reveal">When I scored myself against those 40, two things happened.</p>
+
+    <p class="reveal">First, I found a trend nobody had flagged. My fasting insulin, drifting upward over a few years:</p>
+
+    <div class="trend-line reveal">
       <span class="trend-label">Fasting insulin</span>
       <div class="trend-values">
         3.5 <span class="arrow">&rarr;</span> 8.2 <span class="arrow">&rarr;</span> 13.9 mIU/L
       </div>
     </div>
 
-    <p>Each reading was "in range." But the trajectory was heading somewhere bad. No doctor, no app, no annual physical had connected the dots. The data was in six different places and nobody was looking at the whole picture.</p>
-    <p>Second, I realized how small the gap was. I went from seeing about 40% of my health picture to 85% for about $50. A blood pressure cuff and a lipid panel. Everything I needed was already there. Annual physicals, a watch on my wrist, basic blood work. It just wasn't connected.</p>
+    <p class="reveal">Each reading was "in range." But the trajectory was heading somewhere bad. No doctor, no app, no annual physical had connected the dots. The data was in six different places and nobody was looking at the whole picture.</p>
+
+    <p class="reveal">Second, I realized how small the gap was. I went from seeing about 40% of my health picture to 85% for about $50. A blood pressure cuff and a lipid panel. Everything I needed was already there. Annual physicals, a watch on my wrist, basic blood work. It just wasn't connected.</p>
+
+    <p class="reveal">That experience changed something for me. Not because I found a magic number or a perfect system, but because for the first time I could look at my own data, reason through what it meant, and have the confidence to act on it. Not because a doctor told me I was fine. Because I could see it myself.</p>
+
+    <p class="reveal">The medical community isn't built for that. It's built for when something's already wrong. The space between "you're fine" and "you have a problem." That's where most of us live, and nobody's watching.</p>
+
+    <p class="reveal">I'm navigating that space. Still learning. The picture gets clearer the more data comes in, the more research lands, the more the boundary of what we know expands. I don't have it figured out. But I know where I stand. And that's more than I could say than when I started.</p>
+
   </div>
 
-  <div class="about-section">
-    <p>That experience changed something for me. Not because I found a magic number or a perfect system. Because for the first time, I could look at my own data, reason through what it meant, and have the confidence to act on it. Not because a doctor told me I was fine. Because I could see it myself.</p>
-    <p>The medical community isn't built for that. It's built for when something's already wrong. The space between "you're fine" and "you have a problem." That's where most of us live, and nobody's watching.</p>
-    <p>I'm navigating that space. Still learning. The picture gets clearer the more data comes in, the more research lands, the more the boundary of what we know expands. I don't have it figured out. But I know where I stand. And that's more than I could say when I started.</p>
+  <div class="sign-off reveal">
+    <p>Andrew</p>
   </div>
-
-  <div class="about-section" style="text-align:right;border-top:none;padding-top:0;">
-    <p style="color:var(--text);">Andrew</p>
-  </div>
-
 </div>
 
 <footer>
@@ -271,5 +256,17 @@ footer p {
   </div>
 </footer>
 
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
