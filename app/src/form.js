@@ -274,6 +274,139 @@ export function populateForm(p) {
   }
 }
 
+// ── Draft auto-save (sessionStorage) ──
+const DRAFT_KEY = 'baseline-draft';
+const DRAFT_MAX_AGE_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+const DRAFT_FIELD_IDS = [
+  'f-age', 'f-height-ft', 'f-height-in', 'f-weight', 'f-waist',
+  'f-sbp', 'f-dbp',
+  'f-ldl', 'f-hdl', 'f-trig', 'f-glucose', 'f-hba1c', 'f-insulin',
+  'f-lpa', 'f-hscrp', 'f-alt', 'f-ggt', 'f-hemoglobin', 'f-wbc',
+  'f-platelets', 'f-tsh', 'f-vitd', 'f-ferritin', 'f-apob',
+  'f-rhr', 'f-vo2', 'f-hrv', 'f-steps', 'f-zone2', 'f-sleep-hours', 'f-sleep-reg',
+  'f-lab-date', 'phq9-direct-input',
+];
+
+let _saveTimer = null;
+
+export function saveDraft() {
+  const fields = {};
+  for (const id of DRAFT_FIELD_IDS) {
+    const el = document.getElementById(id);
+    if (el && el.value) fields[id] = el.value;
+  }
+
+  const sexEl = document.querySelector('#f-sex .opt-btn.selected');
+  const sex = sexEl ? sexEl.dataset.value : null;
+
+  const toggles = {};
+  document.querySelectorAll('.toggle-group[data-field]').forEach(group => {
+    const sel = group.querySelector('.toggle-btn.selected');
+    if (sel) toggles[group.dataset.field] = sel.dataset.value;
+  });
+
+  const devices = [];
+  document.querySelectorAll('.device-card.selected').forEach(c => {
+    if (c.dataset.device) devices.push(c.dataset.device);
+  });
+
+  const meds = getSelectedMeds();
+
+  const phase2Visible = document.getElementById('phase2')?.style.display === 'block';
+  const phase = phase2Visible ? 2 : 1;
+  let enrichStep = 0;
+  document.querySelectorAll('.stepper-step').forEach((s, i) => {
+    if (s.classList.contains('active')) enrichStep = i;
+  });
+
+  const draft = { fields, sex, toggles, devices, meds, phase, enrichStep, timestamp: Date.now() };
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch { /* quota exceeded — ignore */ }
+}
+
+export function restoreDraft() {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const draft = JSON.parse(raw);
+    if (Date.now() - draft.timestamp > DRAFT_MAX_AGE_MS) {
+      sessionStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
+    return draft;
+  } catch {
+    return null;
+  }
+}
+
+export function applyDraft(draft) {
+  for (const [id, value] of Object.entries(draft.fields || {})) {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  }
+
+  if (draft.sex) {
+    document.querySelectorAll('#f-sex .opt-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.value === draft.sex);
+    });
+  }
+
+  for (const [field, value] of Object.entries(draft.toggles || {})) {
+    const group = document.querySelector(`.toggle-group[data-field="${field}"]`);
+    if (!group) continue;
+    group.querySelectorAll('.toggle-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.value === value);
+    });
+  }
+
+  if (draft.devices?.length) {
+    document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
+    _selectedDevices = [];
+    for (const device of draft.devices) {
+      const card = document.querySelector(`.device-card[data-device="${device}"]`);
+      if (card) {
+        card.classList.add('selected');
+        _selectedDevices.push(device);
+      }
+    }
+  }
+
+  if (draft.meds?.length) {
+    for (const name of draft.meds) addMedByName(name);
+  }
+
+  if (draft.fields?.['phq9-direct-input']) {
+    import('./phq9.js').then(m => {
+      const score = parseInt(draft.fields['phq9-direct-input'], 10);
+      if (!isNaN(score)) m.setPhq9Score(score);
+    });
+  }
+}
+
+export function clearDraft() {
+  sessionStorage.removeItem(DRAFT_KEY);
+}
+
+export function initDraftAutoSave() {
+  const q = document.getElementById('questionnaire');
+  if (!q) return;
+
+  const debouncedSave = () => {
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(saveDraft, 500);
+  };
+
+  q.addEventListener('input', debouncedSave);
+  q.addEventListener('change', debouncedSave);
+  q.addEventListener('click', (e) => {
+    if (e.target.closest('.opt-btn, .toggle-btn, .device-card')) {
+      debouncedSave();
+    }
+  });
+}
+
 export function switchIntakeTab(tab) {
   document.querySelectorAll('.intake-tab').forEach(t => t.classList.remove('active'));
   const activeTab = document.querySelector(`.intake-tab[data-tab="${tab}"]`);

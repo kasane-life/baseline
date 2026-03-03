@@ -284,7 +284,12 @@ function updateVoiceGuide(ex, source = 'live') {
   currentNudgeState = newState;
 
   if (!nextNudge && nudgesEl) {
-    nudgesEl.innerHTML = '<div class="guide-nudge" style="color:var(--green);">All covered — submit when ready, or keep talking to add more</div>';
+    nudgesEl.innerHTML = '<div class="guide-nudge all-done"><span class="still-listening-dot"></span> All set — tap <strong>Submit</strong> when you\'re ready</div>';
+    // Update status to reinforce mic is still live
+    const status = document.getElementById('voice-full-status');
+    if (status && status.classList.contains('active')) {
+      status.textContent = 'Still listening...';
+    }
   } else if (isPending && FOLLOWUP_NUDGES[nextCheck] && nudgesEl) {
     nudgesEl.innerHTML = '<div class="guide-section-label" style="padding-right:14px;color:#d4a24c;">Heard you</div>' +
       `<div class="guide-nudge">${FOLLOWUP_NUDGES[nextCheck]}</div>`;
@@ -491,7 +496,7 @@ export function toggleFullVoice() {
       // If no pending items, button is enabled and user can tap.
       // If haiku bounce is in-flight, button stays disabled until it resolves.
       if (!document.querySelectorAll('.voice-checklist-item.pending').length) {
-        status.textContent = 'Ready — tap Next to continue';
+        status.textContent = 'Ready — tap Submit to continue';
       } else {
         status.textContent = 'Finishing up...';
       }

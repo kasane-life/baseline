@@ -7,7 +7,7 @@ import { exportAll, importAll } from '../db.js';
 import { createLogger } from './logger.js';
 import { BRANDS, getModelsByBrand, getDeviceCapabilities } from './device-db.js';
 
-import { initToggleButtons, toggleDevice, showStep, buildProfile, populateForm, switchIntakeTab, addParsedLabValues, clearPendingImports, getPendingImports, resetState } from './form.js';
+import { initToggleButtons, toggleDevice, showStep, buildProfile, populateForm, switchIntakeTab, addParsedLabValues, clearPendingImports, getPendingImports, resetState, saveDraft, restoreDraft, applyDraft, clearDraft, initDraftAutoSave } from './form.js';
 import { initLabDrop, handleLabFileInput, parseLabText, togglePasteLabs, toggleManualLabs } from './lab-import.js';
 import { initWearableDrop, handleWearableFileInput, detectAndParse, populateFields } from './wearable-import.js';
 import { renderResults } from './render.js';
@@ -41,23 +41,37 @@ initLabDrop();
 initWearableDrop();
 initMedSearch();
 initPhq9();
+initDraftAutoSave();
 await checkReturnVisit();
+
+// Restore draft if no existing profile (return visit banner handles that case)
+const draft = restoreDraft();
+if (draft) {
+  const returnBanner = document.getElementById('return-banner');
+  const isReturnVisit = returnBanner?.classList.contains('active');
+  if (!isReturnVisit) {
+    applyDraft(draft);
+    if (draft.phase === 2) {
+      showPhase2();
+      if (draft.enrichStep > 0) goToEnrichStep(draft.enrichStep);
+    }
+    log.info('restored draft from sessionStorage');
+  }
+}
+
 initIdentityUI();
 if (!persisted) {
   log.warn('storage not persistent — show export reminder after scoring');
 }
 
-// Default to form on mobile (voice dictation is unreliable on mobile browsers)
-// Also hide voice entirely if Speech API isn't available or ?voice=off
-const isMobile = window.matchMedia('(pointer: coarse)').matches;
+// Default to form tab for everyone. Voice is secondary / experimental.
+// Hide voice entirely if Speech API isn't available or ?voice=off
 if (!hasSpeechSupport() || window._forceFormMode) {
   if (!hasSpeechSupport()) hideSpeechUI();
-  switchIntakeTab('form');
   addBreadcrumb('init', `form-mode: speech=${hasSpeechSupport()}, flag=${!!window._forceFormMode}`);
-} else if (isMobile) {
-  switchIntakeTab('form');
-  addBreadcrumb('init', 'form-default: mobile device, voice still available');
 }
+switchIntakeTab('form');
+addBreadcrumb('init', 'form-default: form is now default for all devices');
 
 // ── Theme toggle ──
 function initThemeToggle() {
@@ -135,6 +149,7 @@ function showPhase2() {
   if (continueBtn) continueBtn.classList.remove('has-data');
   track('phase2_started');
   log.info('navigated to phase 2');
+  saveDraft();
 }
 
 function goBackToPhase1() {
@@ -204,6 +219,7 @@ async function computeResults() {
 
   interstitial.classList.remove('active');
   renderResults(output, formProfile);
+  clearDraft();
   track('score_calculated', { score: Math.round(output.coverageScore) });
   log.info('results computed', { score: output.coverageScore });
 }
@@ -314,7 +330,7 @@ window.__baseline_identity = {
 
 // ── Enrich carousel navigation ──
 let _currentEnrichStep = 0;
-const ENRICH_STEP_COUNT = 5;
+const ENRICH_STEP_COUNT = 6;
 
 function goToEnrichStep(n) {
   if (n < 0 || n >= ENRICH_STEP_COUNT) return;
@@ -334,12 +350,17 @@ function goToEnrichStep(n) {
   slides[n]?.classList.add('active');
   steps[n]?.classList.add('active');
 
+  // Auto-scroll active stepper dot into view on narrow screens
+  steps[n]?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
   _currentEnrichStep = n;
   _updateContinueButton(n);
 
   // Show/hide back button
   const backBtn = document.getElementById('stepper-back');
   if (backBtn) backBtn.style.display = n > 0 ? '' : 'none';
+
+  saveDraft();
 }
 
 function _updateEnrichProgress() {
@@ -386,13 +407,18 @@ function retreatEnrichStep() {
 // ── Continue button progressive disclosure ──
 function _slideHasData(slideIndex) {
   switch (slideIndex) {
-    case 0: { // Wearable — file uploaded or JSON pasted
+    case 0: { // BP — systolic or diastolic entered
+      if (document.getElementById('f-sbp')?.value) return true;
+      if (document.getElementById('f-dbp')?.value) return true;
+      return false;
+    }
+    case 1: { // Wearable — file uploaded or JSON pasted
       if (document.getElementById('wearable-import-summary')?.classList?.contains('active')) return true;
       if (document.getElementById('wearable-paste-results')?.textContent?.trim()) return true;
       if (document.getElementById('wearable-paste')?.value?.trim()) return true;
       return false;
     }
-    case 1: { // Labs — any parsed results, uploaded files, or manual field values
+    case 2: { // Labs — any parsed results, uploaded files, or manual field values
       if (document.getElementById('lab-import-summary')?.textContent?.trim()) return true;
       if (document.getElementById('lab-file-list')?.children?.length > 0) return true;
       if (document.getElementById('parse-summary')?.textContent?.trim()) return true;
@@ -402,11 +428,11 @@ function _slideHasData(slideIndex) {
       if (paste?.value?.trim()) return true;
       return false;
     }
-    case 2: // Equipment — any device card selected
+    case 3: // Equipment — any device card selected
       return !!document.querySelector('.device-card.selected');
-    case 3: // Meds — any med tags added
+    case 4: // Meds — any med tags added
       return document.getElementById('med-tags')?.children?.length > 0;
-    case 4: { // PHQ-9 — direct input or any radio selected
+    case 5: { // PHQ-9 — direct input or any radio selected
       if (document.getElementById('phq9-direct-input')?.value) return true;
       return !!document.querySelector('.phq9-radio.selected');
     }
@@ -422,50 +448,56 @@ function _updateContinueButton(slideIndex) {
 }
 
 function _initContinueWatchers() {
-  // Slide 0 (Wearable): watch wearable import summary and paste area
+  // Slide 0 (BP): watch systolic/diastolic inputs
+  const sbpInput = document.getElementById('f-sbp');
+  if (sbpInput) sbpInput.addEventListener('input', () => _updateContinueButton(0));
+  const dbpInput = document.getElementById('f-dbp');
+  if (dbpInput) dbpInput.addEventListener('input', () => _updateContinueButton(0));
+
+  // Slide 1 (Wearable): watch wearable import summary and paste area
   const wearableSummary = document.getElementById('wearable-import-summary');
   if (wearableSummary) {
-    new MutationObserver(() => _updateContinueButton(0)).observe(wearableSummary, { childList: true, characterData: true, subtree: true, attributes: true });
+    new MutationObserver(() => _updateContinueButton(1)).observe(wearableSummary, { childList: true, characterData: true, subtree: true, attributes: true });
   }
   const wearablePaste = document.getElementById('wearable-paste');
-  if (wearablePaste) wearablePaste.addEventListener('input', () => _updateContinueButton(0));
+  if (wearablePaste) wearablePaste.addEventListener('input', () => _updateContinueButton(1));
   const wearablePasteResults = document.getElementById('wearable-paste-results');
   if (wearablePasteResults) {
-    new MutationObserver(() => _updateContinueButton(0)).observe(wearablePasteResults, { childList: true, characterData: true, subtree: true });
+    new MutationObserver(() => _updateContinueButton(1)).observe(wearablePasteResults, { childList: true, characterData: true, subtree: true });
   }
 
-  // Slide 1 (Labs): watch manual inputs, paste area, file uploads
+  // Slide 2 (Labs): watch manual inputs, paste area, file uploads
   const labInputs = document.querySelectorAll('#manual-labs input, #lab-paste');
-  labInputs.forEach(el => el.addEventListener('input', () => _updateContinueButton(1)));
+  labInputs.forEach(el => el.addEventListener('input', () => _updateContinueButton(2)));
   const labSummary = document.getElementById('lab-import-summary');
   if (labSummary) {
-    new MutationObserver(() => _updateContinueButton(1)).observe(labSummary, { childList: true, characterData: true, subtree: true });
+    new MutationObserver(() => _updateContinueButton(2)).observe(labSummary, { childList: true, characterData: true, subtree: true });
   }
   const parseSummary = document.getElementById('parse-summary');
   if (parseSummary) {
-    new MutationObserver(() => _updateContinueButton(1)).observe(parseSummary, { childList: true, characterData: true, subtree: true });
+    new MutationObserver(() => _updateContinueButton(2)).observe(parseSummary, { childList: true, characterData: true, subtree: true });
   }
   const labFileList = document.getElementById('lab-file-list');
   if (labFileList) {
-    new MutationObserver(() => _updateContinueButton(1)).observe(labFileList, { childList: true });
+    new MutationObserver(() => _updateContinueButton(2)).observe(labFileList, { childList: true });
   }
 
-  // Slide 2 (Equipment): watch device cards for clicks
+  // Slide 3 (Equipment): watch device cards for clicks
   document.querySelectorAll('.device-card').forEach(card => {
-    card.addEventListener('click', () => setTimeout(() => _updateContinueButton(2), 0));
+    card.addEventListener('click', () => setTimeout(() => _updateContinueButton(3), 0));
   });
 
-  // Slide 3 (Meds): watch med-tags for additions/removals
+  // Slide 4 (Meds): watch med-tags for additions/removals
   const medTags = document.getElementById('med-tags');
   if (medTags) {
-    new MutationObserver(() => _updateContinueButton(3)).observe(medTags, { childList: true });
+    new MutationObserver(() => _updateContinueButton(4)).observe(medTags, { childList: true });
   }
 
-  // Slide 4 (PHQ-9): watch direct input and radio clicks
+  // Slide 5 (PHQ-9): watch direct input and radio clicks
   const phq9Input = document.getElementById('phq9-direct-input');
-  if (phq9Input) phq9Input.addEventListener('input', () => _updateContinueButton(4));
+  if (phq9Input) phq9Input.addEventListener('input', () => _updateContinueButton(5));
   document.querySelectorAll('.phq9-radio').forEach(r => {
-    r.addEventListener('click', () => _updateContinueButton(4));
+    r.addEventListener('click', () => _updateContinueButton(5));
   });
 }
 
@@ -786,7 +818,7 @@ function _resetIntakeUI() {
   resetVoiceState();
   const guide = document.getElementById('voice-guide');
   if (guide) { const n = guide.querySelector('#guide-nudges'); if (n) n.innerHTML = ''; }
-  switchIntakeTab('voice');
+  switchIntakeTab('form');
   // Clear PHQ-9 questionnaire state
   document.querySelectorAll('.phq9-radio').forEach(r => r.classList.remove('selected'));
   const phq9Input = document.getElementById('phq9-direct-input');
@@ -811,6 +843,18 @@ function _resetIntakeUI() {
   const contBtn = document.getElementById('stepper-continue');
   if (contBtn) { contBtn.classList.remove('has-data'); contBtn.style.display = ''; }
 }
+
+window.editValues = function() {
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('questionnaire').style.display = 'block';
+  document.getElementById('phase1').style.display = 'none';
+  document.getElementById('phase2').style.display = 'block';
+  goToEnrichStep(0);
+  initLabDrop();
+  initWearableDrop();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  log.info('editing values from results (Phase 2)');
+};
 
 window.startOver = function() {
   _resetIntakeUI();

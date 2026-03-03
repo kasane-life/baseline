@@ -80,8 +80,8 @@
     </div>
 
     <div class="intake-tabs" id="intake-tabs">
-      <button class="intake-tab active" data-tab="voice" onclick="switchIntakeTab('voice')">Talk it out <span class="disclaimer-badge">Experimental</span></button>
-      <button class="intake-tab" data-tab="form" onclick="switchIntakeTab('form')">Type it in</button>
+      <button class="intake-tab" data-tab="voice" onclick="switchIntakeTab('voice')">Talk it out <span class="disclaimer-badge">Experimental</span></button>
+      <button class="intake-tab active" data-tab="form" onclick="switchIntakeTab('form')">Type it in</button>
     </div>
 
     <!-- Voice tab -->
@@ -175,21 +175,6 @@
       </div>
 
       <div class="field-group" style="text-align:center;">
-        <div class="field-label">Blood pressure</div>
-        <div class="field-row" style="justify-content:center;">
-          <div class="field-col" style="flex:0 0 110px;">
-            <input type="number" class="field-input" id="f-sbp" placeholder="120" step="1" style="text-align:center;font-size:1.2rem;">
-            <div class="field-unit" style="text-align:center;">systolic</div>
-          </div>
-          <div style="font-size:1.4rem;color:var(--text-dim);padding-top:8px;flex:0;">/</div>
-          <div class="field-col" style="flex:0 0 110px;">
-            <input type="number" class="field-input" id="f-dbp" placeholder="80" step="1" style="text-align:center;font-size:1.2rem;">
-            <div class="field-unit" style="text-align:center;">diastolic</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="field-group" style="text-align:center;">
         <div class="field-label">Waist</div>
         <div style="display:flex;justify-content:center;">
           <div style="flex:0 0 120px;">
@@ -242,14 +227,23 @@
           <div class="stepper-step active" data-step="0">
             <span class="stepper-num">1</span>
             <span class="stepper-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0L12 5.36l-.77-.78a5.4 5.4 0 0 0-7.65 7.65l1.06 1.06L12 20.64l7.36-7.36 1.06-1.06a5.4 5.4 0 0 0 0-7.64z"/><path d="M12 12v4M12 12l-2-2M12 12l2-2" opacity="0.5"/></svg>
+            </span>
+            <span class="stepper-label">BP</span>
+            <span class="stepper-status" id="bp-card-status"></span>
+            <span class="stepper-check">&check;</span>
+          </div>
+          <div class="stepper-step" data-step="1">
+            <span class="stepper-num">2</span>
+            <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8V4m0 0L9 7m3-3l3 3"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M9 14h6" opacity="0.5"/><path d="M12 12v4" opacity="0.5"/></svg>
             </span>
             <span class="stepper-label">Wearable</span>
             <span class="stepper-status" id="wearable-card-status"></span>
             <span class="stepper-check">&check;</span>
           </div>
-          <div class="stepper-step" data-step="1">
-            <span class="stepper-num">2</span>
+          <div class="stepper-step" data-step="2">
+            <span class="stepper-num">3</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3v2m6-2v2M9 5a2 2 0 0 0-2 2v2l-1 9a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3l-1-9V7a2 2 0 0 0-2-2H9z"/><path d="M9 14h6" opacity="0.5"/></svg>
             </span>
@@ -257,8 +251,8 @@
             <span class="stepper-status" id="labs-card-status"></span>
             <span class="stepper-check">&check;</span>
           </div>
-          <div class="stepper-step" data-step="2">
-            <span class="stepper-num">3</span>
+          <div class="stepper-step" data-step="3">
+            <span class="stepper-num">4</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
             </span>
@@ -266,8 +260,8 @@
             <span class="stepper-status" id="equip-card-status"></span>
             <span class="stepper-check">&check;</span>
           </div>
-          <div class="stepper-step" data-step="3">
-            <span class="stepper-num">4</span>
+          <div class="stepper-step" data-step="4">
+            <span class="stepper-num">5</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="7" rx="3.5"/><path d="M12 11v7" opacity="0.4"/><path d="M8.5 7a3.5 3.5 0 1 1 7 0v4h-7V7z" opacity="0.6"/></svg>
             </span>
@@ -275,8 +269,8 @@
             <span class="stepper-status" id="meds-card-status"></span>
             <span class="stepper-check">&check;</span>
           </div>
-          <div class="stepper-step" data-step="4">
-            <span class="stepper-num">5</span>
+          <div class="stepper-step" data-step="5">
+            <span class="stepper-num">6</span>
             <span class="stepper-icon">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M9 10h.01M15 10h.01" stroke-linecap="round"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke-linecap="round"/></svg>
             </span>
@@ -298,8 +292,27 @@
         </div>
 
         <!-- Step content (no carousel wrapper — slides flow as page content) -->
-          <!-- Slide 0: Wearable import -->
+          <!-- Slide 0: Blood pressure -->
           <div class="enrich-slide active" data-slide="0">
+            <div class="slide-hint">Use a recent reading from the last 7 days. Best taken first thing in the morning, seated, after 5 minutes of rest. Take 2–3 readings a minute apart and use the average.</div>
+            <div class="field-group" style="text-align:center;margin-top:0;">
+              <div class="field-row" style="justify-content:center;align-items:center;gap:12px;">
+                <div class="field-col" style="flex:0 0 110px;">
+                  <input type="number" class="field-input" id="f-sbp" placeholder="120" step="1" style="text-align:center;font-size:1.2rem;">
+                  <div class="field-unit" style="text-align:center;">systolic</div>
+                </div>
+                <div style="font-size:1.4rem;color:var(--text-dim);flex:0;">/</div>
+                <div class="field-col" style="flex:0 0 110px;">
+                  <input type="number" class="field-input" id="f-dbp" placeholder="80" step="1" style="text-align:center;font-size:1.2rem;">
+                  <div class="field-unit" style="text-align:center;">diastolic</div>
+                </div>
+              </div>
+            </div>
+            <button class="slide-skip" onclick="advanceEnrichStep()">I don&rsquo;t know my BP &rarr;</button>
+          </div>
+
+          <!-- Slide 1: Wearable import -->
+          <div class="enrich-slide" data-slide="1">
 
             <!-- Zone 1: Device selector (primary action) -->
             <div class="wearable-zone wearable-zone-primary">
@@ -394,8 +407,8 @@
             <button class="slide-skip" onclick="advanceEnrichStep()">I don&rsquo;t wear one &rarr;</button>
           </div>
 
-          <!-- Slide 1: Blood work -->
-          <div class="enrich-slide" data-slide="1">
+          <!-- Slide 2: Blood work -->
+          <div class="enrich-slide" data-slide="2">
             <div class="slide-hint">Lipid panel, metabolic panel, CBC &mdash; the standard blood work from your annual physical.</div>
             <div class="field-group">
               <div class="upload-zone" id="lab-drop" onclick="document.getElementById('lab-file-input').click()">
@@ -510,8 +523,8 @@
             <button class="slide-skip" onclick="advanceEnrichStep()">I don&rsquo;t have labs &rarr;</button>
           </div>
 
-          <!-- Slide 2: Equipment -->
-          <div class="enrich-slide" data-slide="2">
+          <!-- Slide 3: Equipment -->
+          <div class="enrich-slide" data-slide="3">
             <div class="slide-hint">What can you measure between lab visits?</div>
             <div class="grid grid-cols-4 max-sm:grid-cols-2 gap-3 mb-4" id="device-selector">
               <div class="device-card" data-device="bp_cuff" onclick="toggleDevice(this)">
@@ -538,8 +551,8 @@
             <button class="slide-skip" onclick="advanceEnrichStep()">None of these &rarr;</button>
           </div>
 
-          <!-- Slide 3: Medications -->
-          <div class="enrich-slide" data-slide="3">
+          <!-- Slide 4: Medications -->
+          <div class="enrich-slide" data-slide="4">
             <div class="slide-hint">Type to search — we'll factor these into your picture.</div>
             <div class="relative">
               <input type="text" class="med-search-input" id="med-search" placeholder="e.g. tirzepatide, vitamin D, creatine..." autocomplete="off">
@@ -549,8 +562,8 @@
             <button class="slide-skip" onclick="advanceEnrichStep()">No medications &rarr;</button>
           </div>
 
-          <!-- Slide 4: Mental Health -->
-          <div class="enrich-slide" data-slide="4" id="phq9-section">
+          <!-- Slide 5: Mental Health -->
+          <div class="enrich-slide" data-slide="5" id="phq9-section">
             <div class="slide-hint">Quick mental health screen</div>
             <p class="text-[0.85rem] text-text-dim mb-6 leading-relaxed">Depression is an independent cardiovascular risk factor. A quick screen sharpens your picture.</p>
 
@@ -778,7 +791,7 @@
 
     <!-- UTILITY: Actions -->
     <div class="results-utility">
-      <button onclick="startOver()">Update values</button>
+      <button onclick="editValues()">Edit my data</button>
       <span class="start-fresh-link" id="start-fresh-trigger" onclick="showStartFreshConfirm()">Start fresh</span>
       <div class="start-fresh-confirm" id="start-fresh-confirm" style="display:none;">
         <span style="font-size:0.82rem;color:var(--text-muted);">This will clear all your data. Are you sure?</span>
@@ -791,6 +804,11 @@
   </div><!-- /results-main -->
 
   </div><!-- /results-layout -->
+
+  <!-- Sticky edit bar — visible while scrolling results -->
+  <div class="sticky-edit-bar">
+    <button onclick="editValues()">Edit my data</button>
+  </div>
 </div><!-- /results -->
 
 </div><!-- /container -->

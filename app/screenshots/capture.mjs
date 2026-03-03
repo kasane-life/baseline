@@ -56,7 +56,12 @@ async function capture() {
           deviceScaleFactor: 2,
           colorScheme: scheme,
         });
+        // Bypass beta email gate so overlay doesn't block the flow
+        await context.addInitScript(() => {
+          localStorage.setItem('baseline-beta-email', 'screenshots@baseline.app');
+        });
         const page = await context.newPage();
+        page.on('pageerror', err => console.log(`  ⚠ JS error: ${err.message}`));
         let step = 1;
 
         const snap = async (label) => {
@@ -74,53 +79,78 @@ async function capture() {
 
         // 1. Landing
         await page.goto(baseUrl, { waitUntil: 'networkidle' });
+        // Dismiss any error/feedback overlay that may have appeared
+        await page.evaluate(() => {
+          document.querySelectorAll('.feedback-overlay').forEach(el => el.remove());
+        });
         await snap('landing');
 
-        // Switch to form mode
-        await page.click('button[data-tab="form"]');
+        // Ensure form mode is visible (default tab, but JS init may still be running)
+        await page.evaluate(() => {
+          document.getElementById('form-mode').classList.add('open');
+          document.getElementById('intake-split').style.display = 'none';
+        });
         await page.waitForTimeout(300);
 
-        // 2. Phase 1 — fill form
+        // 2. Phase 1 — fill form (BP moved to Phase 2)
         await page.fill('#f-age', SAMPLE.age);
         await page.click(`.opt-btn[data-value="${SAMPLE.sex}"]`);
         await page.fill('#f-height-ft', SAMPLE.heightFt);
         await page.fill('#f-height-in', SAMPLE.heightIn);
         await page.fill('#f-weight', SAMPLE.weight);
-        await page.fill('#f-sbp', SAMPLE.sbp);
-        await page.fill('#f-dbp', SAMPLE.dbp);
         await page.fill('#f-waist', SAMPLE.waist);
         await page.click(`.toggle-btn[data-value="${SAMPLE.familyHistory}"]`);
         await snap('phase1-form');
 
-        // 3. Phase 2 — Labs
-        await page.click('.nav-next');
+        // 3. Phase 2 — BP (slide 0)
+        await page.evaluate(() => {
+          document.querySelectorAll('.feedback-overlay').forEach(el => el.remove());
+          // Directly show Phase 2 (showPhase2 may not be on window if init errored)
+          document.getElementById('phase1').style.display = 'none';
+          document.getElementById('phase2').style.display = 'block';
+        });
         await page.waitForTimeout(400);
+        await page.fill('#f-sbp', SAMPLE.sbp);
+        await page.fill('#f-dbp', SAMPLE.dbp);
+        await snap('phase2-bp');
+
+        // 4. Wearable (slide 1)
+        await clickContinue();
+        await snap('phase2-wearable');
+
+        // 5. Labs (slide 2)
+        await clickContinue();
         await snap('phase2-labs');
 
-        // 4. Equip
+        // 6. Equip (slide 3)
         await clickContinue();
         await snap('phase2-equip');
 
-        // 5. Meds
+        // 7. Meds (slide 4)
         await clickContinue();
         await snap('phase2-meds');
 
-        // 6. PHQ-9
+        // 8. PHQ-9 (slide 5)
         await clickContinue();
         await snap('phase2-phq9');
 
-        // 7. Score — use evaluate to bypass pointer-events overlay
-        await page.evaluate(() => computeResults());
-        await page.waitForTimeout(2500); // wait for score animation
-        await snap('results-top');
+        // 9. Score — call computeResults if available (may not be if init errored)
+        const hasCompute = await page.evaluate(() => typeof computeResults === 'function');
+        if (hasCompute) {
+          await page.evaluate(() => computeResults());
+          await page.waitForTimeout(2500);
+          await snap('results-top');
 
-        // 8. Scroll to below-fold
-        await page.evaluate(() => {
-          const fold = document.querySelector('.results-fold');
-          if (fold) fold.scrollIntoView({ behavior: 'instant' });
-        });
-        await page.waitForTimeout(300);
-        await snap('results-detail');
+          // 10. Scroll to below-fold
+          await page.evaluate(() => {
+            const fold = document.querySelector('.results-fold');
+            if (fold) fold.scrollIntoView({ behavior: 'instant' });
+          });
+          await page.waitForTimeout(300);
+          await snap('results-detail');
+        } else {
+          console.log('  ⚠ computeResults not available — skipping results screenshots');
+        }
 
         await context.close();
 
@@ -133,6 +163,10 @@ async function capture() {
           deviceScaleFactor: 2,
           colorScheme: scheme,
         });
+        // Bypass beta email gate so overlay doesn't block the flow
+        await ctx2.addInitScript(() => {
+          localStorage.setItem('baseline-beta-email', 'screenshots@baseline.app');
+        });
         const page2 = await ctx2.newPage();
         let step2 = 1;
 
@@ -144,7 +178,11 @@ async function capture() {
         };
 
         await page2.goto(baseUrl, { waitUntil: 'networkidle' });
-        await page2.click('button[data-tab="form"]');
+        await page2.evaluate(() => {
+          document.querySelectorAll('.feedback-overlay').forEach(el => el.remove());
+          document.getElementById('form-mode').classList.add('open');
+          document.getElementById('intake-split').style.display = 'none';
+        });
         await page2.waitForTimeout(300);
         await snap2('phase1-empty');
 

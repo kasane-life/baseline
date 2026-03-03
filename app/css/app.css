@@ -590,6 +590,20 @@ a:hover { @apply text-text; }
 }
 .results-utility button:hover { border-color: rgba(var(--surface),0.2); color: var(--text-muted); }
 
+/* Sticky edit bar at bottom of viewport when results are active */
+.sticky-edit-bar {
+  @apply hidden fixed bottom-0 left-0 right-0 z-50 py-3 px-4;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(var(--surface),0.08);
+  text-align: center;
+}
+#results.active .sticky-edit-bar { @apply block; }
+.sticky-edit-bar button {
+  @apply px-5 py-2.5 bg-transparent border border-white/[0.12] rounded-[5px] text-text-muted font-mono text-[0.75rem] cursor-pointer transition-all duration-150;
+}
+.sticky-edit-bar button:hover { border-color: rgba(var(--surface),0.25); color: var(--text); }
+
 @media (max-width: 600px) {
   .dual-rings { @apply gap-5; }
   .dual-rings .score-ring { @apply w-[150px] h-[150px]; }
@@ -722,6 +736,22 @@ a:hover { @apply text-text; }
 @keyframes nudgeFadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.guide-nudge.all-done {
+  background: rgba(52, 199, 89, 0.08);
+  border-left-color: rgba(52, 199, 89, 0.5);
+  color: var(--text);
+}
+.still-listening-dot {
+  @apply inline-block w-2 h-2 rounded-full mr-1.5;
+  background: var(--red);
+  vertical-align: middle;
+  animation: listenPulse 1.5s ease-in-out infinite;
+}
+@keyframes listenPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
 }
 
 .guide-haiku-status { @apply font-mono text-[0.75rem] text-text-dim text-left mt-2 min-h-5; transition: opacity 0.3s; }
@@ -1070,9 +1100,21 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 
 /* Mobile: stepper compact — hide labels, show only icons */
 @media (max-width: 640px) {
-  .stepper-step { @apply justify-center px-1.5 py-2; }
+  .stepper-step { @apply justify-center px-1.5 py-2; flex-shrink: 0; }
   .stepper-step .stepper-label,
   .stepper-step .stepper-status { @apply hidden; }
+}
+
+/* Narrow mobile: horizontally scrollable stepper strip */
+@media (max-width: 480px) {
+  .stepper-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;          /* Firefox */
+  }
+  .stepper-strip::-webkit-scrollbar { display: none; }  /* Chrome/Safari */
 }
 
 
