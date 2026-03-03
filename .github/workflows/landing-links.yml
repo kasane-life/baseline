@@ -1,0 +1,32 @@
+name: Landing page link check
+
+on:
+  push:
+    branches: [main]
+    paths: [landing/**]
+  pull_request:
+    branches: [main]
+    paths: [landing/**]
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright
+        run: |
+          cd app
+          npm install @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Wait for GitHub Pages deploy
+        if: github.event_name == 'push'
+        run: sleep 30
+
+      - name: Run link tests
+        run: cd app && npx playwright test ../landing/links.test.js --config ../landing/playwright.config.js
