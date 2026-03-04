@@ -104,13 +104,15 @@ h1 .line-neg {
   color: var(--text);
 }
 
-h1 .word-not {
-  color: var(--red);
+h1 .word-noise {
   display: inline-block;
-  transform: rotate(-8deg);
-  position: relative;
-  top: -2px;
-  margin: 0 4px;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text);
+  opacity: 0.7;
+}
+
+h1 .word-signal {
+  color: var(--red);
 }
 
 .hero-hook {
@@ -1320,7 +1322,7 @@ footer p {
   <div class="hero">
     <div class="logo">baseline<span class="period">.</span></div>
     <h1>
-      <span class="line-neg">Less noise<br>More <span class="word-not">signal</span></span>
+      <span class="line-neg">Less <span class="word-noise">noise</span><br>More <span class="word-signal">signal</span></span>
     </h1>
     <svg class="signal-wave" viewBox="0 0 600 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path class="wave-noise" d="M0,30 L8,18 L14,42 L20,12 L28,38 L34,22 L40,45 L46,8 L54,40 L60,15 L66,35 L72,20 L80,44 L86,10 L92,38 L98,25 L106,42 L112,14 L118,36 L124,28 L132,40 L138,18 L144,34 L150,22 L158,39 L164,16 L170,37 L176,24 L184,41 L190,13 L196,35 L202,20 L210,38" stroke="#3e3e4a" stroke-width="1.5" stroke-linecap="round"/>
