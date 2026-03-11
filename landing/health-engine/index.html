@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>baseline. — Health Engine</title>
+<meta name="description" content="An open-source health scoring engine that runs locally with Claude. 20 metrics, clinical thresholds, population percentiles, wearable integration. Your data never leaves your machine.">
+<meta property="og:title" content="baseline. — Health Engine">
+<meta property="og:description" content="An open-source health scoring engine that runs locally with Claude. Score yourself across 20 metrics in minutes.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="baseline. — Health Engine">
+<meta name="twitter:description" content="An open-source health scoring engine that runs locally with Claude. Score yourself across 20 metrics in minutes.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #08080a;
+  --bg-elevated: #0e0e11;
+  --border: #181820;
+  --text: #f0f0f0;
+  --text-muted: #a8a8b8;
+  --text-dim: #3e3e4a;
+  --red: #c83c3c;
+  --red-dim: rgba(200, 60, 60, 0.10);
+  --green: #2d8a4e;
+  --green-dim: rgba(45, 138, 78, 0.10);
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  background: var(--bg);
+}
+
+.header .logo-mark {
+  display: block;
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.2s;
+}
+
+.header .logo-mark:hover { opacity: 0.7; }
+
+.back-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+
+.back-link:hover { color: var(--text-muted); }
+
+/* Hero */
+.page-hero {
+  padding: 80px 0 64px;
+  text-align: center;
+}
+
+.page-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  line-height: 1.05;
+  margin-bottom: 24px;
+}
+
+.page-hero h1 .accent { color: var(--red); }
+
+.page-hero .subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.page-hero .subtitle strong { color: var(--text); }
+
+/* Badge row */
+.badges {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  letter-spacing: 0.02em;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0;
+}
+
+/* Section */
+.section {
+  padding: 64px 0;
+  border-top: 1px solid var(--border);
+}
+
+.section h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.3px;
+  margin-bottom: 20px;
+}
+
+.section p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.section p:last-child { margin-bottom: 0; }
+.section strong { color: var(--text); }
+
+/* Steps */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 32px 0;
+}
+
+.step {
+  display: flex;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.step:last-child { border-bottom: none; }
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-content h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.step-content p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 0;
+}
+
+/* Code block */
+.code-block {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin: 24px 0;
+  overflow-x: auto;
+}
+
+.code-block pre {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.9;
+  color: var(--text-muted);
+}
+
+.code-block .comment { color: var(--text-dim); }
+.code-block .cmd { color: var(--text); }
+
+/* Metric cards */
+.tier-group {
+  margin: 32px 0;
+}
+
+.tier-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.metric-card {
+  padding: 14px 18px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+.metric-card .metric-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.metric-card .metric-detail {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+/* Feature list */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 28px 0;
+}
+
+.feature {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.feature:last-child { border-bottom: none; }
+
+.feature-icon {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--red);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.feature-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.feature-text strong { color: var(--text); }
+
+/* Conversation example */
+.convo {
+  margin: 28px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.convo-msg {
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  max-width: 88%;
+}
+
+.convo-user {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.convo-ai {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.convo-ai strong { color: var(--text); }
+.convo-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  letter-spacing: 0.06em;
+}
+
+/* CTA */
+.cta-section {
+  padding: 80px 0;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.cta-section p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 13px 28px;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 5px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: opacity 0.2s;
+}
+
+.cta-btn:hover { opacity: 0.85; color: var(--bg); }
+
+.cta-secondary {
+  display: inline-block;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.cta-secondary:hover { color: var(--text); }
+
+/* Footer */
+footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+footer p {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  line-height: 2;
+}
+
+footer a { color: var(--text-muted); }
+footer a:hover { color: var(--text); }
+
+@media (max-width: 600px) {
+  .page-hero { padding: 56px 0 48px; }
+  .section { padding: 48px 0; }
+  .metric-grid { grid-template-columns: 1fr; }
+  .convo-msg { max-width: 95%; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <a href="../" class="back-link">&larr; baseline.</a>
+    <a href="../" class="logo-mark"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="6" fill="#f0f0f0"/><text x="5" y="25" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="26" fill="#08080a" letter-spacing="-0.5">b</text><circle cx="24" cy="24" r="3" fill="#c83c3c"/></svg></a>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="container">
+  <div class="page-hero">
+    <h1>Your health<span class="accent">.</span><br>Scored by evidence<span class="accent">.</span></h1>
+    <p class="subtitle">An open-source health intelligence engine that connects to <strong>Claude</strong>. Drop in your labs, connect a wearable, and get scored across <strong>20 clinically validated metrics</strong> — with coaching that actually knows your numbers.</p>
+    <div class="badges">
+      <span class="badge">open source</span>
+      <span class="badge">local-first</span>
+      <span class="badge">runs with Claude</span>
+      <span class="badge">121 tests passing</span>
+    </div>
+  </div>
+</div>
+
+<!-- What it does -->
+<div class="container">
+  <div class="section">
+    <h2>Not another dashboard.</h2>
+    <p>You don't need more charts. You need someone who's read the research, looked at your numbers, and can tell you <strong>what actually matters right now</strong>.</p>
+    <p>Health Engine scores you using clinical thresholds from the AHA, ADA, and ESC — the same cutoffs your cardiologist uses. Then it layers in <strong>population percentiles</strong> from NHANES (300K+ Americans) so you know where you stand relative to everyone else.</p>
+    <p>The difference: <strong>the 50th percentile is the median American</strong> — 42% obese, 38% prediabetic. "Better than average" is a low bar. Clinical zones tell you if you're actually healthy. Population data tells you how rare that is.</p>
+  </div>
+</div>
+
+<!-- Conversation example -->
+<div class="container">
+  <div class="section">
+    <h2>Talk to it like a coach.</h2>
+    <p>Health Engine runs as an <strong>MCP server</strong> inside Claude. No extra apps. No logins. Just open Claude and ask.</p>
+
+    <div class="convo">
+      <div class="convo-msg convo-user">How am I doing?</div>
+      <div class="convo-msg convo-ai">
+        <div class="convo-label">HEALTH ENGINE</div>
+        <strong>191.2 this morning — 6.2 lbs from target.</strong> Trending in the right direction at -1.1 lbs/week.<br><br>
+        RHR 52 &middot; HRV 62 &middot; Sleep 6.8h &middot; 9,200 steps<br><br>
+        Sleep regularity is your weak spot — bedtime stdev of 42 minutes. That irregular schedule is dragging HRV down more than the sleep duration itself. <strong>Regularity predicts mortality more than duration</strong> (UK Biobank, 72K).<br><br>
+        Your ApoB at 82 is clinically optimal. Fasting insulin at 4.2 — you're catching the metabolic picture 10-15 years before glucose would move.<br><br>
+        Lock in tonight: <strong>lights out by 11.</strong>
+      </div>
+    </div>
+
+    <div class="convo" style="margin-top:8px;">
+      <div class="convo-msg convo-user">What should I measure next?</div>
+      <div class="convo-msg convo-ai">
+        <div class="convo-label">HEALTH ENGINE</div>
+        Your coverage is at <strong>68%</strong>. Three gaps with the highest leverage:<br><br>
+        <strong>1. Lp(a)</strong> — one blood test, $30, never changes. 20% of people carry elevated Lp(a) and don't know it. Independent causal CVD risk factor.<br><br>
+        <strong>2. hs-CRP</strong> — $20/year. JUPITER trial showed normal LDL + elevated CRP = 44% CV event reduction with treatment.<br><br>
+        <strong>3. Waist circumference</strong> — $3 tape measure. INTERHEART study: waist-to-hip ratio is 1 of 9 factors explaining 90% of heart attack risk across 52 countries.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Setup -->
+<div class="container">
+  <div class="section" id="setup">
+    <h2>Up and running in 2 minutes.</h2>
+
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div class="step-content">
+          <h3>Add one line to Claude</h3>
+          <p>Add the MCP server to your Claude Desktop config. That's the only install step.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div class="step-content">
+          <h3>Say "set me up"</h3>
+          <p>Claude walks you through it. Age and sex are the only required fields. Everything else is optional — the engine scores whatever you give it and shows you the gaps.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div class="step-content">
+          <h3>Ask "how am I doing?"</h3>
+          <p>Get your first score immediately. Then add data over time — log a weight, connect Garmin or import Apple Health, drop in lab results. Your coverage grows. The coaching gets sharper.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+<pre><span class="comment"># Add to Claude Desktop config (~/.claude/mcp.json)</span>
+{
+  "mcpServers": {
+    "health-engine": {
+      "command": "<span class="cmd">uvx</span>",
+      "args": ["<span class="cmd">health-engine</span>"]
+    }
+  }
+}
+
+<span class="comment"># Restart Claude. Ask: "set me up" or "how am I doing?"</span>
+<span class="comment"># That's it. No cloning, no pip install, no config files.</span></pre>
+    </div>
+
+    <p style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-dim); margin-top:16px;">Requires Python 3.11+ and <a href="https://docs.astral.sh/uv/getting-started/installation/" style="color:var(--text-muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;" target="_blank" rel="noopener">uv</a> installed. Or clone from <a href="https://github.com/a-deal/health-engine" style="color:var(--text-muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;" target="_blank" rel="noopener">GitHub</a> if you want to hack on it.</p>
+  </div>
+</div>
+
+<!-- 20 Metrics -->
+<div class="container">
+  <div class="section">
+    <h2>20 metrics. Ranked by evidence.</h2>
+    <p>Not 400 vanity metrics. <strong>Twenty</strong> — each backed by large-scale RCTs, Mendelian randomization, or 10K+ prospective cohorts. Weighted by three axes: <strong>causal evidence strength</strong>, <strong>cost to measure</strong>, and <strong>whether knowing the number actually changes what you do</strong>.</p>
+
+    <div class="tier-group">
+      <div class="tier-label">Tier 1 &mdash; Foundation (highest weight)</div>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-name">Blood Pressure</div>
+          <div class="metric-detail">$40 cuff &middot; SPRINT trial</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">ApoB</div>
+          <div class="metric-detail">$30-50/yr &middot; Mendelian randomization</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">Fasting Insulin</div>
+          <div class="metric-detail">$40-60/yr &middot; Whitehall II</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">Lp(a)</div>
+          <div class="metric-detail">$30 once &middot; 90% genetic</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-group">
+      <div class="tier-label">Tier 2 &mdash; Daily signal (wearables + habits)</div>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-name">Sleep Regularity</div>
+          <div class="metric-detail">Free &middot; UK Biobank 72K</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">VO2 Max</div>
+          <div class="metric-detail">Free &middot; strongest modifiable mortality predictor</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">Resting Heart Rate</div>
+          <div class="metric-detail">Free &middot; Copenhagen Heart Study</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">HRV Trends</div>
+          <div class="metric-detail">Free &middot; 7-day rolling avg</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">Daily Steps</div>
+          <div class="metric-detail">Free &middot; Paluch, Lancet 2022</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">Waist Circumference</div>
+          <div class="metric-detail">$3 tape &middot; INTERHEART</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-group">
+      <div class="tier-label">Tier 3 &mdash; Clinical depth</div>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-name">hs-CRP</div>
+          <div class="metric-detail">$20/yr &middot; JUPITER trial</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">Fasting Glucose</div>
+          <div class="metric-detail">Included in panels</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">HbA1c</div>
+          <div class="metric-detail">Included in panels</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">HDL / Triglycerides</div>
+          <div class="metric-detail">Included in lipid panel</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">TSH</div>
+          <div class="metric-detail">$20/yr &middot; 12% lifetime prevalence</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-name">Vitamin D + Ferritin</div>
+          <div class="metric-detail">$40-60 &middot; 42% deficient</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:28px;"><a href="../methodology/" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;">Full 40-metric methodology &rarr;</a></p>
+  </div>
+</div>
+
+<!-- What makes it different -->
+<div class="container">
+  <div class="section">
+    <h2>What makes this different.</h2>
+
+    <div class="features">
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>Clinical zones, not just ranges.</strong> "Normal" on a lab report means "not immediately sick." We use Optimal / Healthy / Borderline / Elevated thresholds from AHA, ADA, and ESC — the same cutoffs that inform treatment decisions.</div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>Freshness decay.</strong> A lipid panel from 18 months ago isn't worth as much as one from last month. Data decays based on biological variation — wearable data expires in weeks, Lp(a) never expires (it's genetic).</div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>Cross-metric patterns.</strong> Metabolic syndrome detection (3+ of 5 criteria). Atherogenic dyslipidemia (TG/HDL ratio). Insulin resistance patterns. Recovery stress signals from wearable data. The compound signal is more important than any single number.</div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>Reliability multipliers.</strong> A single blood pressure reading is noisy (0.5x credit). A 7-day protocol is definitive (1.0x). Single hs-CRP readings get 0.6x — it's too variable. The engine knows when to trust data and when to ask for more.</div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>Local-first. Always.</strong> Your health data lives on your machine. The engine runs locally. Claude connects via MCP — no data leaves your laptop. No accounts, no cloud sync, no third-party access.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Wearables -->
+<div class="container">
+  <div class="section">
+    <h2>Connect what you have.</h2>
+    <p>Garmin, Apple Health, or nothing — the engine works with whatever data exists. Labs give you the clinical picture. Wearables give you the daily signal. Together they're a more complete picture than either alone.</p>
+
+    <div class="features">
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>Garmin Connect</strong> — authenticate once via CLI, tokens cached. Pulls RHR, HRV, sleep, steps, VO2 max, zone 2, workouts.</div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>Apple Health</strong> — export from your iPhone, import the ZIP. SAX streaming handles the massive XML files. Same metrics, same scoring.</div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">&rarr;</span>
+        <div class="feature-text"><strong>No wearable?</strong> That's fine. The engine scores whatever you give it — even just a $30 Lp(a) test and a $40 blood pressure cuff gets you into the highest-leverage metrics.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Who built this -->
+<div class="container">
+  <div class="section">
+    <h2>Who built this.</h2>
+    <p>I'm <a href="https://www.linkedin.com/in/andrewdeal/" style="color:var(--text); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;" target="_blank" rel="noopener">Andrew Deal</a>. Former personal trainer and gym owner. Now a software engineer who stares at lab results for fun.</p>
+    <p>I built this because I kept asking "what does this number actually mean for me?" and nobody had a good answer. Not my doctor (7-minute appointments), not my wearable (pretty charts, no context), not the internet (contradictory advice from people selling supplements).</p>
+    <p>So I read the research. NHANES data (300K+ Americans). AHA/ADA/ESC clinical guidelines. Landmark trials — SPRINT, JUPITER, Framingham, UK Biobank. And I built an engine that applies it to real people's data.</p>
+    <p>The whole thing is <strong>open source</strong>. The <a href="../methodology/" style="color:var(--text); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;">methodology is transparent</a>. Every scoring decision is documented and cited. If I got something wrong, you can see exactly where and tell me.</p>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="container">
+    <h2>See where you stand.</h2>
+    <p>Clone the repo. Add it to Claude. Ask "how am I doing?"</p>
+    <a href="https://github.com/a-deal/health-engine" class="cta-btn" target="_blank" rel="noopener">View on GitHub &rarr;</a>
+    <br>
+    <a href="../methodology/" class="cta-secondary">Read the full methodology &rarr;</a>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>
+      Built by <a href="https://www.linkedin.com/in/andrewdeal/" target="_blank" rel="noopener">Andrew Deal</a> in San Francisco &middot; <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a><br>
+      Open source &middot; Local-first &middot; Your data never touches a server
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
