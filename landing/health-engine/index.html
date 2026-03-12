@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>baseline. | Health Engine</title>
-<meta name="description" content="An open-source health scoring engine that runs locally with Claude. 20 metrics, clinical thresholds, population percentiles, wearable integration. Your data never leaves your machine.">
+<meta name="description" content="Your health data is everywhere — except where it's useful. Health Engine connects your labs, wearables, and vitals, scores 20 metrics the way elite programs do, and tells you what to do next. Free, open source, private.">
 <meta property="og:title" content="baseline. | Health Engine">
-<meta property="og:description" content="An open-source health scoring engine that runs locally with Claude. Score yourself across 20 metrics in minutes.">
+<meta property="og:description" content="The same 20 health metrics tracked by NASA, F1, and special operations — scored for you, for free. Your data never leaves your machine.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="baseline. | Health Engine">
-<meta name="twitter:description" content="An open-source health scoring engine that runs locally with Claude. Score yourself across 20 metrics in minutes.">
+<meta name="twitter:description" content="The same 20 health metrics tracked by NASA, F1, and special operations — scored for you, for free. Your data never leaves your machine.">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -419,13 +419,13 @@ footer a:hover { color: var(--text); }
 <!-- Hero -->
 <div class="container">
   <div class="page-hero">
-    <h1>Your health<br>Scored by evidence</h1>
-    <p class="subtitle">An open-source health intelligence engine that connects to <strong>Claude</strong>. Drop in your labs, connect a wearable, and get scored across <strong>20 clinically validated metrics</strong> with coaching that actually knows your numbers.</p>
+    <h1>Your health data is<br>everywhere <span class="accent">except<br>where it's useful</span></h1>
+    <p class="subtitle">Steps on your watch. Labs in a portal. Weight on a scale. Blood pressure in a drawer. <strong>None of it talks to each other.</strong> Health Engine connects all of it, scores you the way elite performance programs do, and tells you what to do next.</p>
     <div class="badges">
       <span class="badge">open source</span>
-      <span class="badge">local-first</span>
+      <span class="badge">your data stays on your machine</span>
       <span class="badge">runs with Claude</span>
-      <span class="badge">121 tests passing</span>
+      <span class="badge">free</span>
     </div>
   </div>
 </div>
@@ -433,10 +433,10 @@ footer a:hover { color: var(--text); }
 <!-- What it does -->
 <div class="container">
   <div class="section">
-    <h2>More than a dashboard</h2>
-    <p>You don't need more charts. You need someone who's read the research, looked at your numbers, and can tell you <strong>what actually matters right now</strong>.</p>
-    <p>Health Engine scores you using clinical thresholds from the AHA, ADA, and ESC. The same cutoffs your cardiologist uses. Then it layers in <strong>population percentiles</strong> from NHANES (300K+ Americans) so you know where you stand relative to everyone else.</p>
-    <p>The difference: <strong>the 50th percentile is the median American</strong>. 42% obese, 38% prediabetic. "Better than average" is a low bar. Clinical zones tell you if you're actually healthy. Population data tells you how rare that is.</p>
+    <h2>The same 20 metrics. A fraction of the cost.</h2>
+    <p>F1 racing teams, NASA astronauts, and military special operations all monitor the same core health dimensions. Their programs cost $50K to over $1M per year. Health Engine scores you on the same framework for free.</p>
+    <p>The difference isn't what they measure. It's that they have a <strong>system</strong> that connects everything, tracks it over time, and tells them what to do. That's what Health Engine does.</p>
+    <p>Your numbers are scored against <strong>clinical guidelines</strong> from the same sources your cardiologist uses, then compared to a <strong>CDC dataset of 300,000+ Americans</strong>. The median American is prediabetic and doesn't know it. "Better than average" is a low bar. We show you where you actually stand.</p>
   </div>
 </div>
 
@@ -444,7 +444,7 @@ footer a:hover { color: var(--text); }
 <div class="container">
   <div class="section">
     <h2>Talk to it like a coach</h2>
-    <p>Health Engine runs as an <strong>MCP server</strong> inside Claude. No extra apps. No logins. Just open Claude and ask.</p>
+    <p>Health Engine plugs directly into <strong>Claude</strong>. No extra apps. No logins. Just open Claude and ask.</p>
 
     <div class="convo">
       <div class="convo-msg convo-user">How am I doing?</div>
@@ -453,7 +453,7 @@ footer a:hover { color: var(--text); }
         <strong>191.2 this morning, 6.2 lbs from target.</strong> Trending in the right direction at -1.1 lbs/week.<br><br>
         RHR 52 &middot; HRV 62 &middot; Sleep 6.8h &middot; 9,200 steps<br><br>
         Sleep regularity is your weak spot. Bedtime stdev of 42 minutes. That irregular schedule is dragging HRV down more than the sleep duration itself. <strong>Regularity predicts mortality more than duration</strong> (UK Biobank, 72K).<br><br>
-        Your ApoB at 82 is clinically optimal. Fasting insulin at 4.2. You're catching the metabolic picture 10-15 years before glucose would move.<br><br>
+        Your cholesterol particle count (ApoB) at 82 is clinically optimal. Fasting insulin at 4.2 means your body handles blood sugar well. You're catching the metabolic picture 10-15 years before a standard glucose test would move.<br><br>
         Lock in tonight: <strong>lights out by 11.</strong>
       </div>
     </div>
@@ -463,9 +463,9 @@ footer a:hover { color: var(--text); }
       <div class="convo-msg convo-ai">
         <div class="convo-label">HEALTH ENGINE</div>
         Your coverage is at <strong>68%</strong>. Three gaps that would move the needle most:<br><br>
-        <strong>1. Lp(a)</strong>. One blood test, $30, never changes. 20% of people carry elevated Lp(a) and don't know it. Independent causal CVD risk factor.<br><br>
-        <strong>2. hs-CRP</strong>. $20/year. JUPITER trial showed normal LDL + elevated CRP = 44% CV event reduction with treatment.<br><br>
-        <strong>3. Waist circumference</strong>. $3 tape measure. INTERHEART study: waist-to-hip ratio is 1 of 9 factors explaining 90% of heart attack risk across 52 countries.
+        <strong>1. Inherited cardiac risk (Lp(a)).</strong> One blood test, $30, never changes. 1 in 5 people carry elevated levels and most doctors never order it.<br><br>
+        <strong>2. Inflammation marker (hs-CRP).</strong> $20/year. People with normal cholesterol but hidden inflammation still have elevated heart disease risk. This catches it.<br><br>
+        <strong>3. Waist circumference.</strong> $3 tape measure. Visceral fat around your organs is one of the strongest predictors of heart attack risk across every population studied.
       </div>
     </div>
   </div>
@@ -769,7 +769,7 @@ footer a:hover { color: var(--text); }
 <div class="container">
   <div class="section">
     <h2>20 metrics, ranked by evidence</h2>
-    <p>Not 400 vanity metrics. <strong>Twenty.</strong> Each backed by large-scale RCTs, Mendelian randomization, or 10K+ prospective cohorts. Weighted by three things: <strong>causal evidence strength</strong>, <strong>cost to measure</strong>, and <strong>whether knowing the number actually changes what you do</strong>.</p>
+    <p>Not 400 vanity metrics. <strong>Twenty.</strong> Each backed by large-scale studies with tens of thousands of participants. Weighted by three things: <strong>how strong the evidence is</strong>, <strong>how much it costs to measure</strong>, and <strong>whether knowing the number actually changes what you do</strong>.</p>
 
     <div class="tier-group">
       <div class="tier-label">Tier 1 &mdash; Foundation (highest weight)</div>
@@ -779,16 +779,16 @@ footer a:hover { color: var(--text); }
           <div class="metric-detail">$40 cuff &middot; SPRINT trial</div>
         </div>
         <div class="metric-card">
-          <div class="metric-name">ApoB</div>
-          <div class="metric-detail">$30-50/yr &middot; Mendelian randomization</div>
+          <div class="metric-name">Cholesterol Particles (ApoB)</div>
+          <div class="metric-detail">$30-50/yr &middot; more accurate than standard cholesterol</div>
         </div>
         <div class="metric-card">
           <div class="metric-name">Fasting Insulin</div>
-          <div class="metric-detail">$40-60/yr &middot; Whitehall II</div>
+          <div class="metric-detail">$40-60/yr &middot; catches problems years before glucose moves</div>
         </div>
         <div class="metric-card">
-          <div class="metric-name">Lp(a)</div>
-          <div class="metric-detail">$30 once &middot; 90% genetic</div>
+          <div class="metric-name">Inherited Cardiac Risk (Lp(a))</div>
+          <div class="metric-detail">$30 once &middot; genetic, 1 in 5 are elevated</div>
         </div>
       </div>
     </div>
@@ -827,8 +827,8 @@ footer a:hover { color: var(--text); }
       <div class="tier-label">Tier 3 &mdash; Clinical depth</div>
       <div class="metric-grid">
         <div class="metric-card">
-          <div class="metric-name">hs-CRP</div>
-          <div class="metric-detail">$20/yr &middot; JUPITER trial</div>
+          <div class="metric-name">Inflammation (hs-CRP)</div>
+          <div class="metric-detail">$20/yr &middot; hidden heart disease risk</div>
         </div>
         <div class="metric-card">
           <div class="metric-name">Fasting Glucose</div>
@@ -843,8 +843,8 @@ footer a:hover { color: var(--text); }
           <div class="metric-detail">Included in lipid panel</div>
         </div>
         <div class="metric-card">
-          <div class="metric-name">TSH</div>
-          <div class="metric-detail">$20/yr &middot; 12% lifetime prevalence</div>
+          <div class="metric-name">Thyroid (TSH)</div>
+          <div class="metric-detail">$20/yr &middot; metabolism, energy, weight</div>
         </div>
         <div class="metric-card">
           <div class="metric-name">Vitamin D + Ferritin</div>
@@ -865,7 +865,7 @@ footer a:hover { color: var(--text); }
     <div class="features">
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
-        <div class="feature-text"><strong>Clinical zones, not just ranges.</strong> "Normal" on a lab report means "not immediately sick." We use Optimal / Healthy / Borderline / Elevated thresholds from AHA, ADA, and ESC. The same cutoffs that inform treatment decisions.</div>
+        <div class="feature-text"><strong>Clinical zones, not just ranges.</strong> "Normal" on a lab report means "not immediately sick." We score you as Optimal, Healthy, Borderline, or Elevated using the same thresholds your cardiologist uses to make treatment decisions.</div>
       </div>
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
@@ -873,7 +873,7 @@ footer a:hover { color: var(--text); }
       </div>
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
-        <div class="feature-text"><strong>Cross-metric patterns.</strong> Metabolic syndrome detection (3+ of 5 criteria). Atherogenic dyslipidemia (TG/HDL ratio). Insulin resistance patterns. Recovery stress signals from wearable data. The compound signal is more important than any single number.</div>
+        <div class="feature-text"><strong>Cross-metric patterns.</strong> Individual numbers tell part of the story. When your triglycerides are high, HDL is low, and insulin is creeping up, that's a pattern. The engine detects these compound signals automatically because they matter more than any single number.</div>
       </div>
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
@@ -881,7 +881,7 @@ footer a:hover { color: var(--text); }
       </div>
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
-        <div class="feature-text"><strong>Local-first. Always.</strong> Your health data lives on your machine. The engine runs locally. Claude connects via MCP. No data leaves your laptop. No accounts, no cloud sync, no third-party access.</div>
+        <div class="feature-text"><strong>Private by default.</strong> Your health data lives on your machine. The engine runs on your laptop. No data is uploaded, no accounts, no cloud sync, no third-party access. You own it.</div>
       </div>
     </div>
   </div>
@@ -896,11 +896,11 @@ footer a:hover { color: var(--text); }
     <div class="features">
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
-        <div class="feature-text"><strong>Garmin Connect.</strong> Authenticate once via CLI, tokens cached. Pulls RHR, HRV, sleep, steps, VO2 max, zone 2, workouts.</div>
+        <div class="feature-text"><strong>Garmin Connect.</strong> Authenticate once, then it pulls heart rate, HRV, sleep, steps, VO2 max, zone 2, and workouts automatically.</div>
       </div>
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
-        <div class="feature-text"><strong>Apple Health.</strong> Export from your iPhone, import the ZIP. SAX streaming handles the massive XML files. Same metrics, same scoring.</div>
+        <div class="feature-text"><strong>Apple Health.</strong> Export from your iPhone, import the file. Handles years of data. Same metrics, same scoring.</div>
       </div>
       <div class="feature">
         <span class="feature-icon">&rarr;</span>
@@ -916,7 +916,7 @@ footer a:hover { color: var(--text); }
     <h2>About me</h2>
     <p>I'm Andrew Deal. Former engineer and product lead. Shipped products across gaming, ag, defense, construction, and graphic design. Spent my 20s running a gym. Now a <strong>health and wellness entrepreneur</strong> building the tools I wish existed when I was training clients.</p>
     <p>Somewhere in my 30s I realized <strong>how little most people actually understand about their own health data</strong>. You get your labs back. Your doctor says "everything looks normal" in a 7-minute appointment. Your wearable shows pretty charts with no context. Meanwhile, 96 million Americans are prediabetic. Half don't know it. And "normal" lab ranges are just the middle 95% of a sick population.</p>
-    <p>I started building this for myself. I wanted to know what my ApoB, fasting insulin, and HRV actually meant. Not in isolation, but together, against real population data, with clinical thresholds from the research that matters. Then I realized: <strong>everyone deserves this</strong>. Not just people who can afford a $3,000/year concierge doctor or a $500 Function Health panel.</p>
+    <p>I started building this for myself. I wanted to know what my cholesterol particles, fasting insulin, and heart rate variability actually meant. Not in isolation, but together, scored against real population data, with the same thresholds cardiologists use. Then I realized: <strong>everyone deserves this</strong>. Not just people who can afford a $3,000/year concierge doctor or a $500 Function Health panel.</p>
     <p>Lately I've been going deep with <a href="https://www.linkedin.com/in/pmederos/" style="color:var(--text); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;" target="_blank" rel="noopener">Paul Mederos</a>, who's building <strong>Kasane</strong>, a daily wellness app focused on habits and behavior change. We're figuring out how scoring and daily practice fit together. Stay tuned.</p>
     <p>The data is yours. The research is public. The engine should be too. The whole thing is <strong>open source</strong>. The <a href="../methodology/" style="color:var(--text); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;">methodology is transparent</a>. Every scoring decision is documented and cited. If I got something wrong, you can see exactly where and tell me.</p>
     <div style="display:flex; gap:20px; align-items:center; margin-top:24px;">
@@ -948,7 +948,7 @@ footer a:hover { color: var(--text); }
   <div class="container">
     <p>
       Built by <a href="https://www.linkedin.com/in/adeal/" target="_blank" rel="noopener">Andrew Deal</a> in San Francisco &middot; <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a><br>
-      Open source &middot; Local-first &middot; Your data never touches a server
+      Open source &middot; Private by default &middot; Your data never touches a server
     </p>
   </div>
 </footer>
