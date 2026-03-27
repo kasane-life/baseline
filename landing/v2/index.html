@@ -455,7 +455,21 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Right: floating card + description -->
+      <!-- Mobile: compact inline stat below names -->
+      <div class="md:hidden mt-6 pl-2" id="outcome-mobile-stat">
+        <div class="flex items-baseline gap-3 mb-1">
+          <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase" id="outcome-mobile-label">sleep duration</div>
+        </div>
+        <div class="flex items-baseline gap-3">
+          <div class="font-stat text-[0.9rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20" id="outcome-mobile-before">5.2 hrs</div>
+          <div class="text-ink-dim/30 text-sm">&rarr;</div>
+          <div class="font-stat text-[1.4rem] text-ink leading-tight" id="outcome-mobile-after">7.4 hrs</div>
+          <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase" id="outcome-mobile-delta">+42%</div>
+        </div>
+        <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-2 max-w-sm" id="outcome-mobile-desc">From fragmented to restorative. The foundation everything else depends on.</p>
+      </div>
+
+      <!-- Right: floating card + description (desktop) -->
       <div class="hidden md:block md:col-span-4 md:col-start-9 relative" style="height: 400px;">
         <div class="absolute top-1/2 -translate-y-1/2 right-0 w-[280px] rounded-lg overflow-hidden shadow-2xl" id="outcome-card" style="transform: translateY(-50%) rotate(2deg);">
           <div class="w-full bg-bg-elevated border border-ink-dim/20 p-6" id="outcome-card-inner">
@@ -965,6 +979,17 @@ if (outcomePinTarget) {
       outcomeCardAfter.textContent = d.after;
       outcomeCardDelta.textContent = d.delta;
       outcomeCardDesc.textContent = d.desc;
+
+      // Update mobile stat
+      const ml = document.getElementById('outcome-mobile-label');
+      if (ml) {
+        ml.textContent = d.label;
+        document.getElementById('outcome-mobile-before').textContent = d.before;
+        document.getElementById('outcome-mobile-after').textContent = d.after;
+        document.getElementById('outcome-mobile-delta').textContent = d.delta;
+        document.getElementById('outcome-mobile-desc').textContent = d.desc;
+        gsap.fromTo('#outcome-mobile-stat', { opacity: 0.4, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: 'expo.out' });
+      }
     }
   });
 
