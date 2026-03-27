@@ -674,14 +674,59 @@ tailwind.config = {
   <div class="px-band py-band">
     <div class="font-label text-coral mb-16 reveal">(a note from us)</div>
 
-    <!-- Story beat 1: Opening statement -->
+    <!-- Story beat 1: Paul's opening — the problem he lived -->
     <div class="max-w-3xl mx-auto mb-20 md:mb-28">
-      <h2 class="font-massive text-[clamp(2rem,5vw,4rem)] text-[#1a1714] leading-[0.92] reveal">THINGS MOVE,<br>AND THEY<br>MOVE FAST.</h2>
+      <h2 class="font-massive text-[clamp(2rem,5vw,4rem)] text-[#1a1714] leading-[0.92] reveal">MORE DATA<br>MADE IT<br>WORSE.</h2>
     </div>
 
-    <!-- Story beat 2: Andrew's story + polaroid -->
+    <!-- Story beat 2: Paul + polaroid -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
       <div class="md:col-span-5 reveal-right">
+        <div class="bg-white p-3 pb-14 shadow-xl inline-block founder-photo" style="transform: rotate(-1.5deg);">
+          <img src="../coach/paul.jpg" alt="Paul Mederos" class="w-full max-w-[320px] aspect-[4/5] object-cover" style="filter: sepia(0.3) saturate(0.8);">
+        </div>
+        <div class="mt-8 space-y-4 max-w-[360px]">
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">name</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Paul Mederos</span>
+          </div>
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">role</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Co-founder</span>
+          </div>
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">before</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Territory Foods, Pro Athlete</span>
+          </div>
+        </div>
+      </div>
+      <div class="md:col-span-6 md:col-start-7 flex flex-col justify-center pl-0 md:pl-4">
+        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 reveal">Full-body MRI. 150+ biomarker panels. Microbiome tests. A decade of spreadsheets.</p>
+        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">Paul assembled an entire care team: functional medicine, primary care, nutrition, specialists. Each provider held a partial picture. He was the one responsible for synthesizing it all.</p>
+      </div>
+    </div>
+
+    <!-- Story beat 3: The anxiety breakthrough -->
+    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
+      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">THE BREAKTHROUGH<br>WASN'T MORE DATA.</h2>
+      <p class="font-display font-bold text-[#1a1714] text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 reveal stagger-1">It was something that could finally synthesize the complete picture.</p>
+      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Accumulating data had intensified his anxiety, not improved his outcomes. When language models became capable enough to connect the dots, the cognitive burden disappeared. A few interventions that actually mattered became clear.</p>
+    </div>
+
+    <!-- Story beat 4: The vision shift -->
+    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
+      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">NOT BUILT FOR<br>BIOHACKERS.</h2>
+      <p class="font-display font-bold text-[#1a1714] text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 reveal stagger-1">Built for the parent who gets lab results and doesn't know what to do with them.</p>
+      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Two kids. Aging parents. Limited time. The system identifies small, impactful daily actions that fit into a real life. Not 30 habits. Three to five.</p>
+    </div>
+
+    <!-- Story beat 5: Andrew + polaroid -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
+      <div class="md:col-span-6 flex flex-col justify-center">
+        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 reveal">I built the coach that texts me every morning.</p>
+        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">It pulls my sleep data, heart rate, weight trend, and lab history. Three weeks in, it cross-referenced sleep fragmentation, heart rate patterns, and nocturia frequency. Flagged possible sleep apnea. Connected dots a decade of doctor visits missed.</p>
+      </div>
+      <div class="md:col-span-5 md:col-start-8 reveal-left">
         <div class="bg-white p-3 pb-14 shadow-xl inline-block founder-photo" style="transform: rotate(2deg);">
           <img src="../coach/andrew.jpg" alt="Andrew Deal" class="w-full max-w-[320px] aspect-[4/5] object-cover" style="filter: sepia(0.3) saturate(0.8);">
         </div>
@@ -697,51 +742,6 @@ tailwind.config = {
           <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
             <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">before</span>
             <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Twitch, GoDaddy, John Deere</span>
-          </div>
-        </div>
-      </div>
-      <div class="md:col-span-6 md:col-start-7 flex flex-col justify-center pl-0 md:pl-4">
-        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 reveal">I built an AI health coach that texts me every morning.</p>
-        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">It pulls my sleep data, heart rate, weight trend, and lab history. It knows what I've measured, what I haven't, and what to do next.</p>
-      </div>
-    </div>
-
-    <!-- Story beat 3: The sleep apnea story -->
-    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
-      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">TEN YEARS<br>OF BAD SLEEP.</h2>
-      <p class="font-display font-bold text-[#1a1714] text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 reveal stagger-1">A three-week-old AI coach caught what a decade of doctor visits missed.</p>
-      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Cross-referenced sleep fragmentation, heart rate patterns, and nocturia frequency. Flagged possible sleep apnea. Connected dots no one else was looking at.</p>
-    </div>
-
-    <!-- Story beat 4: The foundation story -->
-    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
-      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">SKIP THE BORING STUFF,<br>JUMP TO THE<br>SHINY STUFF.</h2>
-      <p class="font-display font-bold text-[#1a1714] text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 reveal stagger-1">First flag on a new user wasn't a lab value. It was a broken foundation.</p>
-      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">60 biomarkers. 8 supplements. Sleep wasn't locked in. That's the failure mode of health culture.</p>
-    </div>
-
-    <!-- Story beat 5: Paul + polaroid -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
-      <div class="md:col-span-6 flex flex-col justify-center">
-        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 reveal">Products that help people change. Not apps that track. Products that move.</p>
-        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">Two decades in behavioral health and consumer wellness. Paul has spent his career building the bridge between intention and action.</p>
-      </div>
-      <div class="md:col-span-5 md:col-start-8 reveal-left">
-        <div class="bg-white p-3 pb-14 shadow-xl inline-block founder-photo" style="transform: rotate(-1.5deg);">
-          <img src="../coach/paul.jpg" alt="Paul Mederos" class="w-full max-w-[320px] aspect-[4/5] object-cover" style="filter: sepia(0.3) saturate(0.8);">
-        </div>
-        <div class="mt-8 space-y-4 max-w-[360px]">
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">name</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Paul Mederos</span>
-          </div>
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">role</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Co-founder</span>
-          </div>
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">before</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Kasane, Territory Foods</span>
           </div>
         </div>
       </div>
