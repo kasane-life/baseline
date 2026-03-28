@@ -1474,6 +1474,7 @@ form.addEventListener('submit', async (e) => {
     if (res.ok) {
       form.style.display = 'none';
       success.classList.remove('hidden');
+      if (window._blTrack) window._blTrack('signup');
     } else {
       btn.disabled = false;
       btn.textContent = "I'M IN";
@@ -1717,6 +1718,48 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
 </div>
 
 <script>
+// ——— Analytics (fire-and-forget to /track) ———
+(function() {
+  const T = 'https://api.mybaseline.health/t';
+  const sid = Math.random().toString(36).slice(2, 10); // session id
+  // Persistent visitor id (survives sessions)
+  let vid;
+  try {
+    vid = localStorage.getItem('bl_vid');
+    if (!vid) { vid = crypto.randomUUID().slice(0, 12); localStorage.setItem('bl_vid', vid); }
+  } catch { vid = 'unknown'; }
+  let maxScroll = 0;
+  let scrollSent = {};
+  const isNew = !localStorage.getItem('bl_seen');
+  try { localStorage.setItem('bl_seen', '1'); } catch {}
+
+  function track(event, data) {
+    try {
+      const payload = JSON.stringify({ event, sid, vid, ts: Date.now(), url: location.pathname, ...data });
+      if (navigator.sendBeacon) { navigator.sendBeacon(T, payload); }
+      else { fetch(T, { method: 'POST', body: payload, keepalive: true }); }
+    } catch {}
+  }
+
+  // Page view + unique visitor
+  track('pageview', { ref: document.referrer || null, new_visitor: isNew });
+
+  // Scroll milestones (25%, 50%, 75%, 100%)
+  window.addEventListener('scroll', () => {
+    const pct = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+    if (pct > maxScroll) maxScroll = pct;
+    [25, 50, 75, 100].forEach(m => {
+      if (maxScroll >= m && !scrollSent[m]) {
+        scrollSent[m] = true;
+        track('scroll', { depth: m });
+      }
+    });
+  }, { passive: true });
+
+  // Expose for chat + form events
+  window._blTrack = track;
+})();
+
 // ——— Milo Demo Chat ———
 (function() {
   const API_URL = 'https://api.mybaseline.health/demo-chat';
@@ -1786,6 +1829,7 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
     panel.classList.add('open');
     fab.style.display = 'none';
     input.focus();
+    if (window._blTrack) window._blTrack('chat_open');
     // Send greeting on first open
     if (!greeted) {
       greeted = true;
@@ -1895,6 +1939,7 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
 
     if (userText) {
       messages.push({ role: 'user', content: userText });
+      if (window._blTrack) window._blTrack('chat_msg', { turn: messages.filter(m => m.role === 'user').length });
     }
 
     // If no messages yet, send a starter to get Milo's greeting
