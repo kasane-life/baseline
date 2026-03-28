@@ -1340,25 +1340,21 @@ if (proofStatRow && !isMobile) {
 // ——— Closing statement: pinned on cream, ghost-fill, then release to CTA (desktop only) ———
 const closingGhost = document.getElementById('closing-ghost');
 if (closingGhost && !isMobile) {
-  // Start invisible, fade in while pinned, then ghost-fill
-  gsap.set(closingGhost, { '--fill': '0%', opacity: 0 });
-
+  // Text is already visible (ghost unfilled state), ghost-fill on scroll
   const closingTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#closing-pin-wrap',
       start: 'top top',
-      end: '+=1200',
+      end: '+=1000',
       pin: '#closing-pin-inner',
       scrub: 1,
     }
   });
 
-  // Blank cream for a beat, then text fades in subtly
-  closingTl.to(closingGhost, { opacity: 1, duration: 0.4, ease: 'none' }, 0.2);
   // Ghost fill from left to right
-  closingTl.to(closingGhost, { '--fill': '100%', duration: 0.6, ease: 'none' }, 0.3);
-  // Hold at full fill
-  closingTl.to({}, { duration: 0.2 });
+  closingTl.to(closingGhost, { '--fill': '100%', duration: 0.8, ease: 'none' }, 0.1);
+  // Hold
+  closingTl.to({}, { duration: 0.3 });
 }
 
 // ——— Coverage bar animations ———
