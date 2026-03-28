@@ -1264,15 +1264,15 @@ if (numOutcomes && !isMobile) {
 
     outcomeCards.forEach((card, i) => {
       const wrapper = document.createElement('div');
-      wrapper.className = 'reveal flex items-baseline gap-4 py-3 border-b border-ink-dim/10';
+      wrapper.className = 'reveal py-4 border-b border-ink-dim/10';
       wrapper.style.opacity = '0';
 
       const name = document.createElement('div');
-      name.className = 'font-display font-bold text-coral text-[1.1rem] tracking-tight shrink-0';
+      name.className = 'font-display font-bold text-coral/60 text-[0.85rem] tracking-tight uppercase mb-1';
       name.textContent = outcomeLabels[i] || '';
 
       const line = document.createElement('p');
-      line.className = 'text-ink-muted text-[0.8rem] leading-relaxed';
+      line.className = 'text-ink text-[0.95rem] leading-relaxed';
       line.textContent = outcomeOneLiner[i] || '';
 
       wrapper.appendChild(name);
