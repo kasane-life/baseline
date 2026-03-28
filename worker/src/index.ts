@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { VOICE_EXTRACTION_TOOL, LAB_EXTRACTION_TOOL } from './schema';
 import { handleAuth } from './auth';
 import { handleSync } from './sync';
-import { handleDemoChat, DEMO_RATE_LIMIT } from './demo';
+import { handleDemoChat, handleDemoSummary, DEMO_RATE_LIMIT } from './demo';
 
 interface Env {
   ANTHROPIC_API_KEY: string;
@@ -184,6 +184,17 @@ export default {
         demoHeaders.set(k, v as string);
       }
       return new Response(response.body, { status: response.status, headers: demoHeaders });
+    }
+
+    // Demo summary — extracts structured context from demo conversation
+    if (request.method === 'POST' && path === '/demo-summary') {
+      const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+      const response = await handleDemoSummary(client, request);
+      const sumHeaders = new Headers(response.headers);
+      for (const [k, v] of Object.entries(headers)) {
+        sumHeaders.set(k, v as string);
+      }
+      return new Response(response.body, { status: response.status, headers: sumHeaders });
     }
 
     if (request.method !== 'POST') {

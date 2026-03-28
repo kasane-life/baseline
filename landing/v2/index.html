@@ -886,6 +886,7 @@ tailwind.config = {
         <form class="space-y-5 reveal stagger-2" id="coach-form" action="https://formspree.io/f/mjgezrdp" method="POST">
           <input type="hidden" name="_subject" value="Coach signup - baseline v2">
           <input type="hidden" name="source" value="landing-v2">
+          <input type="hidden" name="demo_context" id="demo-context" value="">
           <div>
             <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="name">Name</label>
             <input type="text" id="name" name="name" placeholder="First name" required class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
@@ -1686,10 +1687,12 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
   const messagesEl = document.getElementById('milo-messages');
   const typingEl = document.getElementById('milo-typing');
 
+  const SUMMARY_URL = 'https://api.mybaseline.health/demo-summary';
   let messages = []; // conversation history for API
   let isOpen = false;
   let isSending = false;
   let greeted = false;
+  let summarized = false;
 
   fab.addEventListener('click', () => {
     isOpen = true;
@@ -1707,6 +1710,7 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
     isOpen = false;
     panel.classList.remove('open');
     fab.style.display = 'flex';
+    extractSummary();
   });
 
   input.addEventListener('input', () => {
@@ -1784,6 +1788,31 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
     isSending = false;
     sendBtn.disabled = !input.value.trim();
   }
+
+  // Extract structured summary from demo conversation and attach to signup form
+  async function extractSummary() {
+    if (summarized || messages.length < 3) return; // need at least a couple exchanges
+    summarized = true;
+
+    try {
+      const res = await fetch(SUMMARY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.summary) {
+        const contextField = document.getElementById('demo-context');
+        if (contextField) contextField.value = JSON.stringify(data.summary);
+      }
+    } catch { /* silent fail, signup still works without context */ }
+  }
+
+  // Also extract when any form field gets focus (user is about to sign up)
+  document.querySelectorAll('#coach-form input').forEach(field => {
+    field.addEventListener('focus', extractSummary, { once: true });
+  });
 })();
 </script>
 

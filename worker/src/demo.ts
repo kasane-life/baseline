@@ -102,6 +102,58 @@ export async function handleDemoChat(
   }
 }
 
+const SUMMARY_PROMPT = `Extract structured coaching context from this demo conversation. Return ONLY valid JSON, no markdown, no explanation.
+
+Format:
+{
+  "domains": ["sleep", "labs", "nutrition", etc - health domains they mentioned or care about],
+  "goals": ["lose weight", "sleep better", etc - what they want to achieve],
+  "context": ["trains 3x/week", "has recent labs", etc - relevant facts they shared],
+  "primary_concern": "one sentence summary of their main focus"
+}
+
+If the conversation is too short or off-topic, return: {"domains":[],"goals":[],"context":[],"primary_concern":""}`;
+
+export async function handleDemoSummary(
+  client: Anthropic,
+  request: Request,
+): Promise<Response> {
+  let body: { messages: Array<{ role: string; content: string }> };
+  try {
+    body = (await request.json()) as typeof body;
+  } catch {
+    return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  if (!Array.isArray(body.messages) || body.messages.length < 2) {
+    return Response.json({ summary: { domains: [], goals: [], context: [], primary_concern: '' } });
+  }
+
+  // Build transcript for extraction
+  const transcript = body.messages
+    .map((m) => `${m.role}: ${m.content}`)
+    .join('\n');
+
+  try {
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 256,
+      messages: [
+        { role: 'user', content: `${SUMMARY_PROMPT}\n\nConversation:\n${transcript}` },
+      ],
+    });
+
+    let text = response.content[0]?.type === 'text' ? response.content[0].text : '{}';
+    // Strip markdown code fences if present
+    text = text.replace(/```json?\s*/g, '').replace(/```\s*/g, '').trim();
+    const summary = JSON.parse(text);
+    return Response.json({ summary });
+  } catch (err) {
+    console.error('Summary extraction error:', err);
+    return Response.json({ summary: { domains: [], goals: [], context: [], primary_concern: '' } });
+  }
+}
+
 // Hash IP for logging without storing raw IPs
 async function hashIP(ip: string): Promise<string> {
   const encoder = new TextEncoder();
