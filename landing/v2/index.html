@@ -397,82 +397,78 @@ tailwind.config = {
       </div>
     </div>
 
+    <!-- Transition label -->
+    <div class="font-label text-coral mb-6 reveal">(what we help you do)</div>
   </div>
 
-  <!-- Outcomes: centered scroll-linked list (ABCS clients pattern) -->
-  <div class="h-screen flex items-center overflow-hidden" id="outcomes-pin-target">
-    <div class="w-full px-band">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+  <!-- Outcomes: ABCS clients pattern — names scroll, card is sticky -->
+  <div class="relative px-band" id="outcomes-section-scroll">
+    <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
 
-        <!-- Left: side label -->
-        <div class="hidden md:flex md:col-span-2 flex-col justify-center">
-          <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase leading-relaxed">The outcomes<br>we coach on</p>
+      <!-- Left: sticky side label (desktop) -->
+      <div class="hidden md:block md:w-[140px] shrink-0 sticky top-[50vh] -translate-y-1/2">
+        <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase leading-relaxed">The outcomes<br>we coach on</p>
+      </div>
+
+      <!-- Center: names that scroll naturally -->
+      <div class="flex-1 max-w-lg py-[30vh]" id="outcomes-names">
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="sleep">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">SLEEP BETTER</span>
         </div>
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="weight">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">LOSE WEIGHT</span>
+        </div>
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="energy">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">MORE ENERGY</span>
+        </div>
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="strength">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">BUILD STRENGTH</span>
+        </div>
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="nutrition">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">EAT HEALTHIER</span>
+        </div>
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="stress">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">LESS STRESS</span>
+        </div>
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="focus">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">SHARPER FOCUS</span>
+        </div>
+        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="coverage">
+          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">KNOW YOUR SCORE</span>
+        </div>
+      </div>
 
-        <!-- Center: stacked names, centered, scroll-linked -->
-        <div class="md:col-span-4 md:col-start-4 text-center md:text-left">
-          <div id="outcomes-names">
-            <div class="outcome-name cursor-default" data-outcome="0">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">SLEEP BETTER</span>
+      <!-- Right: sticky card + description (desktop) -->
+      <div class="hidden md:block md:w-[300px] shrink-0 sticky top-[50vh] -translate-y-1/2">
+        <!-- Card container with overflow clip for rotation entrance -->
+        <div class="rounded-xl overflow-hidden mb-6" id="outcome-card-wrap">
+          <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl" id="outcome-card">
+            <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4" id="outcome-card-label">sleep duration</div>
+            <div class="flex items-baseline gap-3 mb-1">
+              <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20" id="outcome-card-before">5.2 hrs</div>
+              <div class="text-ink-dim/30">&rarr;</div>
+              <div class="font-stat text-[1.8rem] text-ink leading-tight" id="outcome-card-after">7.4 hrs</div>
             </div>
-            <div class="outcome-name cursor-default" data-outcome="1">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">LOSE WEIGHT</span>
-            </div>
-            <div class="outcome-name cursor-default" data-outcome="2">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">MORE ENERGY</span>
-            </div>
-            <div class="outcome-name cursor-default" data-outcome="3">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">BUILD STRENGTH</span>
-            </div>
-            <div class="outcome-name cursor-default" data-outcome="4">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">EAT HEALTHIER</span>
-            </div>
-            <div class="outcome-name cursor-default" data-outcome="5">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">LESS STRESS</span>
-            </div>
-            <div class="outcome-name cursor-default" data-outcome="6">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">SHARPER FOCUS</span>
-            </div>
-            <div class="outcome-name cursor-default" data-outcome="7">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1.2] tracking-tight transition-colors duration-400">KNOW YOUR SCORE</span>
-            </div>
+            <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4" id="outcome-card-delta">+42%</div>
+            <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed" id="outcome-card-desc">From fragmented to restorative. The foundation everything else depends on.</p>
           </div>
         </div>
+        <p class="text-ink-muted text-[0.85rem] leading-relaxed" id="outcome-card-blurb">The single highest-leverage change for most people.</p>
+      </div>
 
-        <!-- Right: card + description -->
-        <div class="hidden md:block md:col-span-4 md:col-start-9 relative" style="height: 420px;">
-          <!-- Card -->
-          <div class="absolute top-[15%] right-0 w-[260px] rounded-xl overflow-hidden shadow-2xl" id="outcome-card" style="transform: rotate(2deg);">
-            <div class="w-full bg-bg-elevated border border-ink-dim/20 p-6" id="outcome-card-inner">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4" id="outcome-card-label">sleep duration</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20" id="outcome-card-before">5.2 hrs</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight" id="outcome-card-after">7.4 hrs</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4" id="outcome-card-delta">+42%</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed" id="outcome-card-desc">From fragmented to restorative. The foundation everything else depends on.</p>
-            </div>
-          </div>
-          <!-- Description below card -->
-          <div class="absolute bottom-[10%] right-0 w-[260px]">
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed" id="outcome-card-blurb">Pick one. We start there. Everything else follows.</p>
-          </div>
-        </div>
+    </div>
 
-        <!-- Mobile: compact stat -->
-        <div class="md:hidden mt-4 text-center" id="outcome-mobile-stat">
-          <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-1" id="outcome-mobile-label">sleep duration</div>
-          <div class="flex items-baseline justify-center gap-3">
-            <div class="font-stat text-[0.9rem] text-ink-dim/40 leading-tight line-through" id="outcome-mobile-before">5.2 hrs</div>
-            <div class="text-ink-dim/30 text-sm">&rarr;</div>
-            <div class="font-stat text-[1.4rem] text-ink leading-tight" id="outcome-mobile-after">7.4 hrs</div>
-            <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase" id="outcome-mobile-delta">+42%</div>
-          </div>
-          <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-2" id="outcome-mobile-desc">From fragmented to restorative. The foundation everything else depends on.</p>
-        </div>
-
+    <!-- Mobile: sticky stat at bottom -->
+    <div class="md:hidden sticky bottom-0 left-0 right-0 bg-bg/90 backdrop-blur-sm border-t border-ink-dim/10 px-band py-4 z-10" id="outcome-mobile-stat">
+      <div class="flex items-baseline gap-3 mb-1">
+        <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase" id="outcome-mobile-label">sleep duration</div>
+      </div>
+      <div class="flex items-baseline gap-3">
+        <div class="font-stat text-[0.9rem] text-ink-dim/40 leading-tight line-through" id="outcome-mobile-before">5.2 hrs</div>
+        <div class="text-ink-dim/30 text-sm">&rarr;</div>
+        <div class="font-stat text-[1.3rem] text-ink leading-tight" id="outcome-mobile-after">7.4 hrs</div>
+        <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase" id="outcome-mobile-delta">+42%</div>
       </div>
     </div>
   </div>
@@ -891,88 +887,72 @@ document.querySelectorAll('.stack-word').forEach((el, i) => {
   });
 });
 
-// ——— Scroll-linked outcomes (ABCS clients pattern: centered, scroll-through) ———
-const outcomeData = [
-  { label: 'sleep duration', before: '5.2 hrs', after: '7.4 hrs', delta: '+42%', desc: 'From fragmented to restorative. The foundation everything else depends on.', blurb: 'The single highest-leverage change for most people.', rotation: '2deg' },
-  { label: 'weight trend', before: '206 lbs', after: '188 lbs', delta: '-18 lbs', desc: 'Sustainable habits, not crash diets. Your coach tracks the trend, not the day.', blurb: 'Calories, protein, consistency. No crash diets.', rotation: '-3deg' },
-  { label: 'daily energy', before: '3/10', after: '8/10', delta: '+167%', desc: 'Move more, recover well, feel alert. Energy is the output of every system working.', blurb: 'Energy is the output of every system working.', rotation: '4deg' },
-  { label: 'training consistency', before: '1x/wk', after: '4x/wk', delta: '4x', desc: 'Progressive load, consistent training. Volume adjusts with your recovery.', blurb: 'Volume adjusts with your recovery data.', rotation: '-2deg' },
-  { label: 'daily protein', before: '62g', after: '165g', delta: '+166%', desc: 'One change at a time until it sticks. No meal plans. Just better defaults.', blurb: 'One change at a time until it sticks.', rotation: '3deg' },
-  { label: 'hrv baseline', before: '28 ms', after: '52 ms', delta: '+86%', desc: 'Stress shows up in the numbers before you feel it. Recovery is measurable.', blurb: 'Stress shows up before you feel it.', rotation: '-4deg' },
-  { label: 'sleep consistency', before: '52%', after: '89%', delta: '+71%', desc: 'Same bedtime, same wake time. Focus follows when the basics are locked in.', blurb: 'Same time in, same time out. Every day.', rotation: '2deg' },
-  { label: 'health coverage', before: '42%', after: '85%', delta: '+43pts', desc: 'Your full health picture. What you have measured, what is missing, what to do next.', blurb: 'What you have, what is missing, what to do next.', rotation: '-3deg' },
-];
-const outcomePinTarget = document.getElementById('outcomes-pin-target');
+// ——— Outcomes: ABCS clients pattern (names scroll, card is sticky) ———
+const outcomeMap = {
+  sleep:     { label: 'sleep duration',        before: '5.2 hrs', after: '7.4 hrs', delta: '+42%',  desc: 'From fragmented to restorative. The foundation everything else depends on.', blurb: 'The single highest-leverage change for most people.' },
+  weight:    { label: 'weight trend',          before: '206 lbs', after: '188 lbs', delta: '-18 lbs', desc: 'Sustainable habits, not crash diets. Your coach tracks the trend, not the day.', blurb: 'Calories, protein, consistency. No crash diets.' },
+  energy:    { label: 'daily energy',          before: '3/10',    after: '8/10',    delta: '+167%', desc: 'Move more, recover well, feel alert. Energy is the output of every system working.', blurb: 'Energy is the output of every system working.' },
+  strength:  { label: 'training consistency',  before: '1x/wk',  after: '4x/wk',  delta: '4x',    desc: 'Progressive load, consistent training. Volume adjusts with your recovery.', blurb: 'Volume adjusts with your recovery data.' },
+  nutrition: { label: 'daily protein',         before: '62g',     after: '165g',    delta: '+166%', desc: 'One change at a time until it sticks. No meal plans. Just better defaults.', blurb: 'One change at a time until it sticks.' },
+  stress:    { label: 'hrv baseline',          before: '28 ms',   after: '52 ms',   delta: '+86%',  desc: 'Stress shows up in the numbers before you feel it. Recovery is measurable.', blurb: 'Stress shows up before you feel it.' },
+  focus:     { label: 'sleep consistency',     before: '52%',     after: '89%',     delta: '+71%',  desc: 'Same bedtime, same wake time. Focus follows when the basics are locked in.', blurb: 'Same time in, same time out. Every day.' },
+  coverage:  { label: 'health coverage',       before: '42%',     after: '85%',     delta: '+43pts', desc: 'Your full health picture. What you have measured, what is missing, what to do next.', blurb: 'What you have, what is missing, what to do next.' },
+};
 const outcomeNames = document.querySelectorAll('.outcome-name');
 const outcomeCard = document.getElementById('outcome-card');
-const outcomeCardLabel = document.getElementById('outcome-card-label');
-const outcomeCardBefore = document.getElementById('outcome-card-before');
-const outcomeCardAfter = document.getElementById('outcome-card-after');
-const outcomeCardDelta = document.getElementById('outcome-card-delta');
-const outcomeCardDesc = document.getElementById('outcome-card-desc');
-const outcomeCardBlurb = document.getElementById('outcome-card-blurb');
-let currentOutcome = -1;
 
-if (outcomePinTarget) {
-  const isMobile = window.innerWidth < 768;
+function showOutcome(name) {
+  const d = outcomeMap[name];
+  if (!d) return;
 
-  ScrollTrigger.create({
-    trigger: outcomePinTarget,
-    start: 'top top',
-    end: isMobile ? '+=200%' : '+=400%',
-    pin: true,
-    onUpdate: (self) => {
-      const total = outcomeData.length;
-      const idx = Math.min(Math.floor(self.progress * total), total - 1);
-      if (idx === currentOutcome) return;
-      currentOutcome = idx;
-      const d = outcomeData[idx];
-
-      // Highlight active, dim others (ABCS client pattern)
-      outcomeNames.forEach((name, i) => {
-        const span = name.querySelector('span');
-        if (i === idx) {
-          gsap.to(span, { color: '#c83c3c', duration: 0.4, ease: 'expo.out' });
-        } else {
-          gsap.to(span, { color: 'rgba(240,240,240,0.15)', duration: 0.3 });
-        }
-      });
-
-      // Scroll the list up so active item stays roughly centered
-      const namesContainer = document.getElementById('outcomes-names');
-      const activeEl = outcomeNames[idx];
-      if (namesContainer && activeEl) {
-        const containerRect = namesContainer.getBoundingClientRect();
-        const activeRect = activeEl.getBoundingClientRect();
-        const offset = activeRect.top - containerRect.top - (containerRect.height / 2) + (activeRect.height / 2);
-        gsap.to(namesContainer, { y: -offset, duration: 0.6, ease: 'expo.out' });
-      }
-
-      // Card swap with scale
-      gsap.fromTo(outcomeCard,
-        { scale: 0.9, opacity: 0.5 },
-        { scale: 1, opacity: 1, rotation: d.rotation, duration: 0.5, ease: 'back.out(1.2)' }
-      );
-      outcomeCardLabel.textContent = d.label;
-      outcomeCardBefore.textContent = d.before;
-      outcomeCardAfter.textContent = d.after;
-      outcomeCardDelta.textContent = d.delta;
-      outcomeCardDesc.textContent = d.desc;
-      if (outcomeCardBlurb) outcomeCardBlurb.textContent = d.blurb;
-
-      // Mobile stat
-      const ml = document.getElementById('outcome-mobile-label');
-      if (ml) {
-        ml.textContent = d.label;
-        document.getElementById('outcome-mobile-before').textContent = d.before;
-        document.getElementById('outcome-mobile-after').textContent = d.after;
-        document.getElementById('outcome-mobile-delta').textContent = d.delta;
-        document.getElementById('outcome-mobile-desc').textContent = d.desc;
-        gsap.fromTo('#outcome-mobile-stat', { opacity: 0.4, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: 'expo.out' });
-      }
+  // Fade all names to dim, highlight active
+  outcomeNames.forEach(el => {
+    const span = el.querySelector('span');
+    if (el.dataset.outcomeName === name) {
+      gsap.to(span, { color: '#c83c3c', duration: 0.5, ease: 'expo.out' });
+    } else {
+      gsap.to(span, { color: 'rgba(240,240,240,0.15)', duration: 0.4 });
     }
   });
+
+  // Card entrance: scale up, rotate in (ABCS logo pattern)
+  if (outcomeCard) {
+    gsap.fromTo(outcomeCard,
+      { scale: 0.85, rotation: 8, opacity: 0.3 },
+      { scale: 1, rotation: 0, opacity: 1, duration: 0.6, ease: 'expo.out' }
+    );
+  }
+
+  // Update card content
+  const el = (id) => document.getElementById(id);
+  if (el('outcome-card-label'))  el('outcome-card-label').textContent = d.label;
+  if (el('outcome-card-before')) el('outcome-card-before').textContent = d.before;
+  if (el('outcome-card-after'))  el('outcome-card-after').textContent = d.after;
+  if (el('outcome-card-delta'))  el('outcome-card-delta').textContent = d.delta;
+  if (el('outcome-card-desc'))   el('outcome-card-desc').textContent = d.desc;
+  if (el('outcome-card-blurb'))  el('outcome-card-blurb').textContent = d.blurb;
+
+  // Mobile stat
+  if (el('outcome-mobile-label')) {
+    el('outcome-mobile-label').textContent = d.label;
+    el('outcome-mobile-before').textContent = d.before;
+    el('outcome-mobile-after').textContent = d.after;
+    el('outcome-mobile-delta').textContent = d.delta;
+  }
 }
+
+// Each name gets its own ScrollTrigger at "top center"
+const nameKeys = [];
+outcomeNames.forEach((nameEl, i) => {
+  const key = nameEl.dataset.outcomeName;
+  nameKeys.push(key);
+  ScrollTrigger.create({
+    trigger: nameEl,
+    start: 'top center',
+    onEnter: () => showOutcome(key),
+    onLeaveBack: () => { if (i > 0) showOutcome(nameKeys[i - 1]); },
+  });
+});
 
 // ——— Coverage bar animations ———
 document.querySelectorAll('.coverage-bar').forEach(bar => {
@@ -1084,20 +1064,19 @@ document.querySelectorAll('.founder-photo').forEach(photo => {
   });
 });
 
-// ——— Domain cards: emerge from below with parallax speeds ———
-const domainSpeeds = [120, 80, 140, 100, 90, 130, 70, 110];
+// ——— Domain cards: each emerges individually at different speeds ———
+const domainSpeeds = [140, 90, 160, 110, 100, 150, 80, 130];
 document.querySelectorAll('.domain-emerge').forEach((card, i) => {
   gsap.from(card, {
     y: domainSpeeds[i] || 100,
-    scale: 0.85,
+    scale: 0.8,
     opacity: 0,
-    duration: 1.2,
-    ease: 'expo.out',
+    ease: 'none',
     scrollTrigger: {
-      trigger: document.getElementById('domains-parallax'),
-      start: 'top 85%',
-      end: 'center 50%',
-      scrub: 0.8,
+      trigger: card,
+      start: 'top 95%',
+      end: 'top 40%',
+      scrub: true,
     }
   });
 });
