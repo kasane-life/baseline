@@ -52,14 +52,14 @@ tailwind.config = {
     .font-ghost-dark {
       font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
       color: transparent;
-      background: linear-gradient(to right, rgba(240,240,240,0.12) var(--fill, 0%), rgba(240,240,240,0.04) var(--fill, 0%));
+      background: linear-gradient(to right, rgba(240,240,240,0.18) var(--fill, 0%), rgba(240,240,240,0.07) var(--fill, 0%));
       -webkit-background-clip: text;
       background-clip: text;
     }
     .font-ghost-light {
       font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
       color: transparent;
-      background: linear-gradient(to right, rgba(200,60,60,0.25) var(--fill, 0%), rgba(200,60,60,0.06) var(--fill, 0%));
+      background: linear-gradient(to right, rgba(200,60,60,0.3) var(--fill, 0%), rgba(200,60,60,0.1) var(--fill, 0%));
       -webkit-background-clip: text;
       background-clip: text;
     }
@@ -216,9 +216,9 @@ tailwind.config = {
   /* Step card emerge */
   .step-emerge { will-change: transform, opacity; }
 
-  /* Mobile spacing tightening */
+  /* Mobile: hide ghost text connectors, they eat scroll space */
   @media (max-width: 767px) {
-    .connector-section { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+    .connector-section { display: none !important; }
   }
 
   /* Step card with left accent */
