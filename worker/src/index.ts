@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { VOICE_EXTRACTION_TOOL, LAB_EXTRACTION_TOOL } from './schema';
 import { handleAuth } from './auth';
 import { handleSync } from './sync';
+import { handleDemoChat, DEMO_RATE_LIMIT } from './demo';
 
 interface Env {
   ANTHROPIC_API_KEY: string;
@@ -133,7 +134,7 @@ export default {
 
     // Health check — allow GET
     if (request.method === 'GET' && (path === '/' || path === '/health')) {
-      return Response.json({ status: 'ok', endpoints: ['/parse-voice', '/parse-lab', '/auth/*', '/sync/*', '/track'] }, { headers });
+      return Response.json({ status: 'ok', endpoints: ['/parse-voice', '/parse-lab', '/auth/*', '/sync/*', '/track', '/demo-chat'] }, { headers });
     }
 
     // Analytics tracking — fire-and-forget, never errors
@@ -171,6 +172,18 @@ export default {
         syncHeaders.set(k, v as string);
       }
       return new Response(response.body, { status: response.status, headers: syncHeaders });
+    }
+
+    // Demo chat — public, rate-limited
+    if (request.method === 'POST' && path === '/demo-chat') {
+      const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+      const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+      const response = await handleDemoChat(client, request, env.LOGS, ip);
+      const demoHeaders = new Headers(response.headers);
+      for (const [k, v] of Object.entries(headers)) {
+        demoHeaders.set(k, v as string);
+      }
+      return new Response(response.body, { status: response.status, headers: demoHeaders });
     }
 
     if (request.method !== 'POST') {

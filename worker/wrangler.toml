@@ -4,7 +4,7 @@ compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-ALLOWED_ORIGIN = "https://andrewdeal.info,https://beta.mybaseline.health"
+ALLOWED_ORIGIN = "https://andrewdeal.info,https://beta.mybaseline.health,https://mybaseline.health"
 
 [[kv_namespaces]]
 binding = "LOGS"
