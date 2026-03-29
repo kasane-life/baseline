@@ -84,16 +84,26 @@
     let silenceTimer = null;
 
     recognition.onresult = function (e) {
-      const transcript = Array.from(e.results)
-        .map(function (r) { return r[0].transcript; })
-        .join('');
+      // Build transcript from final results + the latest interim result only.
+      // Without this, continuous mode repeats earlier segments.
+      var parts = [];
+      for (var i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          parts.push(e.results[i][0].transcript);
+        }
+      }
+      // Add the latest interim (non-final) result if there is one
+      var last = e.results[e.results.length - 1];
+      if (!last.isFinal) {
+        parts.push(last[0].transcript);
+      }
+      var transcript = parts.join(' ').replace(/\s+/g, ' ').trim();
       input.value = transcript;
       sendBtn.disabled = !transcript.trim();
 
       if (silenceTimer) clearTimeout(silenceTimer);
 
-      var lastResult = e.results[e.results.length - 1];
-      if (lastResult.isFinal && transcript.trim()) {
+      if (last.isFinal && transcript.trim()) {
         silenceTimer = setTimeout(function () {
           recognition.stop();
           setTimeout(send, 100);
