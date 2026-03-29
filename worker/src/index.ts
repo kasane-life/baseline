@@ -146,7 +146,8 @@ export default {
         const event = payload.event || 'unknown';
         const id = `track/${event}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
         const country = request.headers.get('cf-ipcountry') || '';
-        await env.LOGS.put(id, JSON.stringify({ ...payload, country, ip_country: country }), {
+        const ua = request.headers.get('user-agent') || '';
+        await env.LOGS.put(id, JSON.stringify({ ...payload, country, ip_country: country, ua }), {
           expirationTtl: 90 * 24 * 60 * 60, // 90 days
         });
       } catch { /* swallow all errors */ }
