@@ -158,6 +158,9 @@
     panel.classList.add('open');
     fab.style.display = 'none';
     input.focus();
+    // Disable page scroll (Lenis or native) while chat is open
+    document.body.style.overflow = 'hidden';
+    if (window.lenis) window.lenis.stop();
     if (window._blTrack) window._blTrack('chat_open');
     if (!greeted) {
       greeted = true;
@@ -169,6 +172,9 @@
     isOpen = false;
     panel.classList.remove('open');
     fab.style.display = 'flex';
+    // Re-enable page scroll
+    document.body.style.overflow = '';
+    if (window.lenis) window.lenis.start();
     extractSummary();
   });
 
@@ -289,6 +295,10 @@
     } else {
       div.textContent = content;
       messagesEl.appendChild(div);
+    }
+    // Keep typing indicator at the very bottom
+    if (typingEl && typingEl.parentNode === messagesEl) {
+      messagesEl.appendChild(typingEl);
     }
     // Scroll to bottom with a frame delay to ensure DOM has rendered
     requestAnimationFrame(function () {
