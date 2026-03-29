@@ -77,50 +77,35 @@
   if (SpeechRecognition && micBtn) {
     micBtn.style.display = 'flex';
     recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.interimResults = false;
     recognition.lang = 'en-US';
 
-    let silenceTimer = null;
+    // Cross-platform approach: one utterance per session.
+    // Tap mic → speak → browser detects pause → final result → auto-send.
+    // Works identically on Android, iOS, and desktop.
 
     recognition.onresult = function (e) {
-      // Build transcript from final results + the latest interim result only.
-      // Without this, continuous mode repeats earlier segments.
-      var parts = [];
-      for (var i = 0; i < e.results.length; i++) {
-        if (e.results[i].isFinal) {
-          parts.push(e.results[i][0].transcript);
-        }
-      }
-      // Add the latest interim (non-final) result if there is one
-      var last = e.results[e.results.length - 1];
-      if (!last.isFinal) {
-        parts.push(last[0].transcript);
-      }
-      var transcript = parts.join(' ').replace(/\s+/g, ' ').trim();
-      input.value = transcript;
-      sendBtn.disabled = !transcript.trim();
-
-      if (silenceTimer) clearTimeout(silenceTimer);
-
-      if (last.isFinal && transcript.trim()) {
-        silenceTimer = setTimeout(function () {
-          recognition.stop();
-          setTimeout(send, 100);
-        }, isIOS ? 2500 : 2000);
+      var transcript = e.results[0][0].transcript.trim();
+      if (transcript) {
+        input.value = transcript;
+        sendBtn.disabled = false;
       }
     };
 
     recognition.onend = function () {
-      if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
       isRecording = false;
       micBtn.classList.remove('recording');
+      // Auto-send whatever landed in the input
+      if (input.value.trim()) {
+        setTimeout(send, 300);
+      }
     };
 
     recognition.onerror = function (e) {
       isRecording = false;
       micBtn.classList.remove('recording');
-      if (isIOS && e.error === 'not-allowed') {
+      if (e.error === 'not-allowed') {
         input.placeholder = 'Tap the mic on your keyboard to dictate...';
         micBtn.style.display = 'none';
       }
@@ -128,11 +113,7 @@
 
     micBtn.addEventListener('click', function () {
       if (isRecording) {
-        if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
         recognition.stop();
-        if (input.value.trim()) {
-          setTimeout(send, 100);
-        }
       } else {
         isRecording = true;
         micBtn.classList.add('recording');
