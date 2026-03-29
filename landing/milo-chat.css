@@ -20,6 +20,9 @@
   border-radius: 16px; display: none; flex-direction: column;
   box-shadow: 0 16px 60px rgba(0,0,0,0.6);
   overflow: hidden;
+  /* Prevent page scroll when interacting with chat */
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 #milo-panel.open { display: flex; }
 
@@ -46,6 +49,9 @@
   display: flex; flex-direction: column; gap: 12px;
   scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
   min-height: 0;
+  /* Capture scroll inside the messages area, not the page */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .milo-msg {

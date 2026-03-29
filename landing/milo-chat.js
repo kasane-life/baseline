@@ -137,6 +137,21 @@
     });
   }
 
+  // ——— Prevent page scroll when touching chat panel ———
+  // Lenis and other smooth-scroll libraries intercept touch events.
+  // Stop them from reaching the page when the user is scrolling inside the chat.
+  panel.addEventListener('touchmove', function (e) {
+    e.stopPropagation();
+  }, { passive: true });
+
+  panel.addEventListener('wheel', function (e) {
+    e.stopPropagation();
+  }, { passive: true });
+
+  // Also tell Lenis to ignore this element (if Lenis is loaded)
+  panel.setAttribute('data-lenis-prevent', '');
+  messagesEl.setAttribute('data-lenis-prevent', '');
+
   // ——— Panel open/close ———
   fab.addEventListener('click', function () {
     isOpen = true;
@@ -275,7 +290,10 @@
       div.textContent = content;
       messagesEl.appendChild(div);
     }
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    // Scroll to bottom with a frame delay to ensure DOM has rendered
+    requestAnimationFrame(function () {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
   }
 
   // ——— API call ———
@@ -293,7 +311,9 @@
       : messages;
 
     typingEl.classList.add('visible');
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    requestAnimationFrame(function () {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
 
     try {
       var res = await fetch(API_URL, {
