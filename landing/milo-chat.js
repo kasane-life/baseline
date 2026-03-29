@@ -89,16 +89,27 @@
       var transcript = e.results[0][0].transcript.trim();
       if (transcript) {
         input.value = transcript;
-        sendBtn.disabled = false;
       }
     };
 
     recognition.onend = function () {
       isRecording = false;
       micBtn.classList.remove('recording');
-      // Auto-send whatever landed in the input
-      if (input.value.trim()) {
-        setTimeout(send, 300);
+      var text = input.value.trim();
+      if (text) {
+        // Show "Sending..." so user knows what's happening
+        input.placeholder = 'Sending...';
+        // 3 second pause: user can see their text and edit before it sends
+        setTimeout(function () {
+          if (input.value.trim()) {
+            send();
+          }
+          input.placeholder = 'Tap the mic or type here...';
+          updateButtons();
+        }, 3000);
+      } else {
+        input.placeholder = 'Tap the mic or type here...';
+        updateButtons();
       }
     };
 
@@ -113,16 +124,20 @@
 
     micBtn.addEventListener('click', function () {
       if (isRecording) {
+        // Stop recording, let onend handle the send
         recognition.stop();
       } else {
         isRecording = true;
         micBtn.classList.add('recording');
+        sendBtn.classList.remove('visible');
         input.value = '';
+        input.placeholder = 'Listening... tap mic when done';
         try {
           recognition.start();
         } catch (e) {
           isRecording = false;
           micBtn.classList.remove('recording');
+          input.placeholder = 'Tap the mic or type here...';
         }
       }
     });
@@ -169,10 +184,20 @@
     extractSummary();
   });
 
-  // ——— Input handling ———
-  input.addEventListener('input', function () {
-    sendBtn.disabled = !input.value.trim() || isSending;
-  });
+  // ——— Input handling: toggle mic/send visibility ———
+  function updateButtons() {
+    var hasText = input.value.trim().length > 0;
+    if (hasText) {
+      sendBtn.classList.add('visible');
+      sendBtn.disabled = isSending;
+      if (micBtn) micBtn.classList.add('hidden');
+    } else {
+      sendBtn.classList.remove('visible');
+      if (micBtn && !isRecording) micBtn.classList.remove('hidden');
+    }
+  }
+
+  input.addEventListener('input', updateButtons);
 
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey && input.value.trim() && !isSending) {
@@ -187,10 +212,10 @@
     var text = input.value.trim();
     if (!text || isSending) return;
     input.value = '';
-    sendBtn.disabled = true;
     // After first message, swap to standard placeholder
     input.placeholder = 'Ask Milo anything about your health...';
     addMessage('user', text);
+    updateButtons();
     sendToMilo(text);
   }
 
