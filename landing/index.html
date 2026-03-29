@@ -1803,10 +1803,11 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
   if (SpeechRecognition && micBtn) {
     micBtn.style.display = 'flex';
     recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    // iOS doesn't handle interimResults well. Use false on iOS.
-    recognition.interimResults = !isIOS;
+    recognition.continuous = true;
+    recognition.interimResults = true;
     recognition.lang = 'en-US';
+
+    let silenceTimer = null;
 
     recognition.onresult = (e) => {
       const transcript = Array.from(e.results)
@@ -1814,18 +1815,23 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
         .join('');
       input.value = transcript;
       sendBtn.disabled = !transcript.trim();
-      // Auto-send on final result (works on both platforms with interimResults off)
-      if (e.results[e.results.length - 1].isFinal && transcript.trim()) {
-        // Small delay on iOS to let the UI update
-        if (isIOS) {
-          setTimeout(() => send(), 300);
-        } else {
-          send();
-        }
+
+      // Reset silence timer on every result
+      if (silenceTimer) clearTimeout(silenceTimer);
+
+      // When we get a final result, start a 2-second silence timer.
+      // If no new speech comes in, stop recording and auto-send.
+      const lastResult = e.results[e.results.length - 1];
+      if (lastResult.isFinal && transcript.trim()) {
+        silenceTimer = setTimeout(() => {
+          recognition.stop();
+          setTimeout(() => send(), 100);
+        }, isIOS ? 2500 : 2000);
       }
     };
 
     recognition.onend = () => {
+      if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
       isRecording = false;
       micBtn.classList.remove('recording');
     };
@@ -1843,7 +1849,12 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
 
     micBtn.addEventListener('click', () => {
       if (isRecording) {
+        // Tap to stop: cancel silence timer, stop recognition, send what we have
+        if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
         recognition.stop();
+        if (input.value.trim()) {
+          setTimeout(() => send(), 100);
+        }
       } else {
         isRecording = true;
         micBtn.classList.add('recording');
@@ -1851,7 +1862,6 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
         try {
           recognition.start();
         } catch (e) {
-          // iOS can throw if recognition is already active
           isRecording = false;
           micBtn.classList.remove('recording');
         }
