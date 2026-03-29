@@ -1544,8 +1544,20 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
 </script>
 
 <!-- ═══════════════════════ MILO DEMO CHAT WIDGET ═══════════════════════ -->
-<link rel="stylesheet" href="milo-chat.css">
-<script src="milo-chat.js"></script>
+<script>
+// Auto cache-bust: loads milo-chat.css + milo-chat.js with a unique timestamp
+// so browsers and CDNs always fetch the latest version.
+(function() {
+  var v = Date.now();
+  var css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = 'milo-chat.css?v=' + v;
+  document.head.appendChild(css);
+  var js = document.createElement('script');
+  js.src = 'milo-chat.js?v=' + v;
+  document.body.appendChild(js);
+})();
+</script>
 
 </body>
 </html>
