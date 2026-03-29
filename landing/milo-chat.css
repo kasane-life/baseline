@@ -1,0 +1,160 @@
+/* Milo Demo Chat Widget — standalone styles */
+/* Usage: <link rel="stylesheet" href="milo-chat.css"> */
+
+#milo-fab {
+  position: fixed; bottom: 24px; right: 24px; z-index: 200;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #c83c3c; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(200,60,60,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#milo-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(200,60,60,0.5); }
+#milo-fab svg { width: 24px; height: 24px; fill: white; }
+
+#milo-panel {
+  position: fixed; bottom: 24px; right: 24px; z-index: 201;
+  width: min(400px, calc(100vw - 32px)); max-width: calc(100vw - 32px);
+  height: min(560px, calc(100vh - 48px));
+  background: #0e0e11; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; display: none; flex-direction: column;
+  box-shadow: 0 16px 60px rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+#milo-panel.open { display: flex; }
+
+#milo-header {
+  padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: space-between;
+}
+#milo-header .milo-title {
+  font-family: 'Anybody', sans-serif; font-weight: 700; font-size: 0.85rem;
+  color: #f0f0f0; letter-spacing: -0.02em;
+}
+#milo-header .milo-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.55rem;
+  color: #c83c3c; letter-spacing: 0.2em; text-transform: uppercase;
+}
+#milo-close {
+  background: none; border: none; cursor: pointer; padding: 4px;
+  color: rgba(255,255,255,0.3); transition: color 0.2s;
+}
+#milo-close:hover { color: rgba(255,255,255,0.7); }
+
+#milo-messages {
+  flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 12px;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+  min-height: 0;
+}
+
+.milo-msg {
+  max-width: 85%; padding: 10px 14px; border-radius: 12px;
+  font-family: 'Inter', sans-serif; font-size: 0.85rem; line-height: 1.55;
+  overflow-wrap: break-word; word-break: break-word;
+}
+.milo-msg.assistant {
+  align-self: flex-start; background: rgba(255,255,255,0.06); color: #e0e0e0;
+  border-bottom-left-radius: 4px;
+}
+.milo-msg.assistant p { margin: 0 0 8px; }
+.milo-msg.assistant p:last-child { margin-bottom: 0; }
+.milo-msg.assistant ol, .milo-msg.assistant ul {
+  margin: 8px 0; padding-left: 0; list-style: none;
+}
+.milo-msg.assistant li {
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-weight: 500;
+}
+.milo-msg.assistant li:last-child { border-bottom: none; }
+.milo-msg.assistant ol { counter-reset: milo; }
+.milo-msg.assistant ol li { counter-increment: milo; }
+.milo-msg.assistant ol li::before {
+  content: counter(milo) ". ";
+  color: #c83c3c; font-weight: 700; margin-right: 4px;
+}
+
+.milo-choices {
+  display: flex; flex-direction: column; gap: 6px; margin-top: 8px;
+  align-self: flex-start; max-width: 85%; width: 85%;
+  overflow-wrap: break-word; word-break: break-word;
+}
+.milo-choice {
+  background: rgba(200,60,60,0.12); border: 1px solid rgba(200,60,60,0.25);
+  color: #e0e0e0; border-radius: 12px; padding: 8px 14px;
+  font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 500;
+  cursor: pointer; transition: background 0.2s, border-color 0.2s;
+  text-align: left; line-height: 1.4;
+  overflow-wrap: break-word; word-break: break-word;
+}
+.milo-choice:hover {
+  background: rgba(200,60,60,0.25); border-color: rgba(200,60,60,0.5);
+}
+.milo-choice.selected {
+  background: rgba(200,60,60,0.3); border-color: #c83c3c;
+}
+.milo-choices-submit {
+  background: #c83c3c; color: white; border: none; border-radius: 8px;
+  padding: 8px 20px; font-family: 'Inter', sans-serif; font-size: 0.8rem;
+  font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+  margin-top: 4px; display: none;
+}
+.milo-choices-submit:hover { opacity: 0.85; }
+
+.milo-msg.user {
+  align-self: flex-end; background: #c83c3c; color: white;
+  border-bottom-right-radius: 4px;
+}
+.milo-msg.system {
+  align-self: center; background: none; color: rgba(255,255,255,0.25);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+  letter-spacing: 0.1em; text-transform: uppercase; text-align: center;
+  max-width: 100%;
+}
+
+.milo-typing {
+  align-self: flex-start; padding: 10px 14px;
+  background: rgba(255,255,255,0.06); border-radius: 12px;
+  border-bottom-left-radius: 4px; display: none;
+}
+.milo-typing.visible { display: flex; gap: 4px; align-items: center; }
+.milo-typing span {
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3);
+  animation: miloTyping 1.2s infinite;
+}
+.milo-typing span:nth-child(2) { animation-delay: 0.2s; }
+.milo-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes miloTyping {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+#milo-input-wrap {
+  padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; gap: 8px; align-items: center;
+}
+#milo-input {
+  flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 10px 14px; color: #f0f0f0;
+  font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none;
+  transition: border-color 0.2s;
+}
+#milo-input:focus { border-color: rgba(200,60,60,0.4); }
+#milo-input::placeholder { color: rgba(255,255,255,0.2); }
+
+#milo-send, #milo-mic {
+  width: 36px; height: 36px; border-radius: 8px; border: none;
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+  transition: opacity 0.2s, background 0.2s;
+}
+#milo-send { background: #c83c3c; }
+#milo-send:disabled { opacity: 0.4; cursor: default; }
+#milo-send svg, #milo-mic svg { width: 16px; height: 16px; fill: white; }
+#milo-mic { background: rgba(255,255,255,0.08); }
+#milo-mic:hover { background: rgba(255,255,255,0.15); }
+#milo-mic.recording { background: #c83c3c; animation: micPulse 1.2s infinite; }
+@keyframes micPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,60,60,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(200,60,60,0); }
+}
