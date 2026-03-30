@@ -99,23 +99,13 @@
       input.classList.remove('recording');
       var text = input.value.trim();
       if (text) {
-        // Enter review mode: user sees their text, can edit, press enter to send now
+        // Enter review mode: user sees their text, can edit, press enter or tap send
         input.classList.add('reviewing');
-        input.placeholder = 'Press enter to send, or edit...';
-        // Show send button so they can tap it too
+        input.placeholder = 'Press enter to send, or keep talking...';
         sendBtn.classList.add('visible');
         sendBtn.disabled = false;
-        micBtn.classList.add('hidden');
-        // Auto-send after 3 seconds if they don't act
-        reviewTimer = setTimeout(function () {
-          reviewTimer = null;
-          if (input.value.trim()) {
-            input.classList.remove('reviewing');
-            send();
-          }
-          input.placeholder = 'Tap the mic or type here...';
-          updateButtons();
-        }, 3000);
+        micBtn.classList.remove('hidden');
+        input.focus();
       } else {
         input.placeholder = 'Tap the mic or type here...';
         updateButtons();
