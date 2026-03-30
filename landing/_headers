@@ -1,0 +1,8 @@
+/*
+  Cache-Control: public, max-age=60, s-maxage=60
+
+/*.html
+  Cache-Control: no-cache, must-revalidate
+
+/v2/*.html
+  Cache-Control: no-cache, must-revalidate
