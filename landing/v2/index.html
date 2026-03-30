@@ -40,6 +40,19 @@ tailwind.config = {
   }
 }
 </script>
+<style type="text/tailwindcss">
+  @layer utilities {
+    .font-massive { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.88; letter-spacing: -0.04em; text-transform: uppercase; }
+    .font-ghost { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase; color: transparent; background: linear-gradient(to right, #1a1a1a var(--fill, 0%), rgba(0,0,0,0.06) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; }
+    .font-ghost-dark { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase; color: transparent; background: linear-gradient(to right, rgba(240,240,240,0.18) var(--fill, 0%), rgba(240,240,240,0.07) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; }
+    .font-ghost-light { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase; color: transparent; background: linear-gradient(to right, rgba(200,60,60,0.3) var(--fill, 0%), rgba(200,60,60,0.1) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; }
+    .font-stat { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+    .font-label { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; }
+    .px-band { padding-left: clamp(2rem, 6vw, 6rem); padding-right: clamp(2rem, 6vw, 6rem); }
+    .py-band { padding-top: clamp(6rem, 12vw, 10rem); padding-bottom: clamp(6rem, 12vw, 10rem); }
+  }
+</style>
+
 </head>
 <body class="font-body bg-bg text-ink overflow-x-hidden">
 
@@ -53,7 +66,7 @@ tailwind.config = {
     <a href="/v2/how-it-works.html">How It Works</a>
     <a href="/v2/science.html">The Science</a>
     <a href="/v2/about.html">About</a>
-    <a href="#get-started" class="nav-cta">Get Started</a>
+    <a href="#get-started" style="background:#c83c3c; color:white; padding:0.5rem 1.2rem; border-radius:6px; font-weight:600; letter-spacing:0.1em; text-decoration:none;">Get Started</a>
   </div>
 </nav>
 
@@ -67,7 +80,6 @@ tailwind.config = {
     <h1 class="font-massive text-[clamp(5rem,18vw,16rem)] text-ink leading-[0.82] reveal stagger-1">FINALLY</h1>
     <div class="mt-8 md:mt-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 reveal stagger-2">
       <p class="font-mono text-[0.75rem] md:text-[0.8rem] text-ink-muted tracking-widest uppercase max-w-md leading-relaxed entrance-words">an ai coach that knows your numbers. connects them. tells you what to do next.</p>
-      <a href="#get-started" class="font-mono text-[0.65rem] text-coral tracking-widest uppercase hover:text-ink transition-colors">get started &darr;</a>
     </div>
   </div>
 </section>
