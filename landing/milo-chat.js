@@ -36,12 +36,12 @@
     <div class="milo-typing" id="milo-typing"><span></span><span></span><span></span></div>
   </div>
   <div id="milo-input-wrap">
-    <button id="milo-mic" aria-label="Voice input" style="display:none;">
-      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-    </button>
     <input type="text" id="milo-input" placeholder="Tap the mic or type here..." autocomplete="off" enterkeyhint="send">
     <button id="milo-send" disabled>
       <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+    <button id="milo-mic" aria-label="Voice input" style="display:none;">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
     </button>
   </div>
 </div>`;
@@ -70,6 +70,7 @@
   let summarized = false;
   let recognition = null;
   let isRecording = false;
+  let reviewTimer = null;
 
   // ——— Speech Recognition ———
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -95,13 +96,21 @@
     recognition.onend = function () {
       isRecording = false;
       micBtn.classList.remove('recording');
+      input.classList.remove('recording');
       var text = input.value.trim();
       if (text) {
-        // Show "Sending..." so user knows what's happening
-        input.placeholder = 'Sending...';
-        // 3 second pause: user can see their text and edit before it sends
-        setTimeout(function () {
+        // Enter review mode: user sees their text, can edit, press enter to send now
+        input.classList.add('reviewing');
+        input.placeholder = 'Press enter to send, or edit...';
+        // Show send button so they can tap it too
+        sendBtn.classList.add('visible');
+        sendBtn.disabled = false;
+        micBtn.classList.add('hidden');
+        // Auto-send after 3 seconds if they don't act
+        reviewTimer = setTimeout(function () {
+          reviewTimer = null;
           if (input.value.trim()) {
+            input.classList.remove('reviewing');
             send();
           }
           input.placeholder = 'Tap the mic or type here...';
@@ -124,19 +133,24 @@
 
     micBtn.addEventListener('click', function () {
       if (isRecording) {
-        // Stop recording, let onend handle the send
         recognition.stop();
       } else {
+        // Cancel any pending review timer from previous recording
+        if (reviewTimer) { clearTimeout(reviewTimer); reviewTimer = null; }
         isRecording = true;
         micBtn.classList.add('recording');
+        input.classList.add('recording');
+        input.classList.remove('reviewing');
         sendBtn.classList.remove('visible');
         input.value = '';
         input.placeholder = 'Listening... tap mic when done';
+        input.focus();
         try {
           recognition.start();
         } catch (e) {
           isRecording = false;
           micBtn.classList.remove('recording');
+          input.classList.remove('recording');
           input.placeholder = 'Tap the mic or type here...';
         }
       }
@@ -211,8 +225,10 @@
   function send() {
     var text = input.value.trim();
     if (!text || isSending) return;
+    // Cancel any pending review timer
+    if (reviewTimer) { clearTimeout(reviewTimer); reviewTimer = null; }
+    input.classList.remove('reviewing');
     input.value = '';
-    // After first message, swap to standard placeholder
     input.placeholder = 'Ask Milo anything about your health...';
     addMessage('user', text);
     updateButtons();

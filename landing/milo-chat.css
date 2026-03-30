@@ -147,6 +147,14 @@
 }
 #milo-input:focus { border-color: rgba(200,60,60,0.4); }
 #milo-input::placeholder { color: rgba(255,255,255,0.2); }
+#milo-input.recording {
+  border-color: rgba(200,60,60,0.6);
+  box-shadow: 0 0 0 2px rgba(200,60,60,0.15);
+}
+#milo-input.reviewing {
+  border-color: rgba(200,60,60,0.4);
+  background: rgba(200,60,60,0.06);
+}
 
 #milo-send, #milo-mic {
   width: 36px; height: 36px; border-radius: 8px; border: none;
