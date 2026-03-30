@@ -63,9 +63,9 @@ tailwind.config = {
 <nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-band py-5 mix-blend-difference">
   <a href="/v2/" class="font-display font-extrabold text-sm text-white/60 tracking-tight no-underline hover:text-white/90 transition-opacity">b<span class="text-coral">.</span></a>
   <div class="nav-links">
-    <a href="/v2/how-it-works.html">How It Works</a>
-    <a href="/v2/science.html">The Science</a>
-    <a href="/v2/about.html">About</a>
+    <a href="v2/how-it-works.html">How It Works</a>
+    <a href="v2/science.html">The Science</a>
+    <a href="v2/about.html">About</a>
     <a href="#get-started" style="background:#c83c3c; color:white; padding:0.5rem 1.2rem; border-radius:6px; font-weight:600; letter-spacing:0.1em; text-decoration:none;">Get Started</a>
   </div>
 </nav>
@@ -311,35 +311,10 @@ tailwind.config = {
 </section>
 
 <!-- ═══════════════════════ HOW IT WORKS TEASER ═══════════════════════ -->
-<section class="bg-bg relative noise overflow-visible">
-  <div class="hidden md:block absolute -left-4 top-1/3 font-mono text-[0.55rem] text-coral/30 tracking-[0.5em] uppercase origin-center" style="transform: rotate(-90deg); white-space: nowrap;">the process</div>
-  <div class="px-band py-band">
-    <div class="bg-cream rounded-3xl p-8 md:p-16 lg:p-20 reveal-scale">
-      <div class="font-label text-coral mb-16">(how it works)</div>
-      <div class="font-ghost text-[clamp(2.5rem,9vw,7rem)] leading-[0.85] mb-20 parallax" data-speed="0.03">FOUR<br>STEPS</div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16 max-w-4xl" id="steps-grid">
-        <div class="step-card step-emerge">
-          <div class="font-stat text-[3rem] text-coral leading-none mb-3">01</div>
-          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">You sign up with your name and number.</strong> That's it. Your coach reaches out on whatever channel you prefer and gets to know you.</p>
-        </div>
-        <div class="step-card step-emerge">
-          <div class="font-stat text-[3rem] text-coral leading-none mb-3">02</div>
-          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">Your coach builds your health picture.</strong> Over time, not all at once. Maybe it starts with sleep. Maybe you have labs you want to make sense of.</p>
-        </div>
-        <div class="step-card step-emerge">
-          <div class="font-stat text-[3rem] text-coral leading-none mb-3">03</div>
-          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">You get coached on what matters.</strong> The system finds the highest-leverage thing for you right now and helps you lock it in before moving to the next.</p>
-        </div>
-        <div class="step-card step-emerge">
-          <div class="font-stat text-[3rem] text-coral leading-none mb-3">04</div>
-          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">You see real outcomes.</strong> Not charts. Changes. Better sleep. More energy. A coach that notices progress and adjusts with you.</p>
-        </div>
-      </div>
-      <div class="mt-16 text-center">
-        <a href="/v2/how-it-works.html" class="font-mono text-[0.7rem] text-coral tracking-widest uppercase hover:text-[#1a1714] transition-colors">Learn more about how it works &rarr;</a>
-      </div>
-    </div>
-  </div>
+<section class="bg-bg relative noise px-band py-[clamp(4rem,8vw,6rem)] text-center">
+  <div class="font-label text-coral mb-6 reveal">(the process)</div>
+  <div class="font-display font-bold text-[clamp(1.2rem,2.5vw,1.8rem)] text-ink leading-[1.4] tracking-tight max-w-xl mx-auto mb-8 reveal stagger-1">Sign up. Pick an outcome. Get coached on the one thing that moves the needle. See real changes.</div>
+  <a href="v2/how-it-works.html" class="font-mono text-[0.7rem] text-coral tracking-widest uppercase hover:text-ink transition-colors reveal stagger-2">See how it works &rarr;</a>
 </section>
 
 <!-- ═══════════════════════ CTA / SIGNUP ═══════════════════════ -->
