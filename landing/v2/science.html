@@ -230,6 +230,49 @@ tailwind.config = {
   </div>
 </section>
 
+<!-- ═══════════════════════ COMPOUND PATTERNS ═══════════════════════ -->
+<section class="bg-bg relative noise">
+  <div class="px-band py-band">
+    <div class="font-label text-coral mb-16 reveal">(what we catch that others miss)</div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-16">
+      <div class="md:col-span-6">
+        <div class="font-massive text-[clamp(1.8rem,4vw,3rem)] text-ink leading-[0.95] entrance-snap">INDIVIDUAL METRICS LIE.<br>PATTERNS DON'T.</div>
+      </div>
+      <div class="md:col-span-5 md:col-start-8 flex items-end">
+        <p class="text-ink-muted text-[0.95rem] leading-[1.85] reveal stagger-1">Every metric in range doesn't mean healthy. The system checks five compound patterns that cross metrics. These are the things a dashboard can't see and a single lab review misses.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="border border-ink-dim/15 rounded-xl p-6 reveal" style="background: rgba(255,255,255,0.03);">
+        <div class="font-display font-bold text-ink text-[1rem] tracking-tight mb-2">Metabolic Syndrome</div>
+        <p class="text-[0.8rem] text-ink-muted leading-relaxed">Waist + triglycerides + HDL + blood pressure + glucose. Three of five criteria triggers a flag. Each metric can be "borderline normal." Together, they mean something.</p>
+      </div>
+      <div class="border border-ink-dim/15 rounded-xl p-6 reveal stagger-1" style="background: rgba(255,255,255,0.03);">
+        <div class="font-display font-bold text-ink text-[1rem] tracking-tight mb-2">Insulin Resistance</div>
+        <p class="text-[0.8rem] text-ink-muted leading-relaxed">HOMA-IR calculation from fasting glucose + insulin. TG/HDL atherogenic ratio. Ferritin as a metabolic marker. Shows up 10-15 years before a diabetes diagnosis.</p>
+      </div>
+      <div class="border border-ink-dim/15 rounded-xl p-6 reveal stagger-2" style="background: rgba(255,255,255,0.03);">
+        <div class="font-display font-bold text-ink text-[1rem] tracking-tight mb-2">Recovery-Deficit Cascade</div>
+        <p class="text-[0.8rem] text-ink-muted leading-relaxed">Sleep under target + high bedtime variance + elevated RHR + suppressed HRV. Four signals that compound. Fix sleep regularity and the rest often resolves.</p>
+      </div>
+      <div class="border border-ink-dim/15 rounded-xl p-6 reveal stagger-1" style="background: rgba(255,255,255,0.03);">
+        <div class="font-display font-bold text-ink text-[1rem] tracking-tight mb-2">Atherogenic Dyslipidemia</div>
+        <p class="text-[0.8rem] text-ink-muted leading-relaxed">High ApoB + low HDL + high triglycerides. The lipid pattern most predictive of cardiovascular events. Standard cholesterol panels miss it.</p>
+      </div>
+      <div class="border border-ink-dim/15 rounded-xl p-6 reveal stagger-2" style="background: rgba(255,255,255,0.03);">
+        <div class="font-display font-bold text-ink text-[1rem] tracking-tight mb-2">Recovery Stress</div>
+        <p class="text-[0.8rem] text-ink-muted leading-relaxed">HRV trending down + RHR trending up + sleep duration dropping. Your body is telling you something before you feel it. The numbers move before symptoms show.</p>
+      </div>
+      <div class="border border-ink-dim/15 rounded-xl p-6 reveal stagger-3" style="background: rgba(255,255,255,0.03);">
+        <div class="font-display font-bold text-ink text-[1rem] tracking-tight mb-2">Open Source</div>
+        <p class="text-[0.8rem] text-ink-muted leading-relaxed">The scoring engine is open source. Every threshold, every calculation, every clinical reference is inspectable. <a href="https://github.com/a-deal/kiso" class="text-coral hover:text-ink transition-colors">See the code.</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════════════════ COMPARISON ═══════════════════════ -->
 <section class="bg-bg relative overflow-hidden">
   <div class="px-band py-band">
