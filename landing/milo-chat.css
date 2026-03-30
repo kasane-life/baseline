@@ -156,20 +156,16 @@
   background: rgba(200,60,60,0.06);
 }
 
-#milo-send, #milo-mic {
+#milo-action {
   width: 36px; height: 36px; border-radius: 8px; border: none;
   cursor: pointer; display: flex;
   align-items: center; justify-content: center; flex-shrink: 0;
-  transition: opacity 0.2s, background 0.2s;
+  transition: background 0.2s;
+  background: #c83c3c;
 }
-#milo-send { background: #c83c3c; display: none; }
-#milo-send.visible { display: flex; }
-#milo-send:disabled { opacity: 0.4; cursor: default; }
-#milo-send svg, #milo-mic svg { width: 16px; height: 16px; fill: white; }
-#milo-mic { background: #c83c3c; }
-#milo-mic:hover { background: #b33535; }
-#milo-mic.recording { animation: micPulse 1.2s infinite; }
-#milo-mic.hidden { display: none; }
+#milo-action:hover { background: #b33535; }
+#milo-action.recording { animation: micPulse 1.2s infinite; }
+#milo-action svg { width: 16px; height: 16px; fill: white; }
 @keyframes micPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(200,60,60,0.4); }
   50% { box-shadow: 0 0 0 8px rgba(200,60,60,0); }
