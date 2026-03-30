@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Anybody:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.15/dist/lenis.css" crossorigin>
+<link rel="stylesheet" href="shared.css">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -39,203 +40,6 @@ tailwind.config = {
   }
 }
 </script>
-<style type="text/tailwindcss">
-  @layer utilities {
-    .font-massive { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.88; letter-spacing: -0.04em; text-transform: uppercase; }
-    .font-ghost {
-      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
-      color: transparent;
-      background: linear-gradient(to right, #1a1a1a var(--fill, 0%), rgba(0,0,0,0.06) var(--fill, 0%));
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    .font-ghost-diag {
-      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
-      color: transparent;
-      background: linear-gradient(135deg, #1a1a1a var(--fill, 0%), rgba(0,0,0,0.06) var(--fill, 0%));
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    .font-ghost-dark {
-      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
-      color: transparent;
-      background: linear-gradient(to right, rgba(240,240,240,0.18) var(--fill, 0%), rgba(240,240,240,0.07) var(--fill, 0%));
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    .font-ghost-light {
-      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
-      color: transparent;
-      background: linear-gradient(to right, rgba(200,60,60,0.3) var(--fill, 0%), rgba(200,60,60,0.1) var(--fill, 0%));
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
-    .font-stat { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
-    .font-label { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; }
-    .px-band { padding-left: clamp(2rem, 6vw, 6rem); padding-right: clamp(2rem, 6vw, 6rem); }
-    .py-band { padding-top: clamp(6rem, 12vw, 10rem); padding-bottom: clamp(6rem, 12vw, 10rem); }
-  }
-
-  /* GSAP handles all scroll animations. These are just marker classes. */
-  html.lenis, html.lenis body { height: auto; }
-  .lenis.lenis-smooth { scroll-behavior: auto !important; }
-  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-
-  /* Noise texture */
-  .noise::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.35;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-    background-size: 128px 128px;
-    mix-blend-mode: overlay;
-  }
-
-  /* Form focus */
-  input:focus { border-color: theme('colors.coral.DEFAULT') !important; outline: none; }
-
-  /* Stacked word hover */
-  .stack-word { transition: color 0.3s ease, transform 0.3s ease, letter-spacing 0.3s ease; }
-  .stack-word:hover { color: #c83c3c; transform: translateX(8px); letter-spacing: -0.02em; }
-
-  /* CTA button */
-  .cta-btn { position: relative; overflow: hidden; }
-  .cta-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-    transition: left 0.5s ease;
-  }
-  .cta-btn:hover::before { left: 100%; }
-
-  /* Parallax elements */
-  .parallax { will-change: transform; }
-
-  /* Diagonal section divider */
-  .angle-top { clip-path: polygon(0 clamp(30px, 5vw, 60px), 100% 0, 100% 100%, 0 100%); margin-top: calc(-1 * clamp(30px, 5vw, 60px)); }
-  .angle-bottom { clip-path: polygon(0 0, 100% 0, 100% calc(100% - clamp(30px, 5vw, 60px)), 0 100%); }
-
-  /* Bridge card that spans sections */
-  .bridge-card {
-    position: relative;
-    z-index: 10;
-    margin-bottom: calc(-1 * clamp(3rem, 6vw, 6rem));
-  }
-
-  /* Floating accent line */
-  .accent-line {
-    position: absolute;
-    width: 2px;
-    background: linear-gradient(to bottom, transparent, rgba(200,60,60,0.4), transparent);
-    pointer-events: none;
-  }
-
-  /* Stat counter animation */
-  .stat-count { display: inline-block; }
-
-  /* Scroll progress bar */
-  .scroll-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    background: #c83c3c;
-    z-index: 100;
-    transform-origin: left;
-    transition: none;
-  }
-
-  /* Horizontal scrolling marquee */
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    animation: marquee 25s linear infinite;
-  }
-  .marquee-track:hover { animation-play-state: paused; }
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .marquee-word {
-    font-family: 'Anybody', sans-serif;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.03em;
-    white-space: nowrap;
-    padding: 0 clamp(1.5rem, 3vw, 3rem);
-  }
-  .marquee-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #c83c3c;
-    flex-shrink: 0;
-    align-self: center;
-  }
-
-  /* Letter stagger button */
-  .letter-btn { display: inline-flex; gap: 0; }
-  .letter-btn span {
-    display: inline-block;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-  }
-  .letter-btn:hover span {
-    animation: letterBounce 0.4s ease forwards;
-  }
-  .letter-btn:hover span:nth-child(1) { animation-delay: 0s; }
-  .letter-btn:hover span:nth-child(2) { animation-delay: 0.02s; }
-  .letter-btn:hover span:nth-child(3) { animation-delay: 0.04s; }
-  .letter-btn:hover span:nth-child(4) { animation-delay: 0.06s; }
-  .letter-btn:hover span:nth-child(5) { animation-delay: 0.08s; }
-  .letter-btn:hover span:nth-child(6) { animation-delay: 0.1s; }
-  .letter-btn:hover span:nth-child(7) { animation-delay: 0.12s; }
-  .letter-btn:hover span:nth-child(8) { animation-delay: 0.14s; }
-  @keyframes letterBounce {
-    0% { transform: translateY(0); }
-    40% { transform: translateY(-3px); }
-    100% { transform: translateY(0); }
-  }
-
-  /* Footer reveal: sits behind content, uncovered as last section scrolls away */
-  .footer-reveal {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 0;
-  }
-  /* All content sections float above the footer */
-  section, .connector-section, nav, .marquee-wrap { position: relative; z-index: 1; }
-
-  /* Outcome name */
-  .outcome-name { transition: transform 0.3s ease; }
-
-  /* Domain card in pinned grid */
-  .domain-card { will-change: transform, opacity; transition: border-color 0.3s ease; }
-
-  /* Founder photo parallax scale */
-  .founder-photo { will-change: transform; }
-
-  /* Step card emerge */
-  .step-emerge { will-change: transform, opacity; }
-
-  /* Mobile: hide ghost text connectors, they eat scroll space */
-  @media (max-width: 767px) {
-    .connector-section { display: none !important; }
-  }
-
-  /* Step card with left accent */
-  .step-card {
-    border-left: 3px solid rgba(200,60,60,0.3);
-    padding-left: 1.5rem;
-    transition: border-color 0.3s ease;
-  }
-  .step-card:hover { border-left-color: #c83c3c; }
-</style>
 </head>
 <body class="font-body bg-bg text-ink overflow-x-hidden">
 
@@ -244,19 +48,20 @@ tailwind.config = {
 
 <!-- NAV -->
 <nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-band py-5 mix-blend-difference">
-  <a href="/" class="font-display font-extrabold text-sm text-white/60 tracking-tight no-underline hover:text-white/90 transition-opacity">b<span class="text-coral">.</span></a>
+  <a href="/v2/" class="font-display font-extrabold text-sm text-white/60 tracking-tight no-underline hover:text-white/90 transition-opacity">b<span class="text-coral">.</span></a>
+  <div class="nav-links">
+    <a href="/v2/how-it-works.html">How It Works</a>
+    <a href="/v2/science.html">The Science</a>
+    <a href="/v2/about.html">About</a>
+    <a href="#get-started" class="nav-cta">Get Started</a>
+  </div>
 </nav>
 
 <!-- ═══════════════════════ HERO ═══════════════════════ -->
 <section class="relative min-h-screen bg-bg flex flex-col justify-end px-band pb-24 md:pb-32 overflow-hidden noise">
-  <!-- Radial glow -->
   <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(ellipse 70% 50% at 30% 55%, rgba(200,60,60,0.06) 0%, transparent 60%);"></div>
-  <!-- Grid -->
   <div class="absolute inset-0 pointer-events-none z-0" style="background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 60% at 40% 50%, black 0%, transparent 55%); -webkit-mask-image: radial-gradient(ellipse 80% 60% at 40% 50%, black 0%, transparent 55%);"></div>
-
-  <!-- Floating accent line -->
   <div class="accent-line hidden md:block" style="right: 15%; top: 20%; height: 40%;"></div>
-
   <div class="relative z-10">
     <div class="font-label text-ink-dim mb-6 reveal">your full health picture</div>
     <h1 class="font-massive text-[clamp(5rem,18vw,16rem)] text-ink leading-[0.82] reveal stagger-1">FINALLY</h1>
@@ -265,7 +70,6 @@ tailwind.config = {
       <a href="#get-started" class="font-mono text-[0.65rem] text-coral tracking-widest uppercase hover:text-ink transition-colors">get started &darr;</a>
     </div>
   </div>
-
 </section>
 
 <!-- ═══════════════════════ MARQUEE ═══════════════════════ -->
@@ -294,9 +98,7 @@ tailwind.config = {
 <section class="bg-bg relative noise overflow-visible" id="problem-section">
   <div class="px-band py-band">
     <div class="font-label text-coral mb-16 reveal">(the problem)</div>
-
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-0">
-      <!-- Left: THE REAL QUESTION massive stacked -->
       <div class="md:col-span-6">
         <div class="font-massive text-ink leading-[0.88] entrance-clip-up">
           <div class="text-[clamp(3rem,9vw,8rem)]">THE</div>
@@ -304,15 +106,11 @@ tailwind.config = {
           <div class="text-[clamp(2.5rem,7.5vw,6.5rem)]">QUESTION</div>
         </div>
       </div>
-
-      <!-- Right: the question + pain points, vertically centered next to REAL -->
       <div class="md:col-span-5 md:col-start-8 flex flex-col justify-center">
         <div class="mb-10">
           <p class="text-ink text-[1.1rem] leading-[1.6] font-medium entrance-words">How do I know if I'm <span class="text-coral font-semibold">actually</span> healthy?</p>
           <p class="text-ink-muted text-[0.95rem] leading-[1.85] mt-4 reveal stagger-2">Not "am I fit?" Not "are my labs in range?" The one your doctor doesn't answer and your wearable can't.</p>
         </div>
-
-        <!-- 3 pain points, numbered -->
         <div class="space-y-8">
           <div class="flex gap-4 reveal stagger-1">
             <div class="font-stat text-[1.5rem] text-coral/50 leading-none mt-1 shrink-0">01</div>
@@ -338,82 +136,6 @@ tailwind.config = {
   <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto mt-2" id="ghost-signal" style="background: linear-gradient(to right, rgba(200,60,60,0.25) var(--fill, 0%), rgba(240,240,240,0.04) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text;">MORE SIGNAL</div>
 </div>
 
-<!-- ═══════════════════════ HEALTH DOMAINS — WHERE YOUR CONTEXT LIVES ═══════════════════════ -->
-<section class="bg-bg relative noise" style="overflow: clip;" id="outcomes-section">
-  <div class="px-band pt-[clamp(6rem,12vw,10rem)] pb-8 md:pb-16">
-    <div class="font-label text-coral mb-10 md:mb-16 reveal">(your health picture)</div>
-
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 mb-16 md:mb-24">
-      <div class="md:col-span-5">
-        <div class="font-display font-bold text-[clamp(1.4rem,3.5vw,2.8rem)] text-ink leading-[1.15] tracking-tight mb-8 parallax entrance-snap" data-speed="0.02">SCATTERED CONTEXT<br>ONE PICTURE</div>
-        <p class="text-ink-muted text-[0.95rem] leading-[1.85] max-w-md entrance-words">Your labs are in one portal. Your sleep is in another app. Your weight is on a scale. Family history is in your head. No tool connects them. We do.</p>
-      </div>
-      <div class="md:col-span-5 md:col-start-8 flex flex-col justify-end">
-        <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight text-ink reveal stagger-2 mt-auto">Eight domains. Forty metrics.<br>One coach that sees all of it.</p>
-      </div>
-    </div>
-
-    <!-- Health domains: pinned grid, cards reveal one at a time -->
-    <div class="relative mb-16 md:mb-24" id="domains-pin-wrap">
-      <div id="domains-pin-inner">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="0">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">01</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">SLEEP</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Duration, consistency, quality</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Poor sleep doubles your risk of metabolic disease. The foundation everything else depends on.</p>
-          </div>
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="1">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">02</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">LABS</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Blood work, biomarkers, trends</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">A single blood draw is a snapshot. Three draws reveal trajectories your doctor can't see in one visit.</p>
-          </div>
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="2">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">03</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">MOVEMENT</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Steps, training, VO2 max</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">VO2 max is the single strongest predictor of all-cause mortality. Stronger than smoking. And it's trainable at any age.</p>
-          </div>
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="3">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">04</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">NUTRITION</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Macros, protein, meal patterns</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Most adults eat 50-70% less protein than optimal. One change here moves body comp, energy, and recovery simultaneously.</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="4">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">05</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">BODY COMP</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Weight, waist, lean mass</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">The scale lies. Two people at 180 lbs can have completely different health profiles. Composition is signal.</p>
-          </div>
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="5">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">06</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">VITALS</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Blood pressure, heart rate, HRV</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Resting heart rate trends predict cardiac events years in advance. Your body's real-time status report.</p>
-          </div>
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="6">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">07</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">MIND</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Stress, mood, mental health</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Chronic stress elevates cortisol, disrupts sleep, and accelerates aging. The domain that amplifies every other one.</p>
-          </div>
-          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="7">
-            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">08</div>
-            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">HISTORY</div>
-            <p class="text-[0.75rem] text-ink-muted/70 leading-relaxed">Family history, medications</p>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Your family history changes which metrics matter most. Context that changes what to measure first.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
 <!-- ═══════════ TRANSITION: What we help you do ═══════════ -->
 <section class="bg-bg relative noise py-band px-band text-center">
   <div class="font-label text-coral mb-8 reveal">(what we help you do)</div>
@@ -426,13 +148,9 @@ tailwind.config = {
   <div id="outcomes-pin-wrap">
     <div class="min-h-screen flex items-center px-band" id="outcomes-pin-inner">
       <div class="w-full flex flex-col md:flex-row gap-6 md:gap-16 items-start md:items-center">
-
-        <!-- Left: side label (desktop only) -->
         <div class="hidden md:block md:w-[100px] shrink-0">
           <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase leading-relaxed">The outcomes<br>we coach on</p>
         </div>
-
-        <!-- Center: carousel viewport (clips overflow, shows one name at a time) -->
         <div class="flex-1 w-full max-w-lg relative overflow-hidden" style="height: 60px;" id="outcomes-carousel">
           <div class="absolute left-0 w-full" id="outcomes-carousel-track">
             <div class="outcome-name" data-outcome-name="sleep" style="height: 60px; display: flex; align-items: center;">
@@ -461,8 +179,6 @@ tailwind.config = {
             </div>
           </div>
         </div>
-
-        <!-- Right: stacked cards (all 8 in DOM, GSAP controls visibility) -->
         <div class="w-full md:w-[300px] shrink-0 relative" id="outcome-card-area" style="min-height: 280px;">
           <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="0">
             <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
@@ -577,24 +293,18 @@ tailwind.config = {
             <p class="text-ink-muted text-[0.85rem] leading-relaxed">What you have, what is missing, what to do next.</p>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════ HOW IT WORKS (cream card inside dark) ═══════════════════════ -->
+<!-- ═══════════════════════ HOW IT WORKS TEASER ═══════════════════════ -->
 <section class="bg-bg relative noise overflow-visible">
-  <!-- Floating rotated label -->
   <div class="hidden md:block absolute -left-4 top-1/3 font-mono text-[0.55rem] text-coral/30 tracking-[0.5em] uppercase origin-center" style="transform: rotate(-90deg); white-space: nowrap;">the process</div>
-
   <div class="px-band py-band">
-    <!-- Cream container card -->
     <div class="bg-cream rounded-3xl p-8 md:p-16 lg:p-20 reveal-scale">
       <div class="font-label text-coral mb-16">(how it works)</div>
-
       <div class="font-ghost text-[clamp(2.5rem,9vw,7rem)] leading-[0.85] mb-20 parallax" data-speed="0.03">FOUR<br>STEPS</div>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16 max-w-4xl" id="steps-grid">
         <div class="step-card step-emerge">
           <div class="font-stat text-[3rem] text-coral leading-none mb-3">01</div>
@@ -613,254 +323,8 @@ tailwind.config = {
           <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">You see real outcomes.</strong> Not charts. Changes. Better sleep. More energy. A coach that notices progress and adjusts with you.</p>
         </div>
       </div>
-
-      <!-- Rotated strip cards (ABCS services pattern) -->
-      <div class="mt-20 flex flex-wrap justify-end gap-3 md:gap-4">
-        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(-8deg);">SLEEP</div>
-        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(-4deg);">NUTRITION</div>
-        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(2deg);">MOVEMENT</div>
-        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(5deg);">LABS</div>
-        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(8deg);">MIND</div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ CONNECTOR: Ghost text ═══════════ -->
-<div class="connector-section bg-bg px-band py-[clamp(4rem,10vw,8rem)] text-center overflow-hidden">
-  <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto">YOUR NUMBERS TELL A STORY</div>
-</div>
-
-<!-- ═══════════════════════ THE PROOF (pinned stat reveal) ═══════════════════════ -->
-<section class="relative overflow-hidden" style="background: #0c0c0f;" id="proof-section">
-  <div class="px-band py-band" id="proof-pin-wrap">
-    <div id="proof-pin-inner">
-    <div class="font-label text-coral mb-16 text-center reveal">(the proof)</div>
-
-    <!-- Centered provocative statement (ABCS about-page serif heading style) -->
-    <div class="max-w-3xl mx-auto text-center mb-16 md:mb-20">
-      <h2 class="font-serif text-[clamp(1.6rem,3.5vw,2.8rem)] text-ink leading-[1.3] font-medium entrance-snap">About 40 metrics where the science is clear. Validated across large populations. Replicated across decades. Not 400. <em class="text-coral">Forty.</em></h2>
-    </div>
-
-    <!-- Hero stat: 42% → 85% centered big -->
-    <div class="flex items-center justify-center gap-8 md:gap-12 mb-16 md:mb-20 reveal" id="proof-stat-row">
-      <div class="text-center">
-        <div class="font-stat text-[clamp(3rem,8vw,5rem)] text-ink-dim/30 leading-none">42%</div>
-        <div class="text-xs text-ink-dim mt-3 font-mono tracking-widest">before</div>
-      </div>
-      <div class="flex flex-col items-center gap-1">
-        <svg width="40" height="20" viewBox="0 0 40 20" class="text-coral"><path d="M0 10h32m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase">~$50</div>
-      </div>
-      <div class="text-center">
-        <div class="font-stat text-[clamp(3rem,8vw,5rem)] text-coral leading-none">85%</div>
-        <div class="text-xs text-ink-dim mt-3 font-mono tracking-widest">after</div>
-      </div>
-    </div>
-
-    <div class="max-w-md mx-auto text-center mb-16 md:mb-20">
-      <p class="text-ink-muted text-[0.95rem] leading-[1.85] reveal">Three moves totaling about $50 would take most people from 40% to 80% coverage. Several of the top metrics are free.</p>
-    </div>
-
-    <!-- Insulin story card — centered, wider -->
-    <div class="max-w-xl mx-auto">
-      <div class="border border-ink-dim/20 rounded-2xl p-8 md:p-10 reveal-scale">
-        <div class="font-mono text-xs text-coral tracking-widest uppercase mb-4">fasting insulin</div>
-        <div class="font-stat text-[2rem] text-ink leading-tight mb-4">3.5 &rarr; 8.2 &rarr; 13.9 <span class="text-ink-muted text-sm font-body font-normal">mIU/L</span></div>
-        <p class="text-sm text-ink-muted leading-relaxed">Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10-15 years before a diabetes diagnosis. But only if you're tracking.</p>
-        <div class="w-8 h-px bg-coral/40 mt-6 mb-4"></div>
-        <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase">founder's real data</p>
-      </div>
-    </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════ COMPARISON ═══════════════════════ -->
-<section class="bg-bg relative overflow-hidden">
-  <div class="px-band py-band">
-    <div class="font-label text-coral mb-16 reveal">(the landscape)</div>
-
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-20">
-      <div class="md:col-span-6">
-        <div class="font-massive text-[clamp(2.2rem,5.5vw,4.5rem)] text-ink leading-[0.95] entrance-split">DIFFERENT TOOLS<br>GIVE YOU SLICES.</div>
-      </div>
-      <div class="md:col-span-5 md:col-start-8 flex items-end">
-        <p class="text-ink-muted text-[0.95rem] leading-[1.85] reveal stagger-1">Each product is excellent at what it does. They give you a piece. <strong class="text-ink">Baseline is the layer that shows you the whole picture.</strong></p>
-      </div>
-    </div>
-
-    <!-- Competitor cards: tilted, staggered -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-      <div class="comp-card relative rounded-2xl p-7 md:p-8" style="background: rgba(255,255,255,0.04);" data-rotate="-1.5">
-        <div class="font-display font-bold text-ink text-lg mb-1">Function Health</div>
-        <p class="text-ink-dim text-xs mb-6">Deep blood work. 160+ tests, 2x/yr.</p>
-        <div class="flex items-center justify-between mb-3">
-          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">coverage</div>
-          <div class="font-stat text-lg text-ink-muted">62%</div>
-        </div>
-        <div class="w-full h-1.5 rounded-full bg-ink-dim/10 overflow-hidden"><div class="h-full rounded-full bg-ink-dim/30 coverage-bar" style="width: 0%;" data-target="62"></div></div>
-        <div class="mt-5 pt-4 border-t border-ink-dim/10">
-          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase mb-1">cost</div>
-          <div class="font-stat text-xl text-ink">$365<span class="text-ink-dim text-xs font-body">/yr</span></div>
-        </div>
-      </div>
-
-      <div class="comp-card relative rounded-2xl p-7 md:p-8" style="background: rgba(255,255,255,0.04);" data-rotate="1">
-        <div class="font-display font-bold text-ink text-lg mb-1">InsideTracker</div>
-        <p class="text-ink-dim text-xs mb-6">Blood + DNA optimization.</p>
-        <div class="flex items-center justify-between mb-3">
-          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">coverage</div>
-          <div class="font-stat text-lg text-ink-muted">55%</div>
-        </div>
-        <div class="w-full h-1.5 rounded-full bg-ink-dim/10 overflow-hidden"><div class="h-full rounded-full bg-ink-dim/30 coverage-bar" style="width: 0%;" data-target="55"></div></div>
-        <div class="mt-5 pt-4 border-t border-ink-dim/10">
-          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase mb-1">cost</div>
-          <div class="font-stat text-xl text-ink">$249<span class="text-ink-dim text-xs font-body">-589/yr</span></div>
-        </div>
-      </div>
-
-      <div class="comp-card relative rounded-2xl p-7 md:p-8" style="background: rgba(255,255,255,0.04);" data-rotate="-0.5">
-        <div class="font-display font-bold text-ink text-lg mb-1">Oura / Whoop</div>
-        <p class="text-ink-dim text-xs mb-6">Sleep + recovery wearables.</p>
-        <div class="flex items-center justify-between mb-3">
-          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">coverage</div>
-          <div class="font-stat text-lg text-ink-muted">22%</div>
-        </div>
-        <div class="w-full h-1.5 rounded-full bg-ink-dim/10 overflow-hidden"><div class="h-full rounded-full bg-ink-dim/30 coverage-bar" style="width: 0%;" data-target="22"></div></div>
-        <div class="mt-5 pt-4 border-t border-ink-dim/10">
-          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase mb-1">cost</div>
-          <div class="font-stat text-xl text-ink">$239<span class="text-ink-dim text-xs font-body">-369/yr</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Baseline: cream card, big, stands apart -->
-    <div class="bg-cream rounded-3xl p-8 md:p-12 lg:p-14 reveal-scale" style="transform: rotate(0.5deg);">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-        <div class="md:col-span-5">
-          <div class="font-massive text-[clamp(2rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-4">BASELINE</div>
-          <p class="text-[#4a4a4a] text-[0.95rem] leading-[1.75]">Full picture. All domains. AI coaching that connects your sleep, labs, weight, and habits into one view.</p>
-        </div>
-        <div class="md:col-span-3 md:col-start-7 text-center">
-          <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-2">coverage</div>
-          <div class="font-stat text-[4rem] text-coral leading-none">100%</div>
-          <div class="w-full h-2 rounded-full bg-coral/10 overflow-hidden mt-4"><div class="h-full rounded-full bg-coral coverage-bar" style="width: 0%;" data-target="100"></div></div>
-        </div>
-        <div class="md:col-span-3 md:col-start-10 text-center md:text-right">
-          <div class="font-mono text-[0.55rem] text-[#4a4a4a] tracking-widest uppercase mb-2">cost</div>
-          <div class="font-stat text-[2.5rem] text-[#1a1714] leading-none">~$100<span class="text-[#4a4a4a] text-sm font-body">/yr</span></div>
-          <p class="text-[#6a6a6a] text-xs mt-2">$143/yr for top 10 metrics. Several are free.</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════ CONNECTOR: Ghost text ═══════════ -->
-<div class="connector-section bg-bg px-band py-[clamp(4rem,10vw,8rem)] text-center overflow-hidden">
-  <div class="font-ghost-light text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto">BUILT BY PEOPLE WHO USE IT EVERY DAY</div>
-</div>
-
-<!-- ═══════════════════════ A NOTE FROM US — Vertical scroll story ═══════════════════════ -->
-<section class="bg-cream relative overflow-hidden">
-  <div class="px-band py-band">
-    <div class="font-label text-coral mb-16 reveal">(a note from us)</div>
-
-    <!-- Story beat 1: Paul's opening — the problem he lived -->
-    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
-      <h2 class="font-massive text-[clamp(2rem,5vw,4rem)] text-[#1a1714] leading-[0.92] entrance-clip-up">MORE DATA<br>MADE IT<br>WORSE.</h2>
-    </div>
-
-    <!-- Story beat 2: Paul + polaroid -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
-      <div class="md:col-span-5 reveal-right">
-        <div class="bg-white p-3 pb-14 shadow-xl inline-block founder-photo" style="transform: rotate(-1.5deg);">
-          <img src="coach/paul.jpg" alt="Paul Mederos" class="w-full max-w-[320px] aspect-[4/5] object-cover" style="filter: sepia(0.3) saturate(0.8);">
-        </div>
-        <div class="mt-8 space-y-4 max-w-[360px]">
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">name</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Paul Mederos</span>
-          </div>
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">role</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Co-founder</span>
-          </div>
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">before</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Territory Foods, Pro Athlete</span>
-          </div>
-        </div>
-      </div>
-      <div class="md:col-span-6 md:col-start-7 flex flex-col justify-center pl-0 md:pl-4">
-        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 entrance-words">Full-body MRI. 150+ biomarker panels. Microbiome tests. A decade of spreadsheets.</p>
-        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">Paul assembled an entire care team: functional medicine, primary care, nutrition, specialists. Each provider held a partial picture. He was the one responsible for synthesizing it all.</p>
-      </div>
-    </div>
-
-    <!-- Story beat 3: The anxiety breakthrough -->
-    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
-      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">THE BREAKTHROUGH<br>WASN'T MORE DATA.</h2>
-      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 font-ghost text-[#1a1714]" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">It was something that could finally synthesize the complete picture.</p>
-      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Accumulating data had intensified his anxiety, not improved his outcomes. When language models became capable enough to connect the dots, the cognitive burden disappeared. A few interventions that actually mattered became clear.</p>
-    </div>
-
-    <!-- Story beat 4: The vision shift -->
-    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
-      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">NOT BUILT FOR<br>BIOHACKERS.</h2>
-      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 font-ghost" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">Built for the parent who gets lab results and doesn't know what to do with them.</p>
-      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Two kids. Aging parents. Limited time. The system identifies small, impactful daily actions that fit into a real life. Not 30 habits. Three to five.</p>
-    </div>
-
-    <!-- Story beat 5: Andrew + polaroid -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
-      <div class="md:col-span-6 flex flex-col justify-center">
-        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 entrance-words">I built the coach that texts me every morning.</p>
-        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">It pulls my sleep data, heart rate, weight trend, and lab history. Three weeks in, it cross-referenced sleep fragmentation, heart rate patterns, and nocturia frequency. Flagged possible sleep apnea. Connected dots a decade of doctor visits missed.</p>
-      </div>
-      <div class="md:col-span-5 md:col-start-8 reveal-left">
-        <div class="bg-white p-3 pb-14 shadow-xl inline-block founder-photo" style="transform: rotate(2deg);">
-          <img src="coach/andrew.jpg" alt="Andrew Deal" class="w-full max-w-[320px] aspect-[4/5] object-cover" style="filter: sepia(0.3) saturate(0.8);">
-        </div>
-        <div class="mt-8 space-y-4 max-w-[360px]">
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">name</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Andrew Deal</span>
-          </div>
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">role</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Co-founder</span>
-          </div>
-          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
-            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">before</span>
-            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Twitch, GoDaddy, John Deere</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Story beat 6: The dad story (emotional closer) -->
-    <div class="max-w-3xl mx-auto mb-24">
-      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">I TEXTED MY DAD<br>FROM IT.</h2>
-      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight font-ghost" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">He doesn't know what AI is. He doesn't need to.</p>
-      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] mt-4 reveal stagger-2">He got a message from a coach who's about to learn his health picture and help him build on it.</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════ CLOSING STATEMENT (pinned on cream, breathes before CTA) ═══════════ -->
-<section class="bg-cream relative" id="closing-pin-section">
-  <div id="closing-pin-wrap" style="min-height: 100vh;">
-    <div class="flex items-center justify-center px-band" id="closing-pin-inner" style="min-height: 100vh;">
-      <div class="text-center relative" id="closing-text-wrap">
-        <!-- Back layer: ghost text, words tumble up -->
-        <div class="font-display font-black text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] uppercase tracking-[-0.03em] mx-auto" style="color: rgba(26,23,20,0.08);" id="closing-behind">START WITH WHAT YOU HAVE</div>
-        <!-- Front layer: filled text, clip-path wipes down to reveal -->
-        <div class="font-display font-black text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] uppercase tracking-[-0.03em] mx-auto absolute inset-0" style="color: rgba(26,23,20,0.7); clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);" id="closing-front">START WITH WHAT YOU HAVE</div>
+      <div class="mt-16 text-center">
+        <a href="/v2/how-it-works.html" class="font-mono text-[0.7rem] text-coral tracking-widest uppercase hover:text-[#1a1714] transition-colors">Learn more about how it works &rarr;</a>
       </div>
     </div>
   </div>
@@ -869,19 +333,18 @@ tailwind.config = {
 <!-- ═══════════════════════ CTA / SIGNUP ═══════════════════════ -->
 <section id="get-started" class="relative overflow-hidden" style="background: #0e0e11;">
   <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(ellipse 60% 40% at 50% 40%, rgba(200,60,60,0.04) 0%, transparent 60%);"></div>
-
-  <!-- Floating accent line -->
   <div class="accent-line hidden md:block" style="right: 30%; top: 10%; height: 50%;"></div>
-
   <div class="px-band py-band relative z-10">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
       <div class="md:col-span-5 flex flex-col justify-center">
         <div class="font-label text-coral mb-8 reveal">(get started)</div>
         <div class="font-massive text-[clamp(2.5rem,6vw,4.5rem)] text-ink mb-6 entrance-clip-up">READY<br>WHEN YOU<br>ARE</div>
         <p class="text-ink-muted text-[0.9rem] leading-relaxed max-w-sm reveal stagger-2">Just your name and how you want to be reached. Your coach will take it from there.</p>
-        <p class="text-ink-dim text-xs mt-8 reveal stagger-3"><strong class="text-ink-muted font-medium">Free while we grow.</strong> Early members get founding rates locked in for life.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-4 reveal stagger-3">
+          <a href="https://cal.com/andrew-deal/discovery" target="_blank" class="font-mono text-[0.65rem] text-ink-muted tracking-widest uppercase border border-ink-dim/30 rounded-md px-5 py-3 hover:border-coral hover:text-coral transition-colors text-center">Book a Call</a>
+        </div>
+        <p class="text-ink-dim text-xs mt-8 reveal stagger-4"><strong class="text-ink-muted font-medium">Free while we grow.</strong> Early members get founding rates locked in for life.</p>
       </div>
-
       <div class="md:col-span-5 md:col-start-8">
         <form class="space-y-5 reveal stagger-2" id="coach-form" action="https://formspree.io/f/mjgezrdp" method="POST">
           <input type="hidden" name="_subject" value="Coach signup - baseline v2">
@@ -912,7 +375,6 @@ tailwind.config = {
           <button type="submit" class="cta-btn letter-btn w-full py-4 bg-coral text-white font-mono font-bold text-xs uppercase tracking-[0.3em] rounded-md hover:opacity-90 transition-opacity cursor-pointer border-none mt-3 flex items-center justify-center gap-[0.3em]"><span>I</span><span>'</span><span>M</span><span>&nbsp;</span><span>I</span><span>N</span></button>
           <p class="text-center text-xs text-ink-dim font-mono mt-1">your coach will reach out within 24 hours.</p>
         </form>
-
         <div class="hidden mt-6 p-6 border border-green rounded-lg text-center" id="success" style="background: rgba(45, 138, 78, 0.08);">
           <p class="text-ink text-sm">You're in. Your coach will reach out shortly.</p>
         </div>
@@ -921,12 +383,10 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- ═══════════════════════ FOOTER (revealed from behind CTA) ═══════════════════════ -->
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <footer class="footer-reveal bg-bg overflow-hidden" id="site-footer" style="visibility: hidden;">
   <div class="px-band pt-16 md:pt-24 pb-12">
-    <!-- Big BASELINE watermark -->
     <div class="font-massive text-[clamp(5rem,18vw,14rem)] text-ink/[0.06] leading-[0.82] mb-12">BASELINE</div>
-
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-t border-ink-dim/10 pt-8">
       <div class="space-y-3">
         <p class="text-sm text-ink-muted">Built by <a href="https://www.linkedin.com/in/pmederos/" class="text-ink-muted underline underline-offset-4 hover:text-ink transition-colors">Paul Mederos</a> and <a href="https://www.linkedin.com/in/adeal/" class="text-ink-muted underline underline-offset-4 hover:text-ink transition-colors">Andrew Deal</a>.</p>
@@ -936,264 +396,17 @@ tailwind.config = {
     </div>
   </div>
 </footer>
-<!-- Spacer for footer reveal (matches footer height) -->
 <div id="footer-spacer" style="position: relative; z-index: 0; pointer-events: none;"></div>
 
 <!-- GSAP + ScrollTrigger + Lenis -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.3.15/dist/lenis.min.js"></script>
+<script src="shared.js"></script>
 
+<!-- Page-specific: Outcomes carousel -->
 <script>
-// ——— Mobile detection ———
-const isMobile = window.innerWidth < 768;
-
-// ——— Lenis smooth scroll ———
-window.lenis = new Lenis({ wheelMultiplier: 0.8 });
-const lenis = window.lenis;
-lenis.on('scroll', ScrollTrigger.update);
-gsap.ticker.add((time) => lenis.raf(time * 1000));
-gsap.ticker.lagSmoothing(0);
-gsap.registerPlugin(ScrollTrigger);
-
-// ——— Scroll reveals with GSAP (replaces IntersectionObserver) ———
-document.querySelectorAll('.reveal').forEach(el => {
-  gsap.from(el, {
-    y: 40, opacity: 0, duration: 1, ease: 'expo.out',
-    delay: parseFloat(el.classList.contains('stagger-1') ? 0.1 : el.classList.contains('stagger-2') ? 0.22 : el.classList.contains('stagger-3') ? 0.34 : el.classList.contains('stagger-4') ? 0.46 : 0),
-    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-  });
-});
-document.querySelectorAll('.reveal-left').forEach(el => {
-  gsap.from(el, {
-    x: -60, opacity: 0, duration: 1, ease: 'expo.out',
-    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-  });
-});
-document.querySelectorAll('.reveal-right').forEach(el => {
-  gsap.from(el, {
-    x: 60, opacity: 0, duration: 1, ease: 'expo.out',
-    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-  });
-});
-document.querySelectorAll('.reveal-scale').forEach(el => {
-  gsap.from(el, {
-    scale: 0.92, opacity: 0, duration: 1.2, ease: 'expo.out',
-    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// ——— Unique section header entrances (ABCS-inspired variety) ———
-
-// CLIP-UP: each line slides up from behind a clip mask — feels like it was always there, just revealed
-document.querySelectorAll('.entrance-clip-up').forEach(el => {
-  // Wrap each line (split by <br>) so we can clip and animate independently
-  const html = el.innerHTML;
-  const lines = html.split(/<br\s*\/?>/i);
-  if (lines.length > 1) {
-    el.innerHTML = lines.map(line => `<span class="clip-line block" style="overflow:hidden;"><span class="clip-inner block">${line.trim()}</span></span>`).join('');
-    el.querySelectorAll('.clip-inner').forEach((inner, i) => {
-      gsap.from(inner, {
-        yPercent: 110, duration: 1.2, ease: 'expo.out',
-        delay: i * 0.12,
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-      });
-    });
-  } else if (el.children.length > 1) {
-    // Already has child elements (like THE REAL QUESTION with divs)
-    Array.from(el.children).forEach((child, i) => {
-      child.style.overflow = 'hidden';
-      gsap.from(child, {
-        yPercent: 110, duration: 1.2, ease: 'expo.out',
-        delay: i * 0.12,
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-      });
-    });
-  } else {
-    // Single element, just slide up
-    el.style.overflow = 'hidden';
-    gsap.from(el, {
-      yPercent: 110, duration: 1.2, ease: 'expo.out',
-      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-    });
-  }
-});
-
-// SNAP: appears instantly with a very slight scale punch — like it was always there and just snapped into focus
-document.querySelectorAll('.entrance-snap').forEach(el => {
-  gsap.from(el, {
-    scale: 1.08, opacity: 0, duration: 0.4, ease: 'power4.out',
-    scrollTrigger: { trigger: el, start: 'top 82%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// SPLIT: lines come from opposite sides and meet in the middle
-document.querySelectorAll('.entrance-split').forEach(el => {
-  // Wrap each line in a span for independent animation
-  const html = el.innerHTML;
-  const lines = html.split('<br>');
-  if (lines.length >= 2) {
-    el.innerHTML = lines.map((line, i) => `<span class="split-line block" style="overflow:hidden;"><span class="split-inner block">${line}</span></span>`).join('');
-    const inners = el.querySelectorAll('.split-inner');
-    inners.forEach((inner, i) => {
-      gsap.from(inner, {
-        x: i % 2 === 0 ? -120 : 120, opacity: 0,
-        duration: 1, ease: 'expo.out',
-        delay: i * 0.1,
-        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-      });
-    });
-  }
-});
-
-// SLIDE-RIGHT: whole block slides in from the left edge
-document.querySelectorAll('.entrance-slide-right').forEach(el => {
-  gsap.from(el, {
-    x: -100, opacity: 0, duration: 1.4, ease: 'expo.out',
-    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// ——— Word-by-word entrance: words fade in with stagger ———
-document.querySelectorAll('.entrance-words').forEach(el => {
-  // Wrap each word in a span, preserving existing HTML spans
-  const nodes = el.childNodes;
-  let html = '';
-  nodes.forEach(node => {
-    if (node.nodeType === 3) {
-      // Text node: wrap each word
-      const words = node.textContent.split(/(\s+)/);
-      words.forEach(w => {
-        if (w.trim()) {
-          html += `<span class="ew-word" style="display:inline-block; opacity:0;">${w}</span>`;
-        } else {
-          html += w;
-        }
-      });
-    } else {
-      // Element node (like <span class="text-coral">): wrap inner words
-      const inner = node.textContent.split(/(\s+)/);
-      const cls = node.className || '';
-      inner.forEach(w => {
-        if (w.trim()) {
-          html += `<span class="ew-word ${cls}" style="display:inline-block; opacity:0;">${w}</span>`;
-        } else {
-          html += w;
-        }
-      });
-    }
-  });
-  el.innerHTML = html;
-
-  const words = el.querySelectorAll('.ew-word');
-  gsap.to(words, {
-    opacity: 1, y: 0, duration: 0.4, ease: 'power2.out',
-    stagger: 0.04,
-    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-  });
-  // Set initial y offset
-  gsap.set(words, { y: 8 });
-});
-
-// ——— Ghost text fill on scroll (GSAP ScrollTrigger scrub) ———
-document.querySelectorAll('.font-ghost, .font-ghost-light, .font-ghost-dark').forEach(el => {
-  gsap.to(el, {
-    '--fill': '100%',
-    ease: 'none',
-    scrollTrigger: { trigger: el, start: 'top 85%', end: 'top 25%', scrub: true }
-  });
-});
-
-// ——— Parallax with GSAP ScrollTrigger ———
-document.querySelectorAll('.parallax').forEach(el => {
-  const speed = parseFloat(el.dataset.speed) || 0.03;
-  gsap.to(el, {
-    yPercent: speed * -100,
-    ease: 'none',
-    scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true }
-  });
-});
-
-// ——— Stacked words: stagger in from right ———
-document.querySelectorAll('.stack-word').forEach((el, i) => {
-  gsap.from(el, {
-    x: 80, opacity: 0, duration: 1.2, ease: 'expo.out',
-    delay: i * 0.1,
-    scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// ——— Domain cards ———
-const domainCards = document.querySelectorAll('.domain-card');
-if (domainCards.length && !isMobile) {
-  // Desktop: pinned grid, cards arrive from different directions, crash out
-  const entryDirections = [
-    { x: -80, y: 0 },   // 01 SLEEP - from left
-    { x: 0, y: -80 },   // 02 LABS - from top
-    { x: 80, y: 0 },    // 03 MOVEMENT - from right
-    { x: 0, y: 80 },    // 04 NUTRITION - from bottom
-    { x: -80, y: 40 },  // 05 BODY COMP - from bottom-left
-    { x: 80, y: -40 },  // 06 VITALS - from top-right
-    { x: -60, y: -60 }, // 07 MIND - from top-left
-    { x: 60, y: 60 },   // 08 HISTORY - from bottom-right
-  ];
-
-  const domainTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#domains-pin-wrap',
-      start: 'top 20%',
-      end: () => '+=' + (domainCards.length * 350 + 1000),
-      pin: '#domains-pin-inner',
-      scrub: 0.5,
-    }
-  });
-
-  domainCards.forEach((card, i) => {
-    const dir = entryDirections[i];
-    domainTl.fromTo(card,
-      { x: dir.x, y: dir.y, scale: 0.8, opacity: 0, rotation: gsap.utils.random(-8, 8) },
-      { x: 0, y: 0, scale: 1, opacity: 1, rotation: 0, duration: 1.2, ease: 'expo.out' },
-      i * 0.5
-    );
-  });
-
-  const finaleStart = domainCards.length * 0.5 + 1.2;
-  domainTl.to({}, { duration: 0.8 }, finaleStart);
-
-  const crashDirections = [
-    { x: -200, y: 800, rotation: -35 },
-    { x: 80, y: 900, rotation: 15 },
-    { x: 250, y: 750, rotation: 40 },
-    { x: -100, y: 850, rotation: -20 },
-    { x: -300, y: 700, rotation: -45 },
-    { x: 150, y: 950, rotation: 25 },
-    { x: -50, y: 800, rotation: -10 },
-    { x: 300, y: 750, rotation: 50 },
-  ];
-
-  const crashStart = finaleStart + 0.8;
-  domainCards.forEach((card, i) => {
-    const dir = crashDirections[i];
-    domainTl.to(card, {
-      x: dir.x, y: dir.y, rotation: dir.rotation, opacity: 0,
-      duration: 1.5, ease: 'power2.in',
-    }, crashStart + i * 0.08);
-  });
-} else if (domainCards.length) {
-  // Mobile: simple staggered reveal, no pin
-  domainCards.forEach((card, i) => {
-    gsap.to(card, {
-      opacity: 1, duration: 0.6, ease: 'power2.out',
-      delay: i * 0.08,
-      scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none reverse' }
-    });
-  });
-}
-
-// Refresh after pin so all downstream triggers have correct positions
-ScrollTrigger.refresh();
-
-// ——— Outcomes ———
+// ——— Outcomes carousel (pinned) ———
 const outcomeNames = document.querySelectorAll('.outcome-name');
 const outcomeCards = document.querySelectorAll('.outcome-card-item');
 const carouselTrack = document.getElementById('outcomes-carousel-track');
@@ -1201,10 +414,8 @@ const nameHeight = 60;
 const numOutcomes = outcomeNames.length;
 
 if (numOutcomes && !isMobile) {
-  // Desktop: pinned carousel with scrubbed timeline
   const scrollPerOutcome = 600;
   const totalScroll = numOutcomes * scrollPerOutcome;
-
   const outcomeTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#outcomes-pin-wrap',
@@ -1214,59 +425,34 @@ if (numOutcomes && !isMobile) {
       scrub: 1.5,
     }
   });
-
   const seg = 1;
-
   outcomeNames.forEach((nameEl, i) => {
     const t = i * seg;
     const span = nameEl.querySelector('span');
     const card = outcomeCards[i];
     const prevSpan = i > 0 ? outcomeNames[i - 1].querySelector('span') : null;
     const prevCard = i > 0 ? outcomeCards[i - 1] : null;
-
-    if (prevCard) {
-      outcomeTl.to(prevCard, { opacity: 0, y: -20, duration: seg * 0.2, ease: 'none' }, t);
-    }
-
+    if (prevCard) { outcomeTl.to(prevCard, { opacity: 0, y: -20, duration: seg * 0.2, ease: 'none' }, t); }
     outcomeTl.to(carouselTrack, { y: -(i * nameHeight), duration: seg * 0.25, ease: 'none' }, t);
-
-    if (span) {
-      outcomeTl.to(span, { color: '#c83c3c', duration: seg * 0.2, ease: 'none' }, t);
-    }
-    if (prevSpan) {
-      outcomeTl.to(prevSpan, { color: 'rgba(240,240,240,0.15)', duration: seg * 0.15, ease: 'none' }, t);
-    }
-
-    if (card) {
-      outcomeTl.fromTo(card,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: seg * 0.25, ease: 'none' },
-        t + seg * 0.2
-      );
-    }
+    if (span) { outcomeTl.to(span, { color: '#c83c3c', duration: seg * 0.2, ease: 'none' }, t); }
+    if (prevSpan) { outcomeTl.to(prevSpan, { color: 'rgba(240,240,240,0.15)', duration: seg * 0.15, ease: 'none' }, t); }
+    if (card) { outcomeTl.fromTo(card, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: seg * 0.25, ease: 'none' }, t + seg * 0.2); }
   });
-
   const lastSpan = outcomeNames[numOutcomes - 1]?.querySelector('span');
   const lastCard = outcomeCards[numOutcomes - 1];
   if (lastSpan) outcomeTl.to(lastSpan, { color: 'rgba(240,240,240,0.15)', duration: 0.3, ease: 'none' }, numOutcomes * seg);
   if (lastCard) outcomeTl.to(lastCard, { opacity: 0, duration: 0.3, ease: 'none' }, numOutcomes * seg);
 } else if (numOutcomes) {
-  // Mobile: no pin, show as scrollable list
-  // Hide the carousel viewport and show names inline with their cards
   const carousel = document.getElementById('outcomes-carousel');
   const cardArea = document.getElementById('outcome-card-area');
   if (carousel) carousel.style.display = 'none';
   if (cardArea) cardArea.style.display = 'none';
-
-  // Build a simple mobile outcomes list
   const pinInner = document.getElementById('outcomes-pin-inner');
   if (pinInner) {
     pinInner.classList.remove('min-h-screen');
     pinInner.style.minHeight = 'auto';
-
     const mobileList = document.createElement('div');
     mobileList.className = 'space-y-6 w-full px-band py-8';
-
     const outcomeLabels = ['SLEEP BETTER','LOSE WEIGHT','MORE ENERGY','BUILD STRENGTH','EAT HEALTHIER','LESS STRESS','SHARPER FOCUS','KNOW MORE'];
     const outcomeOneLiner = [
       'The single highest-leverage change for most people.',
@@ -1278,286 +464,58 @@ if (numOutcomes && !isMobile) {
       'Same time in, same time out. Every day.',
       'What you have, what is missing, what to do next.',
     ];
-
     outcomeCards.forEach((card, i) => {
       const wrapper = document.createElement('div');
       wrapper.className = 'reveal py-4 border-b border-ink-dim/10';
       wrapper.style.opacity = '0';
-
       const name = document.createElement('div');
       name.className = 'font-display font-bold text-coral/60 text-[0.85rem] tracking-tight uppercase mb-1';
       name.textContent = outcomeLabels[i] || '';
-
       const line = document.createElement('p');
       line.className = 'text-ink text-[0.95rem] leading-relaxed';
       line.textContent = outcomeOneLiner[i] || '';
-
       wrapper.appendChild(name);
       wrapper.appendChild(line);
-
       mobileList.appendChild(wrapper);
-
-      // Animate
-      gsap.to(wrapper, {
-        opacity: 1, duration: 0.6,
-        scrollTrigger: { trigger: wrapper, start: 'top 88%', toggleActions: 'play none none reverse' }
-      });
+      gsap.to(wrapper, { opacity: 1, duration: 0.6, scrollTrigger: { trigger: wrapper, start: 'top 88%', toggleActions: 'play none none reverse' } });
     });
-
     pinInner.querySelector('.w-full')?.replaceWith(mobileList);
   }
 }
 
-// ——— Proof section: pinned, stat row + insulin card animate in sequence (desktop only) ———
-const proofStatRow = document.getElementById('proof-stat-row');
-if (proofStatRow && !isMobile) {
-  const proofTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#proof-pin-wrap',
-      start: 'top 20%',
-      end: '+=800',
-      pin: '#proof-pin-inner',
-      scrub: 1,
-    }
-  });
-
-  // Stat numbers scale up
-  const statBefore = proofStatRow.querySelector('.text-ink-dim\\/30'); // arrow
-  const statNums = proofStatRow.querySelectorAll('.font-stat');
-  statNums.forEach((num, i) => {
-    proofTl.from(num, {
-      scale: 0.5, opacity: 0, duration: 0.5, ease: 'back.out(1.4)',
-    }, i * 0.2);
-  });
-
-  // Arrow fades in
-  if (statBefore) {
-    proofTl.from(statBefore, { opacity: 0, duration: 0.3 }, 0.1);
-  }
-
-  // Paragraph fades up
-  const proofPara = proofStatRow.parentElement.querySelector('.max-w-md');
-  if (proofPara) {
-    proofTl.from(proofPara, { y: 30, opacity: 0, duration: 0.5 }, 0.5);
-  }
-
-  // Insulin card scales in
-  const insulinCard = proofStatRow.parentElement.querySelector('.max-w-xl');
-  if (insulinCard) {
-    proofTl.from(insulinCard, { scale: 0.9, opacity: 0, y: 40, duration: 0.6, ease: 'expo.out' }, 0.8);
-  }
-}
-
-// ——— Closing statement: ABCS two-layer reveal (words tumble up + clip wipe down) ———
-const closingBehind = document.getElementById('closing-behind');
-const closingFront = document.getElementById('closing-front');
-if (closingBehind && !isMobile) {
-  // Split back layer into words for tumble animation
-  const text = closingBehind.textContent;
-  const words = text.split(/\s+/);
-  closingBehind.innerHTML = words.map(w => `<span class="closing-word" style="display:inline-block; overflow:hidden;"><span class="closing-word-inner" style="display:inline-block;">${w}</span></span>`).join(' ');
-  // Match front layer word wrapping
-  closingFront.innerHTML = words.map(w => `<span style="display:inline-block;">${w}</span>`).join(' ');
-
-  const wordInners = closingBehind.querySelectorAll('.closing-word-inner');
-
-  // Words start below and rotated
-  gsap.set(wordInners, { yPercent: 110, rotation: 3 });
-
-  const closingTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#closing-pin-wrap',
-      start: 'top top',
-      end: '+=1400',
-      pin: '#closing-pin-inner',
-      scrub: 1,
-    }
-  });
-
-  // Words tumble up into place with stagger
-  closingTl.to(wordInners, {
-    yPercent: 0, rotation: 0, duration: 0.4, ease: 'none',
-    stagger: 0.06,
-  }, 0.05);
-
-  // Clip-path wipe reveals the filled front layer (top to bottom)
-  closingTl.fromTo(closingFront, {
-    clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-  }, {
-    clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    duration: 0.4, ease: 'none',
-  }, 0.3);
-
-  // Fill to full black
-  closingTl.to(closingFront, {
-    color: 'rgba(26,23,20,1)', duration: 0.2, ease: 'none',
-  }, 0.65);
-
-  // Hold at full black
-  closingTl.to({}, { duration: 0.2 });
-
-  // Words peel out left and right alternating
-  const frontWords = closingFront.querySelectorAll('span');
-  frontWords.forEach((word, i) => {
-    closingTl.to(word, {
-      x: i % 2 === 0 ? -300 : 300,
-      opacity: 0,
-      duration: 0.25,
-      ease: 'none',
-    }, 0.9 + i * 0.04);
-  });
-  // Also fade the back layer
-  closingTl.to(closingBehind, { opacity: 0, duration: 0.15, ease: 'none' }, 0.9);
-}
-
-// ——— Coverage bar animations ———
-document.querySelectorAll('.coverage-bar').forEach(bar => {
-  const target = parseInt(bar.dataset.target);
-  gsap.to(bar, {
-    width: target + '%',
-    duration: 1.2,
-    ease: 'expo.out',
-    scrollTrigger: { trigger: bar, start: 'top 90%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// ——— Comparison card tilt on entry ———
-document.querySelectorAll('.comp-card').forEach((card, i) => {
-  const endRotation = parseFloat(card.dataset.rotate) || 0;
-  gsap.fromTo(card,
-    { rotation: gsap.utils.random(-15, 15), y: 60, opacity: 0 },
-    { rotation: endRotation, y: 0, opacity: 1, duration: 1, ease: 'back.out(1.4)', delay: i * 0.12,
-      scrollTrigger: { trigger: card.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' }
-    }
-  );
-});
-
-// ——— Scroll progress bar ———
-gsap.to('#scroll-progress', {
-  width: '100%',
-  ease: 'none',
-  scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: true }
-});
-
-// ——— Stat counter animation ———
-document.querySelectorAll('.stat-count').forEach(el => {
-  const target = parseInt(el.dataset.target);
-  const suffix = target === 33 ? '%' : '';
-  ScrollTrigger.create({
-    trigger: el, start: 'top 80%',
-    onEnter: () => {
-      if (el.dataset.counted) return;
-      el.dataset.counted = 'true';
-      let obj = { val: 0 };
-      gsap.to(obj, {
-        val: target, duration: 1.2, ease: 'expo.out',
-        onUpdate: () => { el.textContent = Math.round(obj.val) + suffix; }
-      });
-    }
-  });
-});
-
-// ——— Form submission ———
-const form = document.getElementById('coach-form');
-const success = document.getElementById('success');
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = form.querySelector('button[type="submit"]');
-  btn.disabled = true;
-  btn.textContent = 'SENDING...';
-  try {
-    const res = await fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
-    });
-    if (res.ok) {
-      form.style.display = 'none';
-      success.classList.remove('hidden');
-      if (window._blTrack) window._blTrack('signup');
-    } else {
-      btn.disabled = false;
-      btn.textContent = "I'M IN";
-    }
-  } catch {
-    btn.disabled = false;
-    btn.textContent = "I'M IN";
-  }
-});
-
-// ——— Footer reveal: set spacer height + only show footer near bottom ———
-const footer = document.getElementById('site-footer');
-const spacer = document.getElementById('footer-spacer');
-if (footer && spacer) {
-  const setSpacerHeight = () => { spacer.style.height = footer.offsetHeight + 'px'; };
-  setSpacerHeight();
-  window.addEventListener('resize', setSpacerHeight);
-
-  // Only show footer when CTA section is almost fully scrolled past
-  ScrollTrigger.create({
-    trigger: '#get-started',
-    start: 'bottom 90%',
-    onEnter: () => { footer.style.visibility = 'visible'; },
-    onLeaveBack: () => { footer.style.visibility = 'hidden'; },
-  });
-}
-
-// ——— Step cards: scale up from behind (emerge on scroll) ———
-document.querySelectorAll('.step-emerge').forEach((card, i) => {
-  gsap.from(card, {
-    y: 100, scale: 0.8, opacity: 0, duration: 1, ease: 'expo.out',
-    delay: i * 0.12,
-    scrollTrigger: { trigger: card.parentElement, start: 'top 85%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// ——— Connector blur+fade: connector fades out as next section enters ———
-document.querySelectorAll('.connector-section').forEach(conn => {
-  gsap.to(conn, {
-    filter: 'blur(8px)',
-    opacity: 0.3,
-    ease: 'none',
-    scrollTrigger: { trigger: conn, start: 'center center', end: 'bottom top', scrub: true }
-  });
-});
-
-// ——— Founder photos: scale up from behind content ———
-document.querySelectorAll('.founder-photo').forEach(photo => {
-  gsap.from(photo, {
-    scale: 0.7, y: 80, opacity: 0, duration: 1.4, ease: 'expo.out',
-    scrollTrigger: { trigger: photo, start: 'top 90%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// ——— Rotated strip cards animation ———
-document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
-  gsap.from(strip, {
-    rotation: gsap.utils.random(-25, 25),
-    y: 80,
-    opacity: 0,
-    duration: 1.2,
-    ease: 'back.out(1.7)',
-    delay: i * 0.1,
-    scrollTrigger: { trigger: strip.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' }
-  });
-});
+// Init shared animations
+initSharedAnimations();
+ScrollTrigger.refresh();
 </script>
 
-<!-- ═══════════════════════ MILO DEMO CHAT WIDGET ═══════════════════════ -->
-<script>
-// Auto cache-bust: loads milo-chat.css + milo-chat.js with a unique timestamp
-// so browsers and CDNs always fetch the latest version.
-(function() {
-  var v = Date.now();
-  var css = document.createElement('link');
-  css.rel = 'stylesheet';
-  css.href = 'milo-chat.css?v=' + v;
-  document.head.appendChild(css);
-  var js = document.createElement('script');
-  js.src = 'milo-chat.js?v=' + v;
-  document.body.appendChild(js);
-})();
-</script>
+<!-- Milo Chat Widget -->
+<button id="milo-fab" aria-label="Chat with Milo">
+  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+</button>
+<div id="milo-panel">
+  <div id="milo-header">
+    <div>
+      <div class="milo-title">Milo</div>
+      <div class="milo-label">demo</div>
+    </div>
+    <button id="milo-close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div id="milo-messages">
+    <div class="milo-msg system">this is a demo. your data isn't saved.</div>
+    <div class="milo-typing" id="milo-typing"><span></span><span></span><span></span></div>
+  </div>
+  <div id="milo-input-wrap">
+    <button id="milo-mic" aria-label="Voice input" style="display:none;">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    </button>
+    <input type="text" id="milo-input" placeholder="Ask Milo anything about your health..." autocomplete="off">
+    <button id="milo-send" disabled>
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
 
 </body>
 </html>
