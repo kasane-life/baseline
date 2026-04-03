@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMS Consent — baseline.</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #08080a;
+  --border: #181820;
+  --text: #f0f0f0;
+  --text-muted: #a8a8b8;
+  --text-dim: #3e3e4a;
+  --red: #c83c3c;
+  --green: #2d8a4e;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  background: var(--bg);
+}
+.header .logo-mark {
+  display: block;
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.2s;
+}
+.header .logo-mark:hover { opacity: 0.7; }
+.back-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--text-muted); text-decoration: none; }
+h1 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 48px 0 8px;
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin: 36px 0 12px;
+}
+p, li {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+ul { padding-left: 20px; }
+li { margin-bottom: 8px; }
+.updated {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+.consent-box {
+  background: #0e0e11;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+}
+.consent-box p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.consent-box p:last-child { margin-bottom: 0; }
+.phone-form {
+  margin: 32px 0;
+}
+.phone-form label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+.phone-form input[type="tel"] {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: #0e0e11;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  margin-bottom: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.phone-form input[type="tel"]:focus {
+  border-color: var(--red);
+}
+.phone-form .checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.phone-form .checkbox-row input[type="checkbox"] {
+  margin-top: 4px;
+  accent-color: var(--red);
+}
+.phone-form .checkbox-row label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: normal;
+  margin-bottom: 0;
+}
+.phone-form button {
+  display: block;
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.phone-form button:hover { opacity: 0.9; }
+.phone-form button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.success-message {
+  display: none;
+  background: rgba(45, 138, 78, 0.1);
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  padding: 16px 20px;
+  color: var(--green);
+  font-size: 0.9rem;
+  margin: 24px 0;
+}
+footer {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+</style>
+</head>
+<body>
+<div class="container" style="padding-top:0;">
+
+<div class="header">
+  <a href="../" class="back-link">&larr; Back</a>
+  <a href="../" class="logo-mark"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="6" fill="#f0f0f0"/><text x="5" y="25" font-family="'Barlow Condensed',sans-serif" font-weight="800" font-size="26" fill="#08080a" letter-spacing="-0.5">b</text><circle cx="24" cy="24" r="3" fill="#c83c3c"/></svg></a>
+</div>
+
+<h1>SMS Messaging Consent</h1>
+<p class="updated">Last updated: April 3, 2026</p>
+
+<h2>What you're signing up for</h2>
+<p>By providing your phone number and opting in, you agree to receive SMS messages from Baseline Health ("Baseline") related to your personalized health coaching program. Messages are sent by Milo, your AI health coach.</p>
+
+<h2>Types of messages</h2>
+<p>You may receive the following types of messages:</p>
+<ul>
+  <li>Daily health check-ins and habit reminders</li>
+  <li>Morning briefs with sleep and wellness summaries</li>
+  <li>Evening check-ins on protocol adherence</li>
+  <li>Weekly health reviews with metric trends</li>
+  <li>Responses to messages you send to your coach</li>
+</ul>
+
+<h2>Message frequency</h2>
+<p>Message frequency varies based on your coaching program. Typically 1 to 3 messages per day. You can adjust your preferences at any time by messaging your coach.</p>
+
+<h2>Costs</h2>
+<p>Message and data rates may apply. Baseline does not charge for SMS messages, but your carrier may.</p>
+
+<div class="consent-box">
+  <p><strong>By opting in, you consent to the following:</strong></p>
+  <p>I agree to receive recurring automated SMS messages from Baseline Health at the phone number I provide. I understand that consent is not a condition of purchase. I can opt out at any time by replying STOP. For help, I can reply HELP or contact us at support@mybaseline.health.</p>
+</div>
+
+<form class="phone-form" id="opt-in-form">
+  <label for="phone">Your mobile phone number</label>
+  <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required>
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="consent" name="consent" required>
+    <label for="consent">I agree to receive SMS messages from Baseline Health and acknowledge that I have read the terms above. Message and data rates may apply. Reply STOP to unsubscribe.</label>
+  </div>
+
+  <button type="submit" id="submit-btn" disabled>Sign Up for SMS Coaching</button>
+</form>
+
+<div class="success-message" id="success">
+  You're signed up. You'll receive a confirmation text from Milo shortly. Reply STOP at any time to opt out.
+</div>
+
+<h2>How to opt out</h2>
+<p>You can stop receiving messages at any time by replying <strong>STOP</strong> to any message from Baseline. You will receive a confirmation that you have been unsubscribed. After opting out, you will not receive any further messages unless you re-subscribe.</p>
+
+<h2>How to get help</h2>
+<p>Reply <strong>HELP</strong> to any message from Baseline for assistance, or contact us at <a href="mailto:support@mybaseline.health">support@mybaseline.health</a>.</p>
+
+<h2>Supported carriers</h2>
+<p>Baseline SMS works with all major US carriers including AT&T, T-Mobile, Verizon, and others. Carriers are not liable for delayed or undelivered messages.</p>
+
+<h2>Privacy</h2>
+<p>Your phone number will only be used to send you health coaching messages. We will never sell, share, or use your phone number for marketing purposes. See our full <a href="../privacy/">Privacy Policy</a> for details.</p>
+
+<footer>
+  <a href="../">baseline.</a> &middot; <a href="../privacy/">Privacy Policy</a> &middot; Reply STOP to unsubscribe at any time.
+</footer>
+
+</div>
+
+<script>
+const checkbox = document.getElementById('consent');
+const button = document.getElementById('submit-btn');
+const form = document.getElementById('opt-in-form');
+const success = document.getElementById('success');
+
+checkbox.addEventListener('change', () => {
+  button.disabled = !checkbox.checked;
+});
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  form.style.display = 'none';
+  success.style.display = 'block';
+});
+</script>
+</body>
+</html>
