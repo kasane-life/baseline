@@ -145,6 +145,20 @@ nav.scrolled {
 }
 .logo span { color: var(--coral); }
 .nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a,
+.nav-links .nav-secondary,
+.nav-links .nav-cta {
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+/* Hide CTAs while user is on the signup form so the form is the only ask */
+#nav.nav-hide-cta .nav-secondary,
+#nav.nav-hide-cta .nav-cta {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+}
 .nav-links a {
   font-size: 0.82rem; color: var(--ink-dim); text-decoration: none;
   transition: color 0.3s;
@@ -3985,6 +3999,17 @@ document.querySelectorAll('.coverage-bars').forEach(el => barObs.observe(el));
 
 // Nav scroll
 window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60));
+
+// Hide nav CTAs while the signup form is in view; show them again in the appendix
+(function() {
+  const navEl = document.getElementById('nav');
+  const closingEl = document.querySelector('.closing');
+  if (!navEl || !closingEl) return;
+  const navCtaObs = new IntersectionObserver(es => es.forEach(e => {
+    navEl.classList.toggle('nav-hide-cta', e.isIntersecting);
+  }), { threshold: 0.25 });
+  navCtaObs.observe(closingEl);
+})();
 
 // Live MST lines between particles — animate in, solidify on scroll
 (function() {
