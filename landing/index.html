@@ -3492,8 +3492,8 @@ footer a:hover { color: var(--ink-mid); }
   /* Coverage frontier bar — tighter on tablet */
   .frontier-bar { height: clamp(105px, 18vw, 140px); }
   .zone { padding: 0.7rem 0.8rem; }
-  .zone-pct { font-size: clamp(1.3rem, 4.5vw, 1.8rem); }
-  .zone-sub { display: none; }
+  /* .zone-sub stays visible on tablet now that .zone-pct is gone */
+  .zone-sub { font-size: 0.52rem; }
   .bar-marker .marker-line { height: clamp(140px, 22vw, 175px); }
 
   /* Coach-on appendix: stack columns */
@@ -3539,8 +3539,8 @@ footer a:hover { color: var(--ink-mid); }
 
   /* Frontier bar very compact on phones */
   .frontier-bar { height: clamp(80px, 22vw, 110px); }
-  .zone-pct { font-size: clamp(1.1rem, 5vw, 1.5rem); }
   .zone-label { font-size: 0.5rem; letter-spacing: 0.12em; }
+  .zone-sub { font-size: 0.46rem; letter-spacing: 0.1em; }
   .bar-marker { top: -2.2rem; }
   .bar-marker .marker-label { font-size: 0.48rem; }
   .bar-marker .marker-line { height: clamp(110px, 26vw, 140px); }
@@ -3771,32 +3771,33 @@ footer a:hover { color: var(--ink-mid); }
 <!-- ═══════ COVERAGE — horizontal evidence-frontier bar ═══════ -->
 <section class="coverage">
   <div class="contain">
-    <div class="section-label reveal">The 40, in context</div>
-    <h2 class="coverage-headline reveal s1">EIGHTY IS<br>TODAY'S CEILING.</h2>
+    <div class="section-label reveal">The 40, and what's next</div>
+    <h2 class="coverage-headline reveal s1">THE 40 IS YOUR<br>BASELINE.</h2>
 
     <div class="frontier-wrap reveal s2">
       <div class="frontier-bar" id="frontier-bar">
 
-        <!-- Today marker (80%) — coral, the only marker -->
+        <!-- "You are here" marker — sits at the Enhanced/Frontier boundary,
+             the edge of what the science currently knows. -->
         <div class="bar-marker bar-marker-today" style="left:80%">
-          <div class="marker-label">Today<br>80% &rarr;</div>
+          <div class="marker-label">You are<br>here &rarr;</div>
           <div class="marker-line"></div>
         </div>
 
-        <!-- Three structural zones — knowledge map -->
+        <!-- Three structural zones — knowledge map (no numeric chrome;
+             the bar widths carry the relative scale, the words carry the
+             meaning). Backend is 10/10/10/10 across 4 tiers so per-zone
+             counts would lie against a 3-zone bar. -->
         <div class="zone zone-foundation" style="width:40%">
           <span class="zone-label">Foundation</span>
-          <span class="zone-pct">40%</span>
           <span class="zone-sub">Settled science</span>
         </div>
         <div class="zone zone-enhanced" style="width:40%">
           <span class="zone-label">Enhanced</span>
-          <span class="zone-pct">+40%</span>
           <span class="zone-sub">Leading edge</span>
         </div>
         <div class="zone zone-frontier" style="width:20%">
           <span class="zone-label">Frontier</span>
-          <span class="zone-pct">20%</span>
           <span class="zone-sub">Not yet known</span>
         </div>
 
@@ -3804,12 +3805,8 @@ footer a:hover { color: var(--ink-mid); }
         <div class="personal-fill" id="personal-fill"></div>
       </div>
 
-      <h3 class="frontier-moat reveal s3">THE CEILING MOVES.</h3>
-      <p class="frontier-moat-sub reveal s4">every year, the science expands.<br>your subscription moves with it.</p>
-
-      <p class="frontier-pitch reveal s5">
-        Most start at <strong>40%</strong> &nbsp;·&nbsp; three protocols take you to <strong>80%</strong>
-      </p>
+      <h3 class="frontier-moat reveal s3">THE FRONTIER IS<br>STILL MOVING.</h3>
+      <p class="frontier-moat-sub reveal s4">When a new study changes the answer,<br>your coach hears it first.</p>
     </div>
   </div>
 </section>
