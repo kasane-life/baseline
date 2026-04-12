@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -340,7 +340,23 @@ nav.scrolled {
   text-transform: uppercase;
   color: rgba(224, 64, 64, 0.35);
   white-space: nowrap;
-  transition: color 0.4s;
+  transition: color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              font-size 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
+  transform-origin: left center;
+}
+/* Hover expand: cursor over a dot brightens + scales the label */
+.particle:hover {
+  z-index: 5;
+}
+.particle:hover .dot-label {
+  color: rgba(255, 220, 220, 0.95);
+  font-size: 0.78rem;
+  transform: translateX(2px);
+}
+.particle:hover .dot {
+  box-shadow: 0 0 14px rgba(224, 64, 64, 0.7), 0 0 0 4px rgba(224, 64, 64, 0.15);
 }
 
 /* Solidified state — dots glow, labels brighten */
@@ -2178,6 +2194,99 @@ nav.scrolled {
   letter-spacing: 0.1em;
 }
 
+/* ═══════ FOUNDER NOTE — humanize the system ═══════ */
+.founder {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  position: relative;
+}
+.founder::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.18) 50%, transparent 100%);
+}
+.founder-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: center;
+  max-width: 820px;
+  margin: 0 auto;
+}
+.founder-photo-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+}
+.founder-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: grayscale(0.85) brightness(0.95) contrast(1.05);
+  transition: filter 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.founder-photo-frame {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, transparent 60%, rgba(224,64,64,0.12) 80%, transparent 100%);
+  filter: blur(12px);
+}
+.founder-grid:hover .founder-photo {
+  filter: grayscale(0.4) brightness(1) contrast(1);
+}
+.founder-text {
+  position: relative;
+}
+.founder-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 1.2rem;
+}
+.founder-quote {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: normal;
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0 0 1.6rem;
+  max-width: 540px;
+  letter-spacing: -0.005em;
+}
+.founder-sig {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.founder-name { color: var(--ink); font-weight: 600; }
+.founder-rule {
+  width: 30px;
+  height: 1px;
+  background: rgba(224,64,64,0.5);
+}
+.founder-link {
+  color: var(--ink-dim);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(238,238,240,0.15);
+  padding-bottom: 1px;
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+.founder-link:hover {
+  color: var(--coral);
+  border-bottom-color: var(--coral);
+}
+
 /* ═══════ INTERSTITIAL — gates the appendix ═══════ */
 .interstitial {
   padding: clamp(4rem, 8vw, 6rem) 0;
@@ -3296,6 +3405,12 @@ footer a:hover { color: var(--ink-mid); }
   .closing-others .other-divider { display: none; }
   .closing-others .other-item { padding: 0.3rem 0.6rem; }
 
+  /* Founder section: stack vertically */
+  .founder-grid { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+  .founder-photo-wrap { width: 160px; height: 160px; margin: 0 auto; }
+  .founder-quote { margin-left: auto; margin-right: auto; }
+  .founder-sig { justify-content: center; }
+
   /* Coverage frontier bar — tighter on tablet */
   .frontier-bar { height: clamp(105px, 18vw, 140px); }
   .zone { padding: 0.7rem 0.8rem; }
@@ -3380,7 +3495,7 @@ footer a:hover { color: var(--ink-mid); }
     <div class="nav-links">
       <a href="https://cal.com/andrew-deal/discovery" class="nav-secondary">Book intro call</a>
       <a href="#signup" class="nav-cta">Get Started</a>
-      <span class="nav-nudge"><span class="nav-nudge-lead">Let's do it.</span> A better you is waiting <span class="nav-nudge-arrow">&darr;</span></span>
+      <span class="nav-nudge"><span class="nav-nudge-lead">Ready when you are.</span> A healthier you starts now <span class="nav-nudge-arrow">&darr;</span></span>
     </div>
   </div>
 </nav>
@@ -3682,6 +3797,29 @@ footer a:hover { color: var(--ink-mid); }
           <div class="success" id="success"><p>You're in. Your coach will reach out shortly.</p></div>
         </div>
 
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOUNDER NOTE — humanize the system ═══════ -->
+<section class="founder">
+  <div class="contain">
+    <div class="founder-grid reveal">
+      <div class="founder-photo-wrap">
+        <img src="founder.jpg" alt="Andrew Deal" class="founder-photo" loading="lazy">
+        <div class="founder-photo-frame"></div>
+      </div>
+      <div class="founder-text">
+        <div class="founder-label">A note from the builder</div>
+        <p class="founder-quote">
+          I'm Andrew. I'm a startup operator, former gym owner, and personal trainer. I got tired of $5,000 concierge medicine telling me wellness scores instead of evidence. I built baseline because I needed it. I run on it every day. The 40 metrics aren't theoretical, they're the ones I track for myself, my dad, and my closest friends.
+        </p>
+        <div class="founder-sig">
+          <span class="founder-name">Andrew Deal</span>
+          <span class="founder-rule"></span>
+          <a href="https://www.linkedin.com/in/adeal/" class="founder-link">founder, baseline</a>
+        </div>
       </div>
     </div>
   </div>
@@ -4046,13 +4184,23 @@ window.addEventListener('scroll', () => document.getElementById('nav').classList
   navCtaObs.observe(closingEl);
 })();
 
-// Live MST lines between particles — animate in, solidify on scroll
+// Live MST lines between particles — animate in, solidify on scroll, react to cursor
 (function() {
   const svg = document.getElementById('hero-lines');
   const dotField = document.getElementById('hero-particles');
   const container = dotField.closest('.hero-stagger');
   const dots = dotField.querySelectorAll('.particle');
   let scrollSolidity = 0;
+  // Cursor awareness: track pointer over the dotField as a virtual MST node
+  let cursorPt = null;
+  const isTouch = matchMedia('(pointer: coarse)').matches;
+  if (!isTouch) {
+    dotField.addEventListener('mousemove', (e) => {
+      const cr = dotField.getBoundingClientRect();
+      cursorPt = { x: e.clientX - cr.left, y: e.clientY - cr.top };
+    });
+    dotField.addEventListener('mouseleave', () => { cursorPt = null; });
+  }
 
   function getCenter(el) {
     const dot = el.querySelector('.dot') || el;
@@ -4110,7 +4258,10 @@ window.addEventListener('scroll', () => document.getElementById('nav').classList
     svg.style.width = cr.width + 'px';
     svg.style.height = totalH + 'px';
 
-    const pts = Array.from(dots).map(getCenter);
+    const basePts = Array.from(dots).map(getCenter);
+    // If cursor is over the dotField, include it as the LAST point so MST connects to it
+    const cursorIdx = cursorPt ? basePts.length : -1;
+    const pts = cursorPt ? [...basePts, cursorPt] : basePts;
     const edges = mst(pts);
 
     // Interpolate: dashed → solid
@@ -4122,14 +4273,19 @@ window.addEventListener('scroll', () => document.getElementById('nav').classList
     let html = '';
     edges.forEach(([a, b]) => {
       const p1 = pts[a], p2 = pts[b];
+      // Edges that touch the cursor node render brighter + slightly wider
+      const isCursorEdge = (a === cursorIdx || b === cursorIdx);
+      const edgeOpacity = isCursorEdge ? Math.min(0.85, opacity + 0.5) : opacity;
+      const edgeWidth = isCursorEdge ? width + 0.6 : width;
+      const dasharray = isCursorEdge ? '0' : `${dashLen} ${gapLen}`;
       html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"
-        stroke="rgba(224,64,64,${opacity})" stroke-width="${width}"
-        stroke-dasharray="${dashLen} ${gapLen}"
+        stroke="rgba(224,64,64,${edgeOpacity})" stroke-width="${edgeWidth}"
+        stroke-dasharray="${dasharray}"
         stroke-linecap="round"/>`;
     });
 
-    // Draw the dots themselves
-    pts.forEach(p => {
+    // Draw the data dots (excluding the cursor node, which renders specially below)
+    basePts.forEach(p => {
       const r = 3 + scrollSolidity * 1.5;
       const dotOpacity = 0.4 + scrollSolidity * 0.5;
       html += `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="rgba(224,64,64,${dotOpacity})"/>`;
@@ -4137,6 +4293,12 @@ window.addEventListener('scroll', () => document.getElementById('nav').classList
         html += `<circle cx="${p.x}" cy="${p.y}" r="${r * 2.5}" fill="rgba(224,64,64,${0.08 * scrollSolidity})"/>`;
       }
     });
+    // Cursor as a brighter glowing node when present
+    if (cursorPt) {
+      html += `<circle cx="${cursorPt.x}" cy="${cursorPt.y}" r="14" fill="rgba(224,64,64,0.10)"/>`;
+      html += `<circle cx="${cursorPt.x}" cy="${cursorPt.y}" r="6" fill="rgba(224,64,64,0.25)"/>`;
+      html += `<circle cx="${cursorPt.x}" cy="${cursorPt.y}" r="3" fill="rgba(255,200,200,0.95)"/>`;
+    }
 
     // Once dots are mostly connected, draw lines from bottom-most dots into the card
     if (scrollSolidity > 0.6 && cardInner) {
