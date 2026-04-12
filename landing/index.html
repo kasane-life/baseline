@@ -238,13 +238,6 @@ nav.scrolled {
               color 0.3s,
               opacity 0.3s;
 }
-.nav-cta::after {
-  content: '\2192';
-  display: inline-block;
-  margin-left: 0.55rem;
-  color: var(--coral);
-  transition: transform 0.45s cubic-bezier(0.075, 0.82, 0.165, 1);
-}
 .nav-cta:hover {
   color: #fff !important;
   background: rgba(224, 64, 64, 0.16) !important;
@@ -254,9 +247,6 @@ nav.scrolled {
     inset 0 0.5px 0 rgba(255, 255, 255, 0.3),
     0 0 40px rgba(224, 64, 64, 0.38),
     0 8px 24px rgba(0, 0, 0, 0.4);
-}
-.nav-cta:hover::after {
-  transform: translateX(4px);
 }
 
 /* ═══════ HERO ═══════ */
@@ -3543,7 +3533,6 @@ footer a:hover { color: var(--ink-mid); }
     padding: 0.6rem 1.15rem;
     letter-spacing: 0.1em;
   }
-  .nav-cta::after { margin-left: 0.4rem; }
   .compare-table td.gap-col { display: none; }
   .compare-table th:last-child { display: none; }
 }
@@ -3556,7 +3545,7 @@ footer a:hover { color: var(--ink-mid); }
     <a href="/" class="logo">baseline<span>.</span></a>
     <div class="nav-links">
       <a href="https://cal.com/andrew-deal/discovery" class="nav-secondary">Book intro call</a>
-      <a href="#signup" class="nav-cta">Connect the dots</a>
+      <a href="#signup" class="nav-cta">Connect Your Dots</a>
       <span class="nav-nudge"><span class="nav-nudge-lead">Read by a human.</span> Every morning <span class="nav-nudge-arrow">&darr;</span></span>
     </div>
   </div>
