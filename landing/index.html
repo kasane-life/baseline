@@ -165,19 +165,28 @@ nav.scrolled {
   border-bottom-color: var(--coral);
 }
 .nav-cta {
-  background: var(--coral) !important; color: white !important;
-  padding: 0.55rem 1.3rem; border-radius: 6px;
-  font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em;
+  background: linear-gradient(180deg, #ec5252 0%, var(--coral) 50%, #c83a3a 100%) !important;
+  color: white !important;
+  padding: 0.6rem 1.4rem; border-radius: 7px;
+  font-weight: 700; font-size: 0.78rem; letter-spacing: 0.08em;
   text-transform: uppercase;
+  box-shadow:
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.25),
+    0 4px 14px rgba(224, 64, 64, 0.32),
+    0 0 0 0.5px rgba(224, 64, 64, 0.5);
   transition: transform 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
               box-shadow 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
               opacity 0.3s;
 }
 .nav-cta:hover {
   color: white !important;
-  transform: translateX(-2px);
-  box-shadow: -4px 0 24px rgba(224, 64, 64, 0.3),
-              0 4px 12px rgba(224, 64, 64, 0.2);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.25),
+    0 8px 28px rgba(224, 64, 64, 0.5),
+    0 0 0 0.5px rgba(224, 64, 64, 0.7);
 }
 
 /* ═══════ HERO ═══════ */
