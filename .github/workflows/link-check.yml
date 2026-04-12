@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'landing/**'
+      - '.github/workflows/link-check.yml'
 
 jobs:
   check-links:
@@ -22,7 +23,7 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
-            --base https://andrewdeal.info/baseline
+            --base https://mybaseline.health
             --include-fragments
             --no-progress
             --accept 200,204,301,302

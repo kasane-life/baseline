@@ -6,7 +6,9 @@ on:
     paths: [landing/**]
   pull_request:
     branches: [main]
-    paths: [landing/**]
+    paths:
+      - 'landing/**'
+      - '.github/workflows/landing-links.yml'
 
 jobs:
   link-check:
@@ -14,19 +16,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: app/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: cd app && npm ci
+        run: cd app && pnpm install --frozen-lockfile
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ hashFiles('app/package-lock.json') }}
+          key: playwright-${{ hashFiles('app/pnpm-lock.yaml') }}
 
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
