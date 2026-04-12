@@ -212,29 +212,51 @@ nav.scrolled {
   color: var(--ink) !important;
   border-bottom-color: var(--coral);
 }
+/* Ghost pill: glass object floating over the nav, not a painted sticker.
+   Coral stays precious by living in the border + glow, not the fill. */
 .nav-cta {
-  background: linear-gradient(180deg, #ec5252 0%, var(--coral) 50%, #c83a3a 100%) !important;
-  color: white !important;
-  padding: 0.6rem 1.15rem; border-radius: 7px;
-  font-weight: 700; font-size: 0.74rem; letter-spacing: 0.05em;
+  position: relative;
+  background: rgba(224, 64, 64, 0.06) !important;
+  color: rgba(255, 210, 210, 0.95) !important;
+  padding: 0.7rem 1.5rem;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   box-shadow:
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -0.5px 0 rgba(0, 0, 0, 0.25),
-    0 4px 14px rgba(224, 64, 64, 0.32),
-    0 0 0 0.5px rgba(224, 64, 64, 0.5);
-  transition: transform 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
-              box-shadow 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
+    inset 0 0 0 1px rgba(224, 64, 64, 0.55),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.18),
+    0 0 24px rgba(224, 64, 64, 0.18),
+    0 2px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.45s cubic-bezier(0.075, 0.82, 0.165, 1),
+              box-shadow 0.45s cubic-bezier(0.075, 0.82, 0.165, 1),
+              background 0.45s cubic-bezier(0.075, 0.82, 0.165, 1),
+              color 0.3s,
               opacity 0.3s;
 }
+.nav-cta::after {
+  content: '\2192';
+  display: inline-block;
+  margin-left: 0.55rem;
+  color: var(--coral);
+  transition: transform 0.45s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
 .nav-cta:hover {
-  color: white !important;
-  transform: translateY(-1px);
+  color: #fff !important;
+  background: rgba(224, 64, 64, 0.16) !important;
+  transform: translateY(-2px);
   box-shadow:
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -0.5px 0 rgba(0, 0, 0, 0.25),
-    0 8px 28px rgba(224, 64, 64, 0.5),
-    0 0 0 0.5px rgba(224, 64, 64, 0.7);
+    inset 0 0 0 1px rgba(255, 120, 120, 0.85),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.3),
+    0 0 40px rgba(224, 64, 64, 0.38),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.nav-cta:hover::after {
+  transform: translateX(4px);
 }
 
 /* ═══════ HERO ═══════ */
@@ -3517,10 +3539,11 @@ footer a:hover { color: var(--ink-mid); }
   .price-others { gap: 1.5rem; }
   .nav-links a:not(.nav-cta) { display: none; }
   .nav-cta {
-    font-size: 0.66rem;
-    padding: 0.55rem 0.9rem;
-    letter-spacing: 0.04em;
+    font-size: 0.64rem;
+    padding: 0.6rem 1.15rem;
+    letter-spacing: 0.1em;
   }
+  .nav-cta::after { margin-left: 0.4rem; }
   .compare-table td.gap-col { display: none; }
   .compare-table th:last-child { display: none; }
 }
