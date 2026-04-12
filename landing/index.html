@@ -843,6 +843,7 @@ nav.scrolled {
 
 .forty-text {
   position: relative;
+  z-index: 3;
   min-width: 0;
 }
 
@@ -927,7 +928,8 @@ nav.scrolled {
   overflow: visible;
 }
 .forty-link {
-  filter: drop-shadow(0 0 4px rgba(224,64,64,0.5));
+  stroke: rgba(224, 64, 64, 0.45) !important;
+  filter: drop-shadow(0 0 4px rgba(224, 64, 64, 0.35));
   transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .forty.is-linked .forty-link { stroke-dashoffset: 0 !important; }
@@ -1085,6 +1087,8 @@ nav.scrolled {
 
 /* ═══════ THE 40 — phase pillars (replaces paradigm-card) ═══════ */
 .forty-pillars {
+  position: relative;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   gap: clamp(1.4rem, 2.6vw, 2rem);
@@ -3445,6 +3449,14 @@ footer a:hover { color: var(--ink-mid); }
   /* Other responsive fallbacks */
   .hero-flat .hero-word { font-size: clamp(2.5rem, 8vw, 4rem); white-space: normal; }
   .forty-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  /* Mobile: connectors can't support the side-by-side metaphor when
+     the grid collapses, so drop them to ambient-guide opacity and let
+     text fully dominate. Stacking z-index on forty-text/forty-pillars
+     already keeps text in front. */
+  .forty-link {
+    stroke: rgba(224, 64, 64, 0.22) !important;
+    filter: drop-shadow(0 0 3px rgba(224, 64, 64, 0.18));
+  }
   .forty-number { font-size: clamp(7rem, 28vw, 12rem); }
   .closing-card-inner { grid-template-columns: 1fr; gap: 2.5rem; }
   .closing-others { gap: 0.5rem; font-size: 0.7em; }
