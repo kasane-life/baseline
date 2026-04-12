@@ -1389,6 +1389,20 @@ nav.scrolled {
   background: linear-gradient(180deg, rgba(238,238,240,0.45) 0%, rgba(238,238,240,0.04) 100%);
 }
 
+/* Summary caption between the bar and the moat statement — makes the
+   Foundation + Enhanced = 40 math explicit so the reader connects the
+   three-zone bar to the 40-metric claim from the preceding section. */
+.frontier-sum {
+  font-family: var(--body);
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  color: var(--ink-mid);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 520px;
+  margin: clamp(1.4rem, 3vw, 2.2rem) auto 0;
+}
+.frontier-sum strong { color: var(--ink); font-weight: 700; }
+
 /* Moat statement + sub below the bar — replaces caption paragraph */
 .frontier-moat {
   font-family: var(--display);
@@ -3471,12 +3485,17 @@ footer a:hover { color: var(--ink-mid); }
   /* Other responsive fallbacks */
   .hero-flat .hero-word { font-size: clamp(2.5rem, 8vw, 4rem); white-space: normal; }
   .forty-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-  /* Mobile: 40 per-dot lines fanning vertically through a collapsed
-     single-column grid is chaos regardless of opacity. Hide entirely.
-     The z-index 3 layering on .forty-text/.forty-pillars already keeps
-     mobile reading clean; particles + typographic 40 + pillars carry
-     the metaphor on narrow viewports. */
-  .forty-link { display: none; }
+  /* Mobile: hide the 37 intra-bundle constellation MST edges (too dense
+     in a collapsed single-column grid) but KEEP the 3 outer payoff lines
+     so the cloud-to-pillar metaphor still lands. Outer lines read as
+     short curves from rightmost cluster dot to pillar even at narrow
+     widths. z-index 3 stacking on .forty-text/.forty-pillars keeps text
+     in front of lines. */
+  .forty-link:not(.outer) { display: none; }
+  .forty-link.outer {
+    stroke: rgba(224, 64, 64, 0.4);
+    stroke-width: 0.8;
+  }
   .forty-number { font-size: clamp(7rem, 28vw, 12rem); }
   .closing-card-inner { grid-template-columns: 1fr; gap: 2.5rem; }
   .closing-others { gap: 0.5rem; font-size: 0.7em; }
@@ -3771,7 +3790,6 @@ footer a:hover { color: var(--ink-mid); }
 <!-- ═══════ COVERAGE — horizontal evidence-frontier bar ═══════ -->
 <section class="coverage">
   <div class="contain">
-    <div class="section-label reveal">The 40, and what's next</div>
     <h2 class="coverage-headline reveal s1">THE 40 IS YOUR<br>BASELINE.</h2>
 
     <div class="frontier-wrap reveal s2">
@@ -3805,8 +3823,10 @@ footer a:hover { color: var(--ink-mid); }
         <div class="personal-fill" id="personal-fill"></div>
       </div>
 
-      <h3 class="frontier-moat reveal s3">THE FRONTIER IS<br>STILL MOVING.</h3>
-      <p class="frontier-moat-sub reveal s4">When a new study changes the answer,<br>your coach hears it first.</p>
+      <p class="frontier-sum reveal s2">Foundation + Enhanced. <strong>That's your 40.</strong></p>
+
+      <h3 class="frontier-moat reveal s3">THE FRONTIER IS<br>EXPANDING.</h3>
+      <p class="frontier-moat-sub reveal s4">Your subscription accounts for every change.</p>
     </div>
   </div>
 </section>
