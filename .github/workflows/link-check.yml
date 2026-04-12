@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'landing/**'
+      - '.github/workflows/link-check.yml'
 
 jobs:
   check-links:
