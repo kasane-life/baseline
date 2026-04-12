@@ -152,12 +152,46 @@ nav.scrolled {
               transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-/* Hide CTAs while user is on the signup form so the form is the only ask */
+/* Hide CTAs and reveal nudge in their place while user is on the signup form */
 #nav.nav-hide-cta .nav-secondary,
 #nav.nav-hide-cta .nav-cta {
   opacity: 0;
   transform: translateY(-6px);
   pointer-events: none;
+}
+
+/* Nudge: invisible by default, fades in when CTAs hide (on signup form) */
+.nav-nudge {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(calc(-50% + 6px));
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(238, 238, 240, 0.78);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+.nav-nudge-lead { color: var(--coral); font-weight: 700; }
+.nav-nudge-arrow {
+  display: inline-block;
+  margin-left: 0.3rem;
+  color: var(--coral);
+  animation: nudge-bob 1.8s ease-in-out infinite;
+}
+@keyframes nudge-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(3px); }
+}
+.nav-links { position: relative; }
+#nav.nav-hide-cta .nav-nudge {
+  opacity: 1;
+  transform: translateY(-50%);
 }
 .nav-links a {
   font-size: 0.82rem; color: var(--ink-dim); text-decoration: none;
@@ -3346,6 +3380,7 @@ footer a:hover { color: var(--ink-mid); }
     <div class="nav-links">
       <a href="https://cal.com/andrew-deal/discovery" class="nav-secondary">Book intro call</a>
       <a href="#signup" class="nav-cta">Get Started</a>
+      <span class="nav-nudge"><span class="nav-nudge-lead">Let's do it.</span> A better you is waiting <span class="nav-nudge-arrow">&darr;</span></span>
     </div>
   </div>
 </nav>
