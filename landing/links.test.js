@@ -8,9 +8,8 @@ const BASE = 'https://mybaseline.health';
 
 const PAGES = [
   { name: 'Home', url: `${BASE}/` },
-  { name: 'Methodology', url: `${BASE}/methodology/` },
-  { name: 'Gaps', url: `${BASE}/gaps/` },
   { name: 'Privacy', url: `${BASE}/privacy/` },
+  { name: 'SMS Consent', url: `${BASE}/sms-consent/` },
 ];
 
 // Every page should load without 404

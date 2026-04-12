@@ -3,550 +3,4099 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>baseline. — Your AI Health Coach</title>
+<title>baseline. — Connect the dots. Then raise them.</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="description" content="An AI health coach that knows your numbers, connects them, and drives you to outcomes.">
-<meta property="og:title" content="baseline. — Your AI Health Coach">
-<meta property="og:description" content="There's a healthier version of you on the other side of this.">
+<meta name="description" content="Your sleep, labs, weight, and recovery read together. Coached daily. 40 metrics where the science is clear.">
+<meta property="og:title" content="baseline. — Connect the dots. Then raise them.">
+<meta property="og:description" content="Your sleep, labs, weight, and recovery read together. Coached daily. 40 evidence-ranked metrics. $30/mo.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://mybaseline.health/coach/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Anybody:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.15/dist/lenis.css" crossorigin>
-<link rel="stylesheet" href="v2/shared.css?v=1774889473">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        bg: { DEFAULT: '#08080a', elevated: '#0e0e11' },
-        ink: { DEFAULT: '#f0f0f0', muted: '#a8a8b8', dim: '#3e3e4a' },
-        cream: '#f5f2e9',
-        warm: '#1a1714',
-        coral: { DEFAULT: '#c83c3c', bright: '#c83c3c' },
-        green: '#2d8a4e',
-      },
-      fontFamily: {
-        display: ['Anybody', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
-        body: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-    }
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0b0a0d;
+  --surface: #13121a;
+  --surface-2: #1a1924;
+  --ink: #eeeef0;
+  --ink-mid: #9595a8;
+  --ink-dim: #45454f;
+  --coral: #e04040;
+  --coral-dim: rgba(224, 64, 64, 0.12);
+  --green: #3cb868;
+  --display: 'Anybody', sans-serif;
+  --body: 'Inter', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
+}
+
+/* ── Global atmosphere: noise overlay + drifting orb across full page ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+/* Ambient atmosphere down the entire body — hero's orb extended to the page */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(224, 64, 64, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 25%, rgba(100, 40, 120, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 20% 70%, rgba(224, 64, 64, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(224, 64, 64, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Make sure all section content sits above the atmosphere */
+nav, section, footer { position: relative; z-index: 2; }
+
+::selection { background: var(--coral); color: white; }
+
+.contain {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+}
+
+/* ── KEYFRAMES ── */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes counter-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(6px);
+  transition: opacity 0.9s cubic-bezier(0.075, 0.82, 0.165, 1),
+              transform 0.9s cubic-bezier(0.075, 0.82, 0.165, 1),
+              filter 0.9s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.s1 { transition-delay: 0.08s; }
+.s2 { transition-delay: 0.16s; }
+.s3 { transition-delay: 0.24s; }
+.s4 { transition-delay: 0.32s; }
+.s5 { transition-delay: 0.4s; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1.2rem 0;
+  transition: background 0.4s, backdrop-filter 0.4s;
+}
+nav.scrolled {
+  background: rgba(11, 10, 13, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-inner {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.logo {
+  font-family: var(--display); font-weight: 700; font-size: 1rem;
+  color: var(--ink); text-decoration: none; letter-spacing: -0.5px;
+}
+.logo span { color: var(--coral); }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a {
+  font-size: 0.82rem; color: var(--ink-dim); text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--ink-mid); }
+.nav-secondary {
+  font-size: 0.78rem !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mid) !important;
+  font-weight: 500;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  transition: border-color 0.3s, color 0.3s;
+}
+.nav-secondary:hover {
+  color: var(--ink) !important;
+  border-bottom-color: var(--coral);
+}
+.nav-cta {
+  background: var(--coral) !important; color: white !important;
+  padding: 0.55rem 1.3rem; border-radius: 6px;
+  font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
+              box-shadow 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
+              opacity 0.3s;
+}
+.nav-cta:hover {
+  color: white !important;
+  transform: translateX(-2px);
+  box-shadow: -4px 0 24px rgba(224, 64, 64, 0.3),
+              0 4px 12px rgba(224, 64, 64, 0.2);
+}
+
+/* ═══════ HERO ═══════ */
+.hero {
+  position: relative;
+  overflow: visible;
+  padding: clamp(8rem, 14vw, 12rem) 0 clamp(5rem, 10vw, 8rem);
+}
+
+.hero-orb {
+  position: absolute;
+  width: 1100px; height: 1100px;
+  bottom: -10%; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 40% 40%,
+    rgba(224, 64, 64, 0.10) 0%,
+    rgba(224, 64, 64, 0.03) 35%,
+    rgba(100, 40, 120, 0.02) 50%,
+    transparent 70%
+  );
+  filter: blur(80px);
+  animation: glow-breathe 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+}
+
+/* ── Keyframes ── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float-dot {
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  25% { transform: translate(8px, -12px); opacity: 0.7; }
+  50% { transform: translate(-4px, -20px); opacity: 0.3; }
+  75% { transform: translate(12px, -8px); opacity: 0.6; }
+}
+
+/* ── "CONNECT THE DOTS" stagger ── */
+.hero-stagger {
+  position: relative;
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+  padding: clamp(1rem, 3vw, 2rem) 0;
+}
+
+/* Dot field — full width beneath CONNECT, holds metric particles */
+.hero-dot-field {
+  position: relative;
+  width: 100%;
+  height: clamp(300px, 38vw, 420px);
+}
+
+/* SVG extends beyond the dot field to reach the card */
+.hero-dot-field .hero-connector-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: calc(100% + clamp(10rem, 16vw, 14rem));
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.particle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  animation: float-dot var(--dur) ease-in-out var(--delay) infinite;
+}
+
+.particle .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
+  flex-shrink: 0;
+  transition: width 0.3s, height 0.3s, box-shadow 0.3s;
+}
+
+.particle .dot-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(224, 64, 64, 0.35);
+  white-space: nowrap;
+  transition: color 0.4s;
+}
+
+/* Solidified state — dots glow, labels brighten */
+.hero-stagger.solidified .particle .dot {
+  width: 8px; height: 8px;
+  box-shadow: 0 0 12px rgba(224, 64, 64, 0.4);
+}
+
+.hero-stagger.solidified .particle .dot-label {
+  color: rgba(224, 64, 64, 0.7);
+}
+
+/* THE and DOTS sit beneath the dot field, staggered toward the right */
+
+.hero-word {
+  font-family: var(--display); font-weight: 900;
+  line-height: 0.85; letter-spacing: -0.04em;
+  text-transform: uppercase;
+  position: relative;
+}
+
+/* CONNECT — top, massive, shimmer gradient */
+.hw-connect {
+  font-size: clamp(5.5rem, 14vw, 12rem);
+  text-align: left;
+  position: relative;
+  z-index: 3;
+  background: linear-gradient(
+    90deg,
+    rgba(238,238,240,0.7) 0%,
+    var(--ink) 20%,
+    var(--ink) 40%,
+    var(--coral) 50%,
+    var(--ink) 60%,
+    var(--ink) 80%,
+    rgba(238,238,240,0.7) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(224, 64, 64, 0.08));
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+}
+
+/* THE — beneath particles, staggered toward right, ghosted outline */
+.hw-the {
+  font-size: clamp(3rem, 7vw, 6rem);
+  z-index: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(238, 238, 240, 0.22);
+  text-align: right;
+  padding-right: clamp(6rem, 18vw, 20rem);
+  margin-top: clamp(0.5rem, 1.5vw, 1rem);
+  margin-bottom: clamp(0.3rem, 1vw, 0.6rem);
+}
+
+/* DOTS — further right, dimmest outline */
+.hw-dots {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  z-index: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(238, 238, 240, 0.14);
+  text-align: right;
+  padding-right: clamp(1rem, 4vw, 4rem);
+  margin-bottom: clamp(0.5rem, 1.5vw, 1rem);
+}
+
+/* Pattern card: visible by default, enhanced on scroll activation */
+#pattern-card-inner {
+  opacity: 0.7;
+  transform: translateY(10px) scale(0.98);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.8s;
+}
+
+#pattern-card-inner.card-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4),
+              0 0 60px rgba(224, 64, 64, 0.08),
+              inset 0 0 0 0.5px rgba(255,255,255,0.08);
+}
+
+/* ── Timeline: 3 phases, each with card + narrative word ── */
+.hero-timeline {
+  position: relative;
+  margin-top: clamp(2rem, 5vw, 4rem);
+  padding-left: clamp(1rem, 4vw, 4rem);
+}
+
+.timeline-stop {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* Phase marker */
+.phase-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  min-width: 100px;
+  padding-top: 0.5rem;
+}
+
+.phase-num {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  line-height: 0.85; letter-spacing: -0.04em;
+  background: linear-gradient(
+    180deg,
+    var(--coral) 0%,
+    rgba(224, 64, 64, 0.55) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 24px rgba(224, 64, 64, 0.18));
+}
+
+.phase-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding-top: 0.2rem;
+  border-top: 1px solid rgba(224, 64, 64, 0.3);
+}
+
+/* Narrative words — progression from outlined to solid */
+.narrative-word {
+  font-family: var(--display); font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  margin: 0;
+  justify-self: start;
+  padding-left: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* THEN — outlined, investigation phase, animates in */
+@keyframes then-reveal {
+  0% {
+    -webkit-text-stroke-color: rgba(238, 238, 240, 0);
+    clip-path: inset(0 100% 0 0);
+    letter-spacing: -0.08em;
+  }
+  60% {
+    -webkit-text-stroke-color: rgba(238, 238, 240, 0.2);
+    clip-path: inset(0 0 0 0);
+    letter-spacing: -0.04em;
+  }
+  100% {
+    -webkit-text-stroke-color: rgba(238, 238, 240, 0.4);
+    clip-path: inset(0 0 0 0);
+    letter-spacing: -0.04em;
   }
 }
-</script>
-<style type="text/tailwindcss">
-  @layer utilities {
-    .font-massive { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.88; letter-spacing: -0.04em; text-transform: uppercase; }
-    .font-ghost { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase; color: transparent; background: linear-gradient(to right, #1a1a1a var(--fill, 0%), rgba(0,0,0,0.06) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; }
-    .font-ghost-dark { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase; color: transparent; background: linear-gradient(to right, rgba(240,240,240,0.18) var(--fill, 0%), rgba(240,240,240,0.07) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; }
-    .font-ghost-light { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase; color: transparent; background: linear-gradient(to right, rgba(200,60,60,0.3) var(--fill, 0%), rgba(200,60,60,0.1) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; }
-    .font-stat { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
-    .font-label { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; }
-    .px-band { padding-left: clamp(2rem, 6vw, 6rem); padding-right: clamp(2rem, 6vw, 6rem); }
-    .py-band { padding-top: clamp(6rem, 12vw, 10rem); padding-bottom: clamp(6rem, 12vw, 10rem); }
+
+.nw-then {
+  font-size: clamp(3rem, 6vw, 5rem);
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(238, 238, 240, 0.35);
+  opacity: 1;
+}
+
+.phase-01.themed .nw-then,
+.nw-then.then-drawn {
+  animation: then-reveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* RAISE — same shimmer family as CONNECT, closes the hero loop */
+.nw-raise {
+  font-size: clamp(5rem, 10vw, 8rem);
+  background: linear-gradient(
+    90deg,
+    rgba(238,238,240,0.6) 0%,
+    var(--coral) 30%,
+    var(--coral) 70%,
+    rgba(238,238,240,0.6) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(224, 64, 64, 0.22));
+}
+
+/* THEM — full white solid, outcome reached (phase 03), animates in */
+.nw-them {
+  font-size: clamp(4rem, 8vw, 6.5rem);
+  color: var(--ink);
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+              text-shadow 1s;
+}
+
+.phase-03.themed .nw-them {
+  opacity: 1;
+  transform: translateX(0);
+  text-shadow: 0 0 60px rgba(255, 255, 255, 0.15);
+}
+
+/* Meandering dotted path between 01 and 02 */
+.timeline-meander {
+  display: block;
+  width: clamp(160px, 22vw, 220px);
+  height: clamp(160px, 22vw, 200px);
+  margin-left: clamp(8rem, 16vw, 16rem);
+  overflow: visible;
+  margin-top: -1rem;
+  margin-bottom: -1rem;
+}
+
+/* Vertical light column between 02 and 03 — no line, just ambient bleed */
+.timeline-straight {
+  display: block;
+  width: 140px;
+  height: clamp(140px, 14vw, 200px);
+  margin: -2rem 0 -2rem clamp(7rem, 14vw, 14rem);
+  position: relative;
+  background: radial-gradient(ellipse 28% 75% at 50% 50%,
+    rgba(224, 64, 64, 0.25) 0%,
+    rgba(224, 64, 64, 0.10) 35%,
+    rgba(224, 64, 64, 0.03) 60%,
+    transparent 80%);
+  filter: blur(24px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.timeline-straight.line-drawn {
+  opacity: 1;
+}
+
+/* Hide all SVG children — we're using the gradient, not strokes */
+.timeline-straight svg { display: none; }
+
+/* ── Coaching cards ── */
+.hero-card {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 1.3rem 1.5rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4),
+              inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  position: relative;
+  z-index: 1;
+  width: 320px;
+  flex-shrink: 0;
+}
+
+.hero-card-wrap {
+  position: relative;
+}
+
+.hero-card-wrap::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140%; height: 160%;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(224, 64, 64, 0.1) 0%,
+    rgba(224, 64, 64, 0.02) 45%,
+    transparent 65%
+  );
+  animation: glow-breathe 5s ease-in-out 1s infinite;
+  pointer-events: none; z-index: 0;
+}
+
+.card-top {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.card-pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); position: relative;
+}
+.card-pulse::after {
+  content: ''; position: absolute; inset: -3px;
+  border-radius: 50%; border: 1px solid var(--green);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+.card-tag {
+  font-size: 0.58rem; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-dim);
+}
+.card-time { font-size: 0.58rem; color: var(--ink-dim); margin-left: auto; }
+
+.card-body {
+  font-size: 0.82rem; line-height: 1.65; color: var(--ink-mid);
+}
+.card-body strong { color: var(--ink); font-weight: 600; }
+.card-body .flag { color: var(--coral); font-weight: 600; }
+
+.card-stats {
+  display: flex; gap: 1.2rem; margin-top: 0.8rem;
+  padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.stat-label {
+  font-size: 0.5rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-dim); margin-bottom: 0.15rem;
+}
+.stat-val {
+  font-family: var(--display); font-weight: 700;
+  font-size: 1.1rem; color: var(--ink); letter-spacing: -0.02em;
+}
+.stat-delta { font-size: 0.58rem; font-weight: 600; }
+.stat-delta.good { color: var(--green); }
+.stat-delta.bad { color: var(--coral); }
+
+/* ── Hero bottom ── */
+.hero-bottom {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: end;
+}
+
+.hero-tagline {
+  font-size: 1.05rem; line-height: 1.7;
+  color: var(--ink-mid);
+  max-width: 400px;
+}
+
+.hero-tagline strong { color: var(--ink); font-weight: 600; }
+
+.hero-ctas-wrap {
+  display: flex; flex-direction: column; gap: 1rem;
+  align-items: flex-start;
+}
+
+.hero-ctas {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.8rem;
+  background: var(--coral); color: white;
+  border: none; border-radius: 8px;
+  font-family: var(--body); font-weight: 600;
+  font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(224, 64, 64, 0.3);
+}
+
+.btn-secondary {
+  display: inline-flex; align-items: center;
+  padding: 0.8rem 1.8rem;
+  background: transparent; color: var(--ink-mid);
+  border: 1px solid var(--ink-dim); border-radius: 8px;
+  font-family: var(--body); font-weight: 500;
+  font-size: 0.85rem; text-decoration: none;
+  transition: border-color 0.3s, color 0.3s;
+}
+.btn-secondary:hover { border-color: var(--ink-mid); color: var(--ink); }
+
+/* ═══════ OUTCOMES STRIP ═══════ */
+.outcomes-strip {
+  background: var(--surface);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding: clamp(3rem, 6vw, 4.5rem) 0;
+}
+
+.outcomes-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
+  text-align: center;
+}
+
+.outcome-item { position: relative; }
+.outcome-item::after {
+  content: ''; position: absolute; right: 0; top: 15%; height: 70%;
+  width: 1px; background: rgba(255,255,255,0.06);
+}
+.outcome-item:last-child::after { display: none; }
+
+.o-label {
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--ink-dim); margin-bottom: 0.6rem;
+}
+.o-num {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.03em; line-height: 1;
+}
+.o-before {
+  font-size: 0.45em; color: var(--ink-dim);
+  text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.15);
+  margin-right: 0.3em;
+}
+.o-delta {
+  font-size: 0.65rem; font-weight: 600; color: var(--green);
+  margin-top: 0.4rem; letter-spacing: 0.05em;
+}
+
+.outcomes-note {
+  text-align: center; margin-top: 2rem;
+  font-size: 0.72rem; color: var(--ink-dim); letter-spacing: 0.08em;
+}
+
+/* ═══════ THE 40 — Question + Paradigms merged ═══════ */
+.forty {
+  padding: clamp(6rem, 12vw, 10rem) 0;
+  position: relative;
+}
+
+.forty::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.15) 50%, transparent 100%);
+}
+
+.forty-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  align-items: center;
+}
+
+.forty-text {
+  position: relative;
+  min-width: 0;
+}
+
+.forty-question {
+  font-family: var(--body);
+  font-style: italic;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: var(--ink-mid);
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  max-width: 360px;
+}
+
+.forty-number-wrap {
+  position: relative;
+  display: block;
+  width: fit-content;
+  overflow: visible;
+}
+
+/* Coral radial behind the 40 — subtle, the cloud does the heavy lifting */
+.forty-number-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -25% -15%;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%,
+    rgba(224,64,64,0.14) 0%,
+    rgba(224,64,64,0.04) 40%,
+    transparent 70%);
+  filter: blur(35px);
+  pointer-events: none;
+  z-index: -1;
+  animation: glow-breathe 6s ease-in-out infinite;
+}
+
+/* Dot cloud — noise resolving into signal. Static, no rotation. */
+.forty-cloud {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(320px, 42vw, 520px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+/* Storm motion — dots wander irregular paths up to their per-dot drift magnitude */
+.forty-cloud-dots circle {
+  fill: rgba(238,238,240,0.22);
+  animation: forty-storm var(--drift-duration, 10s) ease-in-out infinite;
+  animation-delay: var(--drift-delay, 0s);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: fill 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+              animation-duration 1.4s ease-out;
+}
+.forty-cloud-dots circle.bright {
+  fill: rgba(224,64,64,0);
+  filter: drop-shadow(0 0 5px rgba(224,64,64,0));
+  transition: fill 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes forty-storm {
+  0%, 100% { transform: translate(0, 0); }
+  20%      { transform: translate(calc(var(--drift-x, 10px) * 0.7),  calc(var(--drift-y, 10px) * -0.5)); }
+  40%      { transform: translate(calc(var(--drift-x, 10px) * -0.4), calc(var(--drift-y, 10px) * -0.9)); }
+  60%      { transform: translate(calc(var(--drift-x, 10px) * -0.8), calc(var(--drift-y, 10px) * 0.3)); }
+  80%      { transform: translate(calc(var(--drift-x, 10px) * 0.5),  calc(var(--drift-y, 10px) * 0.7)); }
+}
+
+/* Forty section becomes a phase host */
+.forty { position: relative; }
+
+/* Connector overlay — three coral hairlines from cloud to pillars */
+.forty-connectors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+.forty-link {
+  filter: drop-shadow(0 0 4px rgba(224,64,64,0.5));
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.forty.is-linked .forty-link { stroke-dashoffset: 0 !important; }
+.forty.is-linked .forty-link:nth-of-type(1) { transition-delay: 0s; }
+.forty.is-linked .forty-link:nth-of-type(2) { transition-delay: 0.2s; }
+.forty.is-linked .forty-link:nth-of-type(3) { transition-delay: 0.4s; }
+
+/* Phase 1 → 2: solidification */
+.forty.is-solid .forty-number {
+  opacity: 1;
+  filter: drop-shadow(0 0 30px rgba(224,64,64,0.20));
+}
+.forty.is-solid .forty-cloud-dots circle.bright {
+  fill: rgba(224,64,64,0.72);
+  filter: drop-shadow(0 0 5px rgba(224,64,64,0.6));
+}
+.forty.is-solid .forty-cloud-dots circle:not(.bright) {
+  animation-duration: calc(var(--drift-duration, 10s) * 1.8);
+  fill: rgba(238,238,240,0.14);
+}
+
+/* Phase 3: pillars resolve from ghost to bright */
+.forty.is-linked .forty-pillars {
+  opacity: 1;
+}
+
+.forty-number {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(7rem, 15vw, 13rem);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  margin: 0;
+  background: linear-gradient(180deg, var(--ink) 0%, var(--ink-mid) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 2;
+  opacity: 0.35;
+  filter: drop-shadow(0 0 30px rgba(224,64,64,0.05));
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Resend trick: ground reflection beneath the 40 */
+.forty-number::after {
+  content: '40';
+  position: absolute;
+  top: 100%; left: 0;
+  font-family: inherit; font-size: inherit; font-weight: inherit;
+  letter-spacing: inherit;
+  background: linear-gradient(180deg, rgba(238,238,240,0.12) 0%, transparent 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: scaleY(-0.4);
+  transform-origin: top;
+  filter: blur(2px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.forty-caption {
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 420px;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.forty-caption strong { color: var(--ink); font-weight: 600; }
+
+/* Glassmorphic paradigms card */
+.paradigm-card {
+  position: relative;
+  padding: clamp(2rem, 3vw, 2.5rem);
+  border-radius: 20px;
+  background: rgba(20, 18, 28, 0.5);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4),
+              inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.paradigm-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5),
+              inset 0 0 0 0.5px rgba(255,255,255,0.12);
+}
+
+.paradigm-card-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 1.2rem;
+}
+
+.paradigm-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.paradigm-list li {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.paradigm-list li:last-child { border-bottom: none; }
+
+.paradigm-list .p-rank {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--coral);
+  margin-bottom: 0.35rem;
+}
+
+.paradigm-list .p-name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.paradigm-list .p-desc {
+  font-size: 0.85rem;
+  color: var(--ink-mid);
+  font-style: italic;
+}
+
+.paradigm-card-foot {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.paradigm-card-foot .accent { color: var(--coral); }
+
+/* ═══════ THE 40 — phase pillars (replaces paradigm-card) ═══════ */
+.forty-pillars {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 2.6vw, 2rem);
+  opacity: 0.4;
+  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.forty-pillar {
+  position: relative;
+  padding-top: 1rem;
+}
+.forty-pillar-rule {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(60px, 8vw, 100px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(224,64,64,0.5) 0%, transparent 100%);
+}
+.forty-pillar-rank {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--coral);
+  margin-bottom: 0.4rem;
+}
+.forty-pillar-name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 0 0 0.35rem;
+}
+.forty-pillar-desc {
+  font-family: var(--body);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  margin: 0;
+  max-width: 280px;
+}
+
+/* The graduation cue: peak gets a brighter, longer rule + name underglow */
+.forty-pillar-peak .forty-pillar-rule {
+  width: clamp(80px, 11vw, 140px);
+  background: linear-gradient(90deg, rgba(224,64,64,0.85) 0%, rgba(224,64,64,0.1) 100%);
+}
+.forty-pillar-peak .forty-pillar-name {
+  filter: drop-shadow(0 0 12px rgba(224,64,64,0.25));
+}
+
+.forty-pillars-foot {
+  margin-top: clamp(0.8rem, 1.6vw, 1.2rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--display);
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  line-height: 1.5;
+}
+.forty-pillars-foot .accent { color: var(--coral); }
+
+/* ═══════ COVERAGE — 40% → 80% transform ═══════ */
+.coverage {
+  padding: clamp(6rem, 12vw, 10rem) 0;
+  position: relative;
+  text-align: center;
+}
+
+.coverage::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.15) 50%, transparent 100%);
+}
+
+.coverage-headline {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+  margin: 1rem 0 clamp(2rem, 4vw, 3.5rem);
+}
+
+.coverage-bridge {
+  max-width: 540px;
+  margin: 0 auto clamp(2rem, 4vw, 3rem);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink-mid);
+}
+.coverage-bridge strong { color: var(--coral); font-weight: 600; }
+
+/* ── Coverage: horizontal evidence-frontier bar ── */
+.frontier-wrap {
+  position: relative;
+  margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+  max-width: 880px;
+}
+
+.frontier-bar {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: clamp(120px, 16vw, 160px);
+  border-radius: 14px 0 0 14px;
+  background: rgba(15, 14, 30, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255,255,255,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 30px 80px rgba(0,0,0,0.55),
+    0 1px 0 rgba(255,255,255,0.04);
+  -webkit-mask-image: linear-gradient(90deg, black 0%, black 88%, transparent 100%);
+          mask-image: linear-gradient(90deg, black 0%, black 88%, transparent 100%);
+}
+
+.zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(0.9rem, 2vw, 1.5rem) clamp(1rem, 2vw, 1.5rem);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  z-index: 2;
+}
+.zone:last-child { border-right: none; }
+
+.zone-foundation {
+  background: linear-gradient(135deg, rgba(224,64,64,0.05) 0%, rgba(224,64,64,0.02) 100%);
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+.zone-enhanced {
+  background: linear-gradient(135deg, rgba(224,64,64,0.025) 0%, rgba(224,64,64,0.01) 100%);
+}
+.zone-frontier {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 8px,
+      transparent 8px,
+      transparent 16px
+    );
+  background-size: 22.6px 22.6px;
+  animation: frontierDrift 12s linear infinite;
+}
+@keyframes frontierDrift {
+  from { background-position: 0 0; }
+  to   { background-position: 22.6px 0; }
+}
+
+.zone-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(238,238,240,0.82);
+  margin-bottom: 0.45rem;
+  position: relative;
+  z-index: 3;
+}
+.zone-foundation .zone-label { color: rgba(255,200,200,0.95); }
+.zone-frontier .zone-label { color: rgba(238,238,240,0.6); }
+
+.zone-pct {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  color: var(--ink);
+  position: relative;
+  z-index: 3;
+}
+.zone-foundation .zone-pct { color: var(--coral); }
+.zone-enhanced .zone-pct { color: rgba(238,238,240,0.92); }
+.zone-frontier .zone-pct {
+  color: rgba(238,238,240,0.5);
+  -webkit-text-stroke: 1px rgba(238,238,240,0.5);
+  -webkit-text-fill-color: transparent;
+}
+
+.zone-sub {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(238,238,240,0.7);
+  margin-top: 0.35rem;
+  position: relative;
+  z-index: 3;
+}
+
+/* Personal coral fill — animates 40% → past 80%, fading into Frontier */
+.personal-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(224,64,64,0.32) 100%);
+  border-bottom: 2px solid var(--coral);
+  border-bottom-left-radius: 14px;
+  box-shadow: inset 0 -22px 30px rgba(224,64,64,0.18);
+  -webkit-mask-image: linear-gradient(90deg, black 0%, black 80%, transparent 100%);
+          mask-image: linear-gradient(90deg, black 0%, black 80%, transparent 100%);
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Theatrical load sequence — zones draw left→right, marker drops, fill ignites */
+.zone-foundation,
+.zone-enhanced,
+.zone-frontier {
+  width: 0 !important;
+  transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.coverage.lit .zone-foundation { width: 40% !important; transition-delay: 0.2s; }
+.coverage.lit .zone-enhanced   { width: 40% !important; transition-delay: 0.55s; }
+.coverage.lit .zone-frontier   { width: 20% !important; transition-delay: 0.90s; }
+
+.bar-marker-today {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px);
+  transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.coverage.lit .bar-marker-today {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 1.4s;
+}
+
+.coverage.lit .personal-fill { width: 100%; }
+
+/* Markers (today + past) above the bar */
+.bar-marker {
+  position: absolute;
+  top: -3.2rem;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 3;
+}
+.bar-marker .marker-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--coral);
+  white-space: nowrap;
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+.bar-marker .marker-line {
+  width: 1px;
+  height: clamp(150px, 19vw, 195px);
+  margin: 0 auto;
+  background: linear-gradient(180deg, rgba(224,64,64,0.85) 0%, rgba(224,64,64,0.15) 100%);
+  animation: todayPulse 3.5s ease-in-out infinite;
+}
+@keyframes todayPulse {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1; }
+}
+.bar-marker-past { opacity: 0.30; }
+.bar-marker-past .marker-label { color: rgba(238,238,240,0.5); }
+.bar-marker-past .marker-line {
+  background: linear-gradient(180deg, rgba(238,238,240,0.45) 0%, rgba(238,238,240,0.04) 100%);
+}
+
+/* Moat statement + sub below the bar — replaces caption paragraph */
+.frontier-moat {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: center;
+  margin: clamp(2.4rem, 5vw, 3.4rem) auto 0.8rem;
+  background: linear-gradient(
+    90deg,
+    rgba(238,238,240,0.7) 0%,
+    var(--ink) 25%,
+    var(--coral) 50%,
+    var(--ink) 75%,
+    rgba(238,238,240,0.7) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+}
+.frontier-moat-sub {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(238,238,240,0.55);
+  text-align: center;
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.frontier-pitch {
+  margin: 1.4rem auto 0;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-align: center;
+}
+.frontier-pitch strong { color: var(--coral); font-weight: 700; }
+
+.section-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.section-title {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.04em; text-transform: uppercase; line-height: 1;
+}
+
+.section-label {
+  font-family: var(--display); font-weight: 900;
+  font-size: 0.65rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--coral);
+  margin-bottom: 1rem;
+}
+
+.coverage-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(3rem, 6vw, 5rem); align-items: start;
+}
+
+/* Glass-wrapped coverage bars */
+.coverage-bars {
+  display: flex; flex-direction: column; gap: 1.1rem;
+  padding: clamp(2rem, 3vw, 2.5rem);
+  border-radius: 20px;
+  background: rgba(20, 18, 28, 0.4);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4),
+              inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.coverage-bars:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5),
+              inset 0 0 0 0.5px rgba(255,255,255,0.12);
+}
+
+.cov-bar {
+  display: flex; align-items: center; gap: 1rem;
+}
+
+.cov-bar .cov-name {
+  font-family: var(--mono); font-size: 0.7rem;
+  color: var(--ink-dim); width: 110px; flex-shrink: 0;
+  text-align: right; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cov-track {
+  flex: 1; height: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5),
+              inset 0 0 0 0.5px rgba(255,255,255,0.04);
+}
+
+.cov-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg,
+    rgba(238, 238, 240, 0.4) 0%,
+    rgba(238, 238, 240, 0.85) 100%);
+  transition: width 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 0;
+  position: relative;
+  box-shadow: 0 0 12px rgba(238, 238, 240, 0.15);
+}
+
+/* Scan-line pulse traveling along filled bars */
+.cov-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,0.4) 50%,
+    transparent 100%);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  background-position: -50% 0;
+  animation: scan-line 3.5s ease-in-out 1.6s infinite;
+}
+
+@keyframes scan-line {
+  0%, 100% { background-position: -50% 0; opacity: 0; }
+  20% { opacity: 1; }
+  60% { opacity: 1; }
+  80% { background-position: 150% 0; opacity: 0; }
+}
+
+.cov-fill.high { /* default treatment */ }
+.cov-fill.med {
+  background: linear-gradient(90deg,
+    rgba(238, 238, 240, 0.3) 0%,
+    rgba(238, 238, 240, 0.6) 100%);
+}
+.cov-fill.low {
+  background: linear-gradient(90deg,
+    rgba(224, 64, 64, 0.5) 0%,
+    rgba(224, 64, 64, 0.9) 100%);
+  box-shadow: 0 0 16px rgba(224, 64, 64, 0.4);
+}
+
+.cov-bar .cov-pct {
+  font-family: var(--mono); font-size: 0.7rem;
+  color: var(--ink); width: 40px;
+  font-weight: 500;
+}
+
+.coverage-text h3 {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  text-transform: uppercase; letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 1.5rem;
+}
+
+.coverage-text p {
+  font-size: 1rem; color: var(--ink-mid); line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.coverage-text p strong { color: var(--ink); font-weight: 600; }
+
+.coverage-callout {
+  margin-top: 1.5rem;
+  padding: 1.2rem 1.5rem;
+  background: rgba(224, 64, 64, 0.06);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(224, 64, 64, 0.18);
+  font-size: 0.88rem; color: var(--ink-mid); line-height: 1.7;
+}
+
+.coverage-callout strong { color: var(--ink); }
+
+/* ═══════ OUTCOMES INTERLUDE ═══════ */
+.outcomes-interlude {
+  padding: clamp(6rem, 12vw, 10rem) 0;
+  position: relative;
+}
+
+.outcomes-interlude::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.15) 50%, transparent 100%);
+}
+
+.outcomes-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.outcomes-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.outcome-line {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  margin: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(238,238,240,0.7) 0%,
+    var(--ink) 25%,
+    var(--coral) 50%,
+    var(--ink) 75%,
+    rgba(238,238,240,0.7) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(224, 64, 64, 0.10));
+}
+
+/* Stagger horizontally — like CONNECT/THE/DOTS hero treatment */
+.outcome-group:nth-child(1) { padding-left: clamp(2rem, 8vw, 8rem); }
+.outcome-group:nth-child(2) { padding-left: 0; }
+.outcome-group:nth-child(3) { padding-left: clamp(4rem, 14vw, 14rem); }
+
+/* Letter-spacing collapse reveal — words resolve into focus */
+.outcome-line.reveal {
+  letter-spacing: 0.4em;
+  filter: blur(14px);
+  transform: translateY(40px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              letter-spacing 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.outcome-line.reveal.visible {
+  letter-spacing: -0.04em;
+  filter: drop-shadow(0 0 40px rgba(224, 64, 64, 0.10));
+  transform: translateY(0);
+}
+
+.outcome-sub {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(238,238,240,0.42);
+  margin: 0.7rem 0 1.4rem;
+}
+
+.outcomes-caption {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-mid);
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+/* ═══════ APPENDIX — what we coach on (outcomes detail) ═══════ */
+.coach-on {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  position: relative;
+}
+.coach-on::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.15) 50%, transparent 100%);
+}
+.coach-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.5vw, 2rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+.coach-row {
+  padding: clamp(1.8rem, 3vw, 2.4rem);
+  background: rgba(15, 14, 30, 0.4);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.08), 0 20px 40px rgba(0,0,0,0.25);
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+  transition: 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.coach-row:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 0.5px rgba(224,64,64,0.2), 0 30px 60px rgba(0,0,0,0.35), 0 0 40px rgba(224,64,64,0.08);
+}
+.coach-head { display: flex; flex-direction: column; gap: 0.5rem; }
+.coach-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+}
+.coach-name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 0.95;
+}
+.coach-desc {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ink-mid);
+  margin: 0 0 0.9rem;
+}
+.coach-desc strong { color: var(--ink); font-weight: 600; }
+.coach-metrics {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* ═══════ COVERAGE STACK — the layer (5-layer geological appendix) ═══════ */
+.coverage-stack-section {
+  padding: clamp(6rem, 12vw, 10rem) 0;
+  position: relative;
+}
+.coverage-stack-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.2) 50%, transparent 100%);
+}
+
+.cs-stack {
+  margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+  max-width: 880px;
+}
+
+/* Layers 1 & 2 use the same 3-col outer grid as the player rows
+   so the inner chips/headers align with the bar segments below */
+.cs-outcomes,
+.cs-categories {
+  display: grid;
+  grid-template-columns: 160px 1fr 90px;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: 0 clamp(0.9rem, 1.6vw, 1.2rem);
+}
+.cs-outcomes { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.cs-categories { margin-bottom: clamp(2rem, 4vw, 2.8rem); }
+.cs-gutter-l, .cs-gutter-r { /* spacers to mirror name + price columns */ }
+
+.cs-outcomes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+}
+.cs-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px; /* matches .cs-player-bar gap so chips line up with segments */
+}
+
+.cs-outcome {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(238,238,240,0.78);
+  position: relative;
+  padding-bottom: 1.4rem;
+}
+.cs-outcome::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 14px;
+  background: linear-gradient(180deg, rgba(224,64,64,0.4) 0%, transparent 100%);
+}
+.cs-chip {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238,238,240,0.62);
+  text-align: center;
+  padding: 0.7rem 0.4rem;
+  background: rgba(255,255,255,0.025);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.cs-chip:hover {
+  color: rgba(238,238,240,0.92);
+  background: rgba(255,255,255,0.045);
+  transform: translateY(-1px);
+}
+
+/* Layer 3: competitor coverage rows */
+.cs-players {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.55rem, 1.1vw, 0.85rem);
+}
+.cs-player {
+  display: grid;
+  grid-template-columns: 160px 1fr 90px;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(0.8rem, 1.4vw, 1.05rem) clamp(0.9rem, 1.6vw, 1.2rem);
+  background: rgba(15, 14, 30, 0.32);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.05);
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.cs-player:hover {
+  background: rgba(15, 14, 30, 0.5);
+  box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.10);
+}
+.cs-player-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(238,238,240,0.78);
+}
+.cs-player-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+.cs-seg {
+  height: 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.05);
+}
+.cs-seg-on {
+  background: rgba(224,64,64,0.4);
+  box-shadow: inset 0 0 0 0.5px rgba(224,64,64,0.6);
+  opacity: 0;
+  transition: opacity 0.55s ease-out;
+}
+.cs-player-price {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: rgba(238,238,240,0.55);
+  text-align: right;
+}
+
+/* Staggered ignition: when section is .lit, competitor segments fade in row by row */
+.coverage-stack-section.lit .cs-player:nth-child(1) .cs-seg-on { transition-delay: 0.10s; opacity: 1; }
+.coverage-stack-section.lit .cs-player:nth-child(2) .cs-seg-on { transition-delay: 0.25s; opacity: 1; }
+.coverage-stack-section.lit .cs-player:nth-child(3) .cs-seg-on { transition-delay: 0.40s; opacity: 1; }
+.coverage-stack-section.lit .cs-player:nth-child(4) .cs-seg-on { transition-delay: 0.55s; opacity: 1; }
+
+/* Layer 4: BASELINE focal point row — graduation, not sibling */
+.cs-divider {
+  height: 1px;
+  margin: clamp(1.6rem, 3vw, 2.2rem) 0 clamp(0.9rem, 1.5vw, 1.2rem);
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.4) 50%, transparent 100%);
+  position: relative;
+}
+.cs-divider::after {
+  /* connector line: divider visually spawns the baseline row */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 1px;
+  height: clamp(1.2rem, 2.5vw, 1.8rem);
+  background: linear-gradient(180deg, rgba(224,64,64,0.55) 0%, transparent 100%);
+}
+.cs-baseline {
+  display: grid;
+  grid-template-columns: 160px 1fr 90px;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(1.3rem, 2.2vw, 1.7rem) clamp(0.9rem, 1.6vw, 1.2rem);
+  /* slight negative margin to break frame past competitor rows */
+  margin-left: clamp(-1rem, -1vw, -0.6rem);
+  margin-right: clamp(-1rem, -1vw, -0.6rem);
+  background: rgba(20, 8, 20, 0.6);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 0 0 0.5px rgba(224,64,64,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 80px rgba(224,64,64,0.22),
+    0 30px 60px rgba(0,0,0,0.5);
+  position: relative;
+}
+.cs-baseline::before {
+  /* coral halo bleed — only place in appendix with this treatment */
+  content: '';
+  position: absolute;
+  inset: -20px -5px;
+  background: radial-gradient(ellipse 80% 100% at 50% 50%, rgba(224,64,64,0.12) 0%, transparent 65%);
+  filter: blur(28px);
+  z-index: -1;
+  pointer-events: none;
+}
+.cs-baseline-name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.cs-baseline-tag-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(224,64,64,0.75);
+}
+.cs-baseline-mark {
+  display: block;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+  filter: drop-shadow(0 0 8px rgba(224,64,64,0.4));
+}
+.cs-baseline-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+.cs-seg-baseline {
+  height: 18px;
+  background: linear-gradient(180deg,
+    rgba(224,64,64,0.85) 0%,
+    rgba(224,64,64,1) 50%,
+    rgba(224,64,64,0.85) 100%);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255,180,180,0.5),
+    0 0 14px rgba(224,64,64,0.55);
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.coverage-stack-section.lit .cs-seg-baseline { opacity: 1; }
+.coverage-stack-section.lit .cs-seg-baseline:nth-child(1) { transition-delay: 1.20s; }
+.coverage-stack-section.lit .cs-seg-baseline:nth-child(2) { transition-delay: 1.32s; }
+.coverage-stack-section.lit .cs-seg-baseline:nth-child(3) { transition-delay: 1.44s; }
+.coverage-stack-section.lit .cs-seg-baseline:nth-child(4) { transition-delay: 1.56s; }
+.coverage-stack-section.lit .cs-seg-baseline:nth-child(5) { transition-delay: 1.68s; }
+.coverage-stack-section.lit .cs-seg-baseline:nth-child(6) { transition-delay: 1.80s; }
+.cs-baseline-price {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  color: var(--coral);
+  font-weight: 700;
+  text-align: right;
+}
+.cs-baseline-price .per {
+  font-size: 0.65rem;
+  font-weight: 500;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+  margin-left: 0.1rem;
+}
+.cs-baseline-tag {
+  margin: 0.9rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(238,238,240,0.55);
+  text-align: center;
+}
+
+/* Layer 5: annotation strip */
+.cs-annotation {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  text-align: center;
+}
+.cs-annotation p {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: rgba(238,238,240,0.5);
+  margin: 0.35rem 0;
+}
+.cs-annotation strong { color: rgba(238,238,240,0.88); font-weight: 600; }
+
+/* Mobile */
+@media (max-width: 820px) {
+  .cs-player, .cs-baseline,
+  .cs-outcomes, .cs-categories {
+    grid-template-columns: 110px 1fr 70px;
+    gap: 0.8rem;
   }
+  .cs-player-name { font-size: 0.74rem; }
+  .cs-player-price, .cs-baseline-price { font-size: 0.62rem; }
+  .cs-baseline-name { font-size: 0.78rem; }
+  .cs-categories-grid { gap: 3px; }
+  .cs-chip { font-size: 0.5rem; padding: 0.55rem 0.2rem; letter-spacing: 0.1em; }
+  .cs-outcome { font-size: 0.66rem; letter-spacing: 0.12em; }
+}
+@media (max-width: 600px) {
+  /* Player rows: stack name above bar above price */
+  .cs-player, .cs-baseline {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.95rem;
+  }
+  /* Kill the baseline frame-break negative margin on phones (would overflow) */
+  .cs-baseline { margin-left: 0; margin-right: 0; }
+
+  /* Outcomes + categories: collapse outer grid to single column */
+  .cs-outcomes, .cs-categories {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+  .cs-gutter-l, .cs-gutter-r { display: none; }
+  .cs-player-price, .cs-baseline-price { text-align: left; font-size: 0.68rem; }
+
+  /* THE KEY FIX: chips stay 6-wide so they align with bar segments */
+  .cs-categories-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+  }
+  .cs-chip {
+    font-size: 0.42rem;
+    padding: 0.5rem 0.15rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* Bar segment gap matches chip gap so columns line up across the section */
+  .cs-player-bar { gap: 3px; }
+  .cs-baseline-bar { gap: 3px; }
+
+  /* Outcomes stay 3-wide as section header (the why above the chips) */
+  .cs-outcomes-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+  .cs-outcomes { gap: 0.5rem; margin-bottom: 1.5rem; }
+  .cs-outcome { font-size: 0.58rem; padding-bottom: 0.9rem; letter-spacing: 0.1em; }
+}
+
+/* ═══════ TOP 10 METRICS — $143 hero with glass list ═══════ */
+.metrics {
+  padding: clamp(6rem, 12vw, 10rem) 0;
+  position: relative;
+}
+
+.metrics::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.2) 50%, transparent 100%);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  align-items: center;
+}
+
+.metrics-text { position: relative; }
+
+.metrics-num-wrap {
+  position: relative;
+  display: inline-block;
+  margin: 1rem 0 1rem;
+}
+
+.metrics-num-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -30% -20%;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%,
+    rgba(224,64,64,0.18) 0%,
+    rgba(224,64,64,0.05) 40%,
+    transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: -1;
+  animation: glow-breathe 6s ease-in-out infinite;
+}
+
+.metrics-num {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(7rem, 16vw, 14rem);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  margin: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(238,238,240,0.7) 0%,
+    var(--ink) 25%,
+    var(--coral) 50%,
+    var(--ink) 75%,
+    rgba(238,238,240,0.7) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(224, 64, 64, 0.15));
+  position: relative;
+}
+
+/* Ground reflection beneath the $143 */
+.metrics-num::after {
+  content: '$143';
+  position: absolute;
+  top: 100%; left: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  background: linear-gradient(180deg, rgba(238,238,240,0.12) 0%, transparent 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: scaleY(-0.4);
+  transform-origin: top;
+  filter: blur(2px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.metrics-caption {
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 360px;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.metrics-caption strong { color: var(--ink); font-weight: 600; }
+
+/* Clarifier — resolves $143 vs $30 tension */
+.metrics-clarifier {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.2rem;
+  background: rgba(224, 64, 64, 0.04);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 0.5px rgba(224, 64, 64, 0.2);
+  max-width: 380px;
+}
+
+.clarifier-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--coral);
+  flex-shrink: 0;
+  padding-top: 0.1rem;
+}
+
+.clarifier-text {
+  font-size: 0.78rem;
+  color: var(--ink-mid);
+  line-height: 1.55;
+}
+
+/* Glassmorphic list card */
+.metrics-card {
+  position: relative;
+  padding: clamp(1.8rem, 3vw, 2.5rem);
+  border-radius: 20px;
+  background: rgba(20, 18, 28, 0.5);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4),
+              inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.metrics-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5),
+              inset 0 0 0 0.5px rgba(255,255,255,0.12);
+}
+
+.metrics-card-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 0.8rem;
+}
+
+.metrics-list {
+  display: flex; flex-direction: column;
+  gap: 0;
+}
+
+.metric-row {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.metric-row:last-child { border-bottom: none; }
+
+.metric-row:hover {
+  padding-left: 0.4rem;
+}
+
+.metric-rank {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  color: var(--coral);
+  width: 22px;
+  flex-shrink: 0;
+}
+
+.metric-name {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.metric-cost {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-mid);
+  text-align: right;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.metric-cost.free {
+  color: var(--green);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+/* ═══════ INTERSTITIAL — gates the appendix ═══════ */
+.interstitial {
+  padding: clamp(4rem, 8vw, 6rem) 0;
+  position: relative;
+  text-align: center;
+}
+
+.interstitial-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.interstitial-divider {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.5) 50%, transparent 100%);
+  margin-bottom: 1rem;
+}
+
+.interstitial-text {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+}
+
+.interstitial-sub {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+  line-height: 1.7;
+  max-width: 420px;
+  margin: 0;
+}
+
+.interstitial-arrow {
+  width: 24px;
+  margin-top: 0.5rem;
+}
+
+.interstitial-arrow svg {
+  width: 100%;
+  height: 32px;
+  animation: arrow-bob 2.6s ease-in-out infinite;
+}
+
+@keyframes arrow-bob {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* ═══════ EVIDENCE TIERS ═══════ */
+.evidence {
+  padding: clamp(4rem, 8vw, 6rem) 0;
+  position: relative;
+}
+
+.evidence::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+}
+
+.tier-stack {
+  position: relative;
+  max-width: 720px;
+}
+
+.tier-card {
+  padding: clamp(2rem, 3vw, 2.8rem);
+  border-radius: 20px;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+  position: relative;
+}
+
+/* Foundation: hero card — luminous, coral inset, glow halo */
+.tier-foundation {
+  background: rgba(20, 18, 28, 0.55);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5),
+              0 0 80px rgba(224, 64, 64, 0.10),
+              inset 0 0 0 1px rgba(224, 64, 64, 0.22);
+  z-index: 2;
+}
+
+.tier-foundation::before {
+  content: '';
+  position: absolute;
+  inset: -20% -10%;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%,
+    rgba(224, 64, 64, 0.08) 0%,
+    rgba(224, 64, 64, 0.02) 50%,
+    transparent 75%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: -1;
+  animation: glow-breathe 7s ease-in-out infinite;
+}
+
+.tier-foundation:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 50px 120px rgba(0,0,0,0.6),
+              0 0 100px rgba(224, 64, 64, 0.14),
+              inset 0 0 0 1px rgba(224, 64, 64, 0.3);
+}
+
+/* Enhanced: smaller, offset right, muted glass */
+.tier-enhanced {
+  background: rgba(20, 18, 28, 0.35);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35),
+              inset 0 0 0 0.5px rgba(255,255,255,0.06);
+  transform: scale(0.92) translateX(clamp(2rem, 6vw, 6rem));
+  margin-top: -1.2rem;
+  opacity: 0.88;
+  z-index: 1;
+}
+
+.tier-enhanced:hover {
+  transform: scale(0.92) translateX(clamp(2rem, 6vw, 6rem)) translateY(-2px);
+  opacity: 1;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45),
+              inset 0 0 0 0.5px rgba(255,255,255,0.12);
+}
+
+.tier-foundation .tier-tag { color: var(--coral); }
+.tier-enhanced .tier-tag { color: var(--ink-dim); }
+
+.tier-foundation .tier-name {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+/* Foundation head: description left, $143 price right */
+.tier-foundation-head {
+  display: grid;
+  grid-template-columns: 1.4fr auto;
+  gap: clamp(2rem, 4vw, 3rem);
+  align-items: start;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2rem);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.tier-foundation-price {
+  text-align: right;
+  position: relative;
+}
+
+.tier-price-num {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  background: linear-gradient(
+    90deg,
+    rgba(238,238,240,0.7) 0%,
+    var(--ink) 25%,
+    var(--coral) 50%,
+    var(--ink) 75%,
+    rgba(238,238,240,0.7) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(224, 64, 64, 0.10));
+}
+
+.tier-price-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-top: 0.6rem;
+  line-height: 1.4;
+}
+
+/* Metric list inside Foundation card */
+.tier-foundation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+
+/* Foot: clarifier showing Baseline reads them all */
+.tier-foundation-foot {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.tier-foundation-foot .clarifier-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--coral);
+  flex-shrink: 0;
+  padding-top: 0.1rem;
+}
+
+.tier-foundation-foot .clarifier-text {
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  line-height: 1.55;
+}
+
+.tier-enhanced .tier-name {
+  font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  color: var(--ink-mid);
+}
+
+.tier-desc strong { color: var(--ink); font-weight: 600; }
+
+.evidence-intro {
+  font-size: 1rem;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.evidence-intro strong { color: var(--ink); font-weight: 600; }
+
+.tier-tag {
+  font-family: var(--display); font-weight: 900;
+  font-size: 0.6rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--coral);
+  margin-bottom: 0.75rem;
+}
+
+.tier-name {
+  font-family: var(--display); font-weight: 900;
+  font-size: 1.4rem; text-transform: uppercase;
+  letter-spacing: -0.02em; margin-bottom: 0.75rem;
+}
+
+.tier-desc {
+  font-size: 0.88rem; color: var(--ink-mid); line-height: 1.7;
+}
+
+.tier-examples {
+  margin-top: 1rem; padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--mono); font-size: 0.72rem;
+  color: var(--ink-dim); line-height: 1.8;
+}
+
+.evidence-note {
+  margin-top: 2.5rem;
+  font-size: 0.92rem; color: var(--ink-mid); line-height: 1.7;
+  max-width: 600px;
+}
+
+.evidence-note strong { color: var(--ink); }
+
+/* ═══════ HOW IT WORKS ═══════ */
+.how {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  background: var(--surface);
+  position: relative;
+}
+
+.how::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.2) 50%, transparent 100%);
+}
+
+.how-steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.step-card {
+  padding: 2rem 1.5rem;
+  background: var(--surface-2);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s, box-shadow 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(224, 64, 64, 0.15);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3),
+              0 0 40px rgba(224, 64, 64, 0.06);
+}
+
+.step-num {
+  font-family: var(--display); font-weight: 900;
+  font-size: 4rem; line-height: 1; letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.04);
+  position: absolute; top: -0.15em; right: 0.2em;
+}
+
+.step-label {
+  font-family: var(--display); font-weight: 900;
+  font-size: 0.7rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--coral);
+  margin-bottom: 1rem;
+}
+
+.step-title {
+  font-family: var(--display); font-weight: 900;
+  font-size: 1.4rem; letter-spacing: -0.02em;
+  text-transform: uppercase; margin-bottom: 0.75rem;
+}
+
+.step-body {
+  font-size: 0.9rem; line-height: 1.7; color: var(--ink-mid);
+}
+
+/* ═══════ STORY ═══════ */
+.story {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+}
+
+.story-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 6vw, 6rem);
+  align-items: start;
+}
+
+.story-headline {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 1; letter-spacing: -0.04em;
+  text-transform: uppercase;
+  position: sticky; top: 120px;
+}
+.story-headline .accent { color: var(--coral); }
+
+.story-body p {
+  font-size: 1rem; line-height: 1.8; color: var(--ink-mid); margin-bottom: 1.5rem;
+}
+.story-body strong { color: var(--ink); font-weight: 600; }
+
+.insulin-callout {
+  margin-top: 0.5rem;
+  padding: 1.2rem 1.5rem;
+  background: var(--coral-dim);
+  border-left: 2px solid var(--coral);
+  border-radius: 0 6px 6px 0;
+  font-family: var(--mono); font-size: 0.82rem;
+  color: var(--ink-mid); line-height: 1.7;
+}
+
+.insulin-callout strong { color: var(--ink); }
+
+/* ═══════ COMPETITOR COMPARISON ═══════ */
+.compare {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  position: relative;
+}
+
+.compare::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.15) 50%, transparent 100%);
+}
+
+/* Comparison: visual coverage gap chart */
+.compete-chart {
+  max-width: 820px;
+  margin-bottom: 2.5rem;
+  padding: clamp(2rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 20px;
+  background: rgba(20, 18, 28, 0.4);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5),
+              inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.compete-chart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6),
+              inset 0 0 0 0.5px rgba(255,255,255,0.12);
+}
+
+.compete-row {
+  display: grid;
+  grid-template-columns: 160px 1fr 50px 110px;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.compete-row:last-child { border-bottom: none; }
+
+.compete-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink-mid);
+}
+
+.compete-track {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5),
+              inset 0 0 0 0.5px rgba(255,255,255,0.04);
+}
+
+.compete-fill {
+  height: 100%;
+  border-radius: 4px;
+  width: 0;
+  background: linear-gradient(90deg,
+    rgba(238, 238, 240, 0.25) 0%,
+    rgba(238, 238, 240, 0.5) 100%);
+  transition: width 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.compete-pct {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  text-align: right;
+  font-weight: 500;
+}
+
+.compete-price {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  text-align: right;
+  letter-spacing: 0.03em;
+}
+
+.compete-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.25) 50%, transparent 100%);
+  margin: 0.5rem 0;
+}
+
+/* Baseline row: glowing, coral, dominant */
+.compete-row.baseline {
+  border-bottom: none;
+  padding: 1.2rem 0;
+}
+
+.compete-row.baseline .compete-name {
+  color: var(--coral);
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+
+.compete-row.baseline .compete-track {
+  height: 10px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5),
+              0 0 16px rgba(224, 64, 64, 0.18);
+}
+
+.compete-row.baseline .compete-fill {
+  background: linear-gradient(90deg,
+    rgba(224, 64, 64, 0.6) 0%,
+    rgba(224, 64, 64, 0.95) 100%);
+  box-shadow: 0 0 24px rgba(224, 64, 64, 0.5);
+}
+
+.compete-row.baseline .compete-pct {
+  color: var(--coral);
+  font-weight: 700;
+}
+
+.compete-row.baseline .compete-price {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.compete-note {
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 640px;
+}
+
+.compete-note strong { color: var(--ink); font-weight: 600; }
+
+.compare-table {
+  width: 100%;
+  border-collapse: separate; border-spacing: 0;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 1.1rem 1.2rem;
+  text-align: left; font-size: 0.88rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.compare-table tr:last-child td { border-bottom: none; }
+
+.compare-table th {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 500;
+  color: var(--ink-dim); letter-spacing: 0.14em; text-transform: uppercase;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.compare-table td:first-child {
+  color: var(--ink-mid);
+  font-weight: 500;
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.compare-table td.price-col {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+}
+
+.compare-table td.gap-col {
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+}
+
+.compare-table tbody tr {
+  transition: background 0.3s;
+}
+
+.compare-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+/* Baseline row gets coral inset border treatment */
+.compare-table .row-baseline {
+  position: relative;
+}
+
+.compare-table .row-baseline td {
+  color: var(--ink);
+  background: rgba(224, 64, 64, 0.04);
+}
+
+.compare-table .row-baseline td:first-child {
+  font-weight: 700;
+  color: var(--coral);
+  box-shadow: inset 2px 0 0 var(--coral);
+}
+
+.compare-table .row-baseline td:last-child {
+  box-shadow: inset -2px 0 0 var(--coral);
+}
+
+.compare-table .row-baseline td.gap-col { color: var(--green); }
+
+.gap-cards {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1rem; margin-top: 2rem;
+}
+
+.gap-card {
+  padding: 1.4rem 1.6rem;
+  background: rgba(255,255,255,0.02);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.06);
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.gap-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.04);
+  box-shadow: inset 0 0 0 0.5px rgba(224,64,64,0.18),
+              0 12px 32px rgba(0,0,0,0.3);
+}
+
+.gap-product {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+  color: var(--ink-dim); letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.gap-text {
+  font-size: 0.85rem; color: var(--ink-mid); line-height: 1.6;
+}
+
+.gap-text strong { color: var(--ink); }
+
+/* ═══════ CLOSING — Price + Signup luminous focal point ═══════ */
+.closing {
+  padding: clamp(6rem, 12vw, 10rem) 0 clamp(5rem, 10vw, 8rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.closing::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(224,64,64,0.2) 50%, transparent 100%);
+}
+
+/* Ambient orb behind the card */
+.closing-orb {
+  position: absolute;
+  width: 1100px; height: 1100px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 50% 50%,
+    rgba(224, 64, 64, 0.18) 0%,
+    rgba(224, 64, 64, 0.06) 30%,
+    rgba(100, 40, 120, 0.04) 50%,
+    transparent 70%
+  );
+  filter: blur(100px);
+  animation: glow-breathe 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Tiny competitor strip */
+.closing-others {
+  display: flex; justify-content: center; align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  position: relative; z-index: 1;
+}
+
+.other-item {
+  display: flex; align-items: baseline; gap: 0.5rem;
+  font-family: var(--mono);
+}
+
+.other-name {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.other-val {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink-dim);
+  position: relative;
+  display: inline-block;
+}
+
+/* Drawn strikethrough — animates left-to-right */
+.other-val::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 100%;
+  top: 50%;
+  height: 1.5px;
+  background: var(--coral);
+  transition: right 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+  opacity: 0.7;
+}
+
+.closing-others.struck .other-item:nth-child(1) .other-val::after { right: -2px; transition-delay: 0.2s; }
+.closing-others.struck .other-item:nth-child(3) .other-val::after { right: -2px; transition-delay: 0.55s; }
+.closing-others.struck .other-item:nth-child(5) .other-val::after { right: -2px; transition-delay: 0.9s; }
+.closing-others.struck .other-item:nth-child(7) .other-val::after { right: -2px; transition-delay: 1.25s; }
+
+/* Once struck, fade to dimmer */
+.closing-others.struck .other-val {
+  transition: color 0.4s 0.6s, opacity 0.4s 0.6s;
+}
+.closing-others.struck .other-item:nth-child(1) .other-val { transition-delay: 0.6s; opacity: 0.4; }
+.closing-others.struck .other-item:nth-child(3) .other-val { transition-delay: 0.95s; opacity: 0.4; }
+.closing-others.struck .other-item:nth-child(5) .other-val { transition-delay: 1.3s; opacity: 0.4; }
+.closing-others.struck .other-item:nth-child(7) .other-val { transition-delay: 1.65s; opacity: 0.4; }
+
+/* Closing card fades in AFTER all strikes complete */
+.closing-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1s 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.6s;
+}
+
+.closing.struck-done .closing-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.other-divider {
+  width: 1px; height: 12px;
+  background: rgba(255,255,255,0.1);
+}
+
+/* THE CARD — single luminous focal point */
+.closing-card {
+  position: relative;
+  z-index: 2;
+  max-width: 980px;
+  margin: 0 auto;
+  border-radius: 28px;
+  background: linear-gradient(180deg,
+    rgba(20, 18, 30, 0.6) 0%,
+    rgba(15, 14, 22, 0.4) 100%);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6),
+              0 0 120px rgba(224,64,64,0.10),
+              inset 0 0 0 0.5px rgba(255,255,255,0.12);
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(2rem, 4vw, 3.5rem);
+  transition: 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.closing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 50px 120px rgba(0,0,0,0.7),
+              0 0 140px rgba(224,64,64,0.14),
+              inset 0 0 0 0.5px rgba(255,255,255,0.16);
+}
+
+.closing-card-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: stretch;
+}
+
+/* Left side: price + headline */
+.closing-left {
+  display: flex; flex-direction: column;
+  position: relative;
+}
+
+.closing-tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 1rem;
+}
+
+.closing-price {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(5rem, 11vw, 9rem);
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  margin: 0 0 1.2rem;
+  background: linear-gradient(
+    90deg,
+    rgba(238,238,240,0.7) 0%,
+    var(--ink) 25%,
+    var(--coral) 50%,
+    var(--ink) 75%,
+    rgba(238,238,240,0.7) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(224, 64, 64, 0.15));
+}
+
+.closing-price span {
+  font-size: 0.25em;
+  -webkit-text-fill-color: var(--ink-dim);
+  vertical-align: baseline;
+  margin-left: 0.1em;
+}
+
+.closing-headline {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.closing-headline .accent { color: var(--coral); }
+
+.closing-sub {
+  font-size: 0.92rem;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 360px;
+  margin-bottom: 2rem;
+}
+
+.closing-alt {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.closing-alt-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+
+.closing-alt-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.closing-alt-link:hover {
+  border-bottom-color: var(--coral);
+  color: var(--coral);
+}
+
+/* Right side: form */
+.closing-right {
+  display: flex; flex-direction: column;
+}
+
+.closing-form {
+  display: flex; flex-direction: column;
+  gap: 0.9rem;
+}
+
+.closing-form .field {
+  display: flex; flex-direction: column;
+}
+
+.closing-form label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.4rem;
+}
+
+.closing-form input {
+  width: 100%;
+  padding: 0.95rem 1.1rem;
+  background: rgba(255,255,255,0.04);
+  border: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  border-radius: 12px;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 0.92rem;
+  outline: none;
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.closing-form input::placeholder { color: var(--ink-dim); }
+
+.closing-form input:focus {
+  background: rgba(255,255,255,0.06);
+  box-shadow: inset 0 0 0 1px rgba(224,64,64,0.4),
+              0 0 24px rgba(224,64,64,0.12);
+}
+
+.closing-btn {
+  position: relative;
+  width: 100%;
+  padding: 1.1rem;
+  margin-top: 0.5rem;
+  background: var(--coral);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.closing-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 30%,
+    rgba(255,255,255,0.25) 50%,
+    transparent 70%);
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  transition: background-position 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+  pointer-events: none;
+}
+
+.closing-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(224, 64, 64, 0.35),
+              0 0 60px rgba(224, 64, 64, 0.15);
+}
+
+.closing-btn:hover::before {
+  background-position: 100% 0;
+}
+
+.closing-note {
+  margin-top: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-dim);
+  text-align: center;
+}
+
+.success {
+  display: none; margin-top: 1rem; padding: 1.5rem;
+  border: 1px solid var(--green); border-radius: 12px;
+  background: rgba(60, 184, 104, 0.08); text-align: center;
+  color: var(--ink);
+}
+
+/* ═══════ FOOTER ═══════ */
+footer {
+  padding: 2.5rem 0 2rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  text-align: center;
+}
+footer p { font-size: 0.75rem; color: var(--ink-dim); line-height: 1.8; }
+footer a { color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
+footer a:hover { color: var(--ink-mid); }
+
+/* ═══════ RESPONSIVE ═══════ */
+@media (max-width: 900px) {
+  /* ─── MOBILE REDESIGN: four full-screen beats ─── */
+
+  .hero { padding: 5rem 0 3rem; }
+  .hero-content { padding: 0 1.5rem; }
+
+  /* Beat 1: CONNECT hero */
+  .hero-stagger {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+
+  .hw-connect {
+    font-size: clamp(3.5rem, 18vw, 7rem);
+    text-align: left;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.05em;
+  }
+
+  /* Simplified dot field — 6 particles spread vertically */
+  .hero-dot-field {
+    height: clamp(320px, 48vh, 420px);
+    margin-bottom: 1rem;
+  }
+
+  .hero-dot-field .particle:nth-child(n+8) { display: none; }
+
+  /* Redistribute particles across full height on mobile */
+  .hero-dot-field .particle:nth-child(1) { top: 8%  !important; left: 8%  !important; }
+  .hero-dot-field .particle:nth-child(2) { top: 22% !important; left: 52% !important; }
+  .hero-dot-field .particle:nth-child(3) { top: 38% !important; left: 18% !important; }
+  .hero-dot-field .particle:nth-child(4) { top: 54% !important; left: 68% !important; }
+  .hero-dot-field .particle:nth-child(5) { top: 72% !important; left: 28% !important; }
+  .hero-dot-field .particle:nth-child(6) { top: 86% !important; left: 58% !important; }
+
+  .particle .dot-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .particle .dot { width: 7px; height: 7px; }
+
+  .hw-the {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    text-align: right;
+    padding-right: clamp(3rem, 12vw, 6rem);
+    -webkit-text-stroke: 1.5px rgba(238, 238, 240, 0.35);
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .hw-dots {
+    font-size: clamp(2.2rem, 8vw, 3.5rem);
+    text-align: right;
+    padding-right: clamp(0.5rem, 2vw, 1rem);
+    -webkit-text-stroke: 1.5px rgba(238, 238, 240, 0.25);
+    margin-bottom: 0;
+  }
+
+  /* Timeline — each phase is its own viewport beat */
+  .hero-timeline {
+    padding-left: 0;
+    margin-top: 0;
+  }
+
+  .timeline-stop {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    text-align: left;
+    gap: 1.75rem;
+    padding: clamp(3rem, 8vw, 4.5rem) 0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+
+  /* Phase marker becomes section header */
+  .phase-marker {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .phase-num {
+    font-size: clamp(4rem, 18vw, 6.5rem);
+    line-height: 0.85;
+  }
+
+  .phase-label {
+    padding: 0.5rem 0 0;
+    border: none;
+    border-top: 1px solid rgba(224, 64, 64, 0.4);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    width: 100%;
+    max-width: 220px;
+  }
+
+  .hero-card { width: 100%; max-width: 100%; }
+
+  /* Narrative words — massive beat-end statements */
+  .narrative-word {
+    padding-left: 0;
+    justify-self: start;
+    margin: 0.5rem 0 0;
+  }
+
+  .nw-then {
+    font-size: clamp(3.5rem, 14vw, 5.5rem);
+    -webkit-text-stroke: 1.5px rgba(238, 238, 240, 0.35);
+  }
+
+  .nw-raise {
+    font-size: clamp(5.5rem, 24vw, 9rem);
+    line-height: 0.85;
+  }
+
+  .nw-them {
+    font-size: clamp(5rem, 22vw, 8rem);
+    line-height: 0.85;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Drop meandering SVG — too cramped on mobile */
+  .timeline-meander { display: none; }
+
+  /* Straight line — subtle vertical connector */
+  .timeline-straight {
+    width: 20px;
+    height: 50px;
+    margin: -0.5rem 0 -0.5rem 1rem;
+    align-self: flex-start;
+  }
+
+  /* Hero bottom */
+  .hero-bottom {
+    margin-top: clamp(3rem, 8vw, 5rem);
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .hero-tagline {
+    max-width: 100%;
+    font-size: 1.05rem;
+  }
+
+  /* Other responsive fallbacks */
+  .hero-flat .hero-word { font-size: clamp(2.5rem, 8vw, 4rem); white-space: normal; }
+  .forty-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .forty-number { font-size: clamp(7rem, 28vw, 12rem); }
+  .closing-card-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .closing-others { gap: 0.5rem; font-size: 0.7em; }
+  .closing-others .other-divider { display: none; }
+  .closing-others .other-item { padding: 0.3rem 0.6rem; }
+
+  /* Coverage frontier bar — tighter on tablet */
+  .frontier-bar { height: clamp(105px, 18vw, 140px); }
+  .zone { padding: 0.7rem 0.8rem; }
+  .zone-pct { font-size: clamp(1.3rem, 4.5vw, 1.8rem); }
+  .zone-sub { display: none; }
+  .bar-marker .marker-line { height: clamp(140px, 22vw, 175px); }
+
+  /* Coach-on appendix: stack columns */
+  .coach-row { grid-template-columns: 1fr; gap: 1.2rem; }
+
+  /* Top 10 metrics — stack vertically */
+  .metrics-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .metrics-num { font-size: clamp(6rem, 24vw, 10rem); }
+
+  /* Comparison chart — tighter columns */
+  .compete-row { grid-template-columns: 110px 1fr 40px 80px; gap: 0.8rem; }
+  .compete-name { font-size: 0.78rem; }
+  .compete-pct, .compete-price { font-size: 0.68rem; }
+
+  /* Tier hierarchy — keep stacked but reduce offsets */
+  .tier-enhanced { transform: scale(0.94) translateX(1.5rem); }
+  .tier-enhanced:hover { transform: scale(0.94) translateX(1.5rem) translateY(-2px); }
+
+  /* Foundation head: stack on mobile */
+  .tier-foundation-head { grid-template-columns: 1fr; gap: 1.5rem; }
+  .tier-foundation-price { text-align: left; }
+  .story-grid { grid-template-columns: 1fr; }
+  .story-headline { position: static; margin-bottom: 2rem; }
+  .how-steps { grid-template-columns: 1fr; }
+  .tier-cards { grid-template-columns: 1fr; }
+  .gap-cards { grid-template-columns: 1fr; }
+  .signup-grid { grid-template-columns: 1fr; }
+  .signup-left { margin-bottom: 2rem; }
+  .compare-table { font-size: 0.78rem; }
+  .compare-table th, .compare-table td { padding: 0.7rem 0.8rem; }
+}
+
+@media (max-width: 600px) {
+  /* Phone-specific tweaks — tighter margins, still breathable */
+  .hero-content { padding: 0 1.25rem; }
+  .hw-connect { font-size: min(clamp(2.8rem, 15vw, 5rem), 88vw); letter-spacing: -0.05em; }
+  /* Outcomes interlude tighter on phones */
+  .outcome-line { font-size: clamp(2.5rem, 11vw, 4rem); }
+  .outcome-group:nth-child(1) { padding-left: 1rem; }
+  .outcome-group:nth-child(2) { padding-left: 0.5rem; }
+  .outcome-group:nth-child(3) { padding-left: 2rem; }
+  .outcome-sub { font-size: 0.62rem; letter-spacing: 0.18em; }
+
+  /* Frontier bar very compact on phones */
+  .frontier-bar { height: clamp(80px, 22vw, 110px); }
+  .zone-pct { font-size: clamp(1.1rem, 5vw, 1.5rem); }
+  .zone-label { font-size: 0.5rem; letter-spacing: 0.12em; }
+  .bar-marker { top: -2.2rem; }
+  .bar-marker .marker-label { font-size: 0.48rem; }
+  .bar-marker .marker-line { height: clamp(110px, 26vw, 140px); }
+
+  /* Frontier moat statement smaller on phones */
+  .frontier-moat { font-size: clamp(1.3rem, 5.5vw, 1.8rem); }
+  .frontier-moat-sub { font-size: 0.62rem; }
+  .hero-dot-field { height: clamp(220px, 34vh, 280px); }
+  .particle .dot-label { font-size: 0.6rem; }
+  .phase-num { font-size: clamp(3.5rem, 16vw, 5rem); }
+
+  /* Narrative words scale slightly down on phone but stay impactful */
+  .nw-raise { font-size: clamp(4.5rem, 20vw, 7rem); }
+  .nw-them { font-size: clamp(4rem, 18vw, 6rem); }
+  .nw-then { font-size: clamp(3rem, 13vw, 4.5rem); }
+
+  .outcomes-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .price-others { gap: 1.5rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .compare-table td.gap-col { display: none; }
+  .compare-table th:last-child { display: none; }
+}
 </style>
-
 </head>
-<body class="font-body bg-bg text-ink overflow-x-hidden">
+<body>
 
-<!-- Scroll progress bar -->
-<div class="scroll-progress" id="scroll-progress" style="width: 0%"></div>
-
-<!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-band py-5 mix-blend-difference">
-  <a href="/v2/" class="font-display font-extrabold text-sm text-white/60 tracking-tight no-underline hover:text-white/90 transition-opacity">b<span class="text-coral">.</span></a>
-  <div class="nav-links">
-    <a href="v2/how-it-works.html">How It Works</a>
-    <a href="v2/science.html">The Science</a>
-    <a href="v2/about.html">About</a>
-    <a href="#get-started" style="background:#c83c3c; color:white; padding:0.5rem 1.2rem; border-radius:6px; font-weight:600; letter-spacing:0.1em; text-decoration:none;">Get Started</a>
+<nav id="nav">
+  <div class="contain nav-inner">
+    <a href="/" class="logo">baseline<span>.</span></a>
+    <div class="nav-links">
+      <a href="https://cal.com/andrew-deal/discovery" class="nav-secondary">Book intro call</a>
+      <a href="#signup" class="nav-cta">Get Started</a>
+    </div>
   </div>
 </nav>
 
-<!-- ═══════════════════════ HERO ═══════════════════════ -->
-<section class="relative min-h-screen bg-bg flex flex-col justify-end px-band pb-24 md:pb-32 overflow-hidden noise">
-  <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(ellipse 70% 50% at 30% 55%, rgba(200,60,60,0.06) 0%, transparent 60%);"></div>
-  <div class="absolute inset-0 pointer-events-none z-0" style="background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 60% at 40% 50%, black 0%, transparent 55%); -webkit-mask-image: radial-gradient(ellipse 80% 60% at 40% 50%, black 0%, transparent 55%);"></div>
-  <div class="accent-line hidden md:block" style="right: 15%; top: 20%; height: 40%;"></div>
-  <div class="relative z-10">
-    <div class="font-label text-ink-dim mb-6 reveal">your full health picture</div>
-    <h1 class="font-massive text-[clamp(5rem,18vw,16rem)] text-ink leading-[0.82] reveal stagger-1">FINALLY</h1>
-    <div class="mt-8 md:mt-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 reveal stagger-2">
-      <p class="font-mono text-[0.75rem] md:text-[0.8rem] text-ink-muted tracking-widest uppercase max-w-md leading-relaxed entrance-words">an ai coach that knows your numbers. connects them. tells you what to do next.</p>
-    </div>
-  </div>
-</section>
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-content">
 
-<!-- ═══════════════════════ MARQUEE ═══════════════════════ -->
-<div class="bg-bg overflow-hidden py-8 md:py-12 border-y border-ink-dim/10">
-  <div class="marquee-track">
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">LESS NOISE</span>
-    <span class="marquee-dot"></span>
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">MORE SIGNAL</span>
-    <span class="marquee-dot"></span>
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">YOUR FULL HEALTH PICTURE</span>
-    <span class="marquee-dot"></span>
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">FINALLY</span>
-    <span class="marquee-dot"></span>
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">LESS NOISE</span>
-    <span class="marquee-dot"></span>
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">MORE SIGNAL</span>
-    <span class="marquee-dot"></span>
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">YOUR FULL HEALTH PICTURE</span>
-    <span class="marquee-dot"></span>
-    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">FINALLY</span>
-    <span class="marquee-dot"></span>
-  </div>
-</div>
+    <!-- "CONNECT THE DOTS" — staggered right -->
+    <div class="hero-stagger" id="hero-stagger">
+      <h1 class="hero-word hw-connect">CONNECT</h1>
 
-<!-- ═══════════════════════ THE PROBLEM ═══════════════════════ -->
-<section class="bg-bg relative noise overflow-visible" id="problem-section">
-  <div class="px-band py-band">
-    <div class="font-label text-coral mb-16 reveal">(the problem)</div>
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-0">
-      <div class="md:col-span-6">
-        <div class="font-massive text-ink leading-[0.88] entrance-clip-up">
-          <div class="text-[clamp(3rem,9vw,8rem)]">THE</div>
-          <div class="text-[clamp(3.5rem,11vw,10rem)]">REAL</div>
-          <div class="text-[clamp(2.5rem,7.5vw,6.5rem)]">QUESTION</div>
-        </div>
+      <div class="hero-dot-field" id="hero-particles">
+        <svg class="hero-connector-svg" id="hero-lines"></svg>
+
+        <div class="particle" style="top:6%;  left:5%;  --dur:8s;  --delay:0s;">  <span class="dot"></span><span class="dot-label">Sleep 5.2h</span></div>
+        <div class="particle" style="top:14%; left:42%; --dur:9s;  --delay:0.5s;"><span class="dot"></span><span class="dot-label">RHR 53</span></div>
+        <div class="particle" style="top:38%; left:8%;  --dur:7s;  --delay:1s;">  <span class="dot"></span><span class="dot-label">Weight 203</span></div>
+        <div class="particle" style="top:28%; left:68%; --dur:10s; --delay:1.5s;"><span class="dot"></span><span class="dot-label">HRV 48</span></div>
+        <div class="particle" style="top:4%;  left:75%; --dur:11s; --delay:2s;">  <span class="dot"></span><span class="dot-label">ApoB</span></div>
+        <div class="particle" style="top:50%; left:28%; --dur:8s;  --delay:0.8s;"><span class="dot"></span><span class="dot-label">Insulin</span></div>
+        <div class="particle" style="top:55%; left:60%; --dur:9s;  --delay:0.3s;"><span class="dot"></span><span class="dot-label">BP</span></div>
+        <div class="particle" style="top:20%; left:90%; --dur:7s;  --delay:2.5s;"><span class="dot"></span><span class="dot-label">Steps</span></div>
+        <div class="particle" style="top:42%; left:48%; --dur:12s; --delay:1.2s;"><span class="dot"></span><span class="dot-label">Lp(a)</span></div>
+        <div class="particle" style="top:60%; left:85%; --dur:8s;  --delay:3s;">  <span class="dot"></span><span class="dot-label">Waist</span></div>
+
       </div>
-      <div class="md:col-span-5 md:col-start-8 flex flex-col justify-center">
-        <div class="mb-10">
-          <p class="text-ink text-[1.1rem] leading-[1.6] font-medium entrance-words">How do I know if I'm <span class="text-coral font-semibold">actually</span> healthy?</p>
-          <p class="text-ink-muted text-[0.95rem] leading-[1.85] mt-4 reveal stagger-2">Whether you're starting from zero or drowning in data from five apps, the answer is the same: nobody's connecting the dots for you.</p>
-        </div>
-        <div class="space-y-8">
-          <div class="flex gap-4 reveal stagger-1">
-            <div class="font-stat text-[1.5rem] text-coral/50 leading-none mt-1 shrink-0">01</div>
-            <p class="text-sm text-ink-muted leading-relaxed">Maybe you have lab results you don't understand. Maybe you don't have labs at all. Either way, nobody's told you what to do next.</p>
-          </div>
-          <div class="flex gap-4 reveal stagger-2">
-            <div class="font-stat text-[1.5rem] text-coral/50 leading-none mt-1 shrink-0">02</div>
-            <p class="text-sm text-ink-muted leading-relaxed">Maybe you wear a Garmin or Apple Watch. Maybe you don't. The data is only useful if someone reads it and coaches you from it.</p>
-          </div>
-          <div class="flex gap-4 reveal stagger-3">
-            <div class="font-stat text-[1.5rem] text-coral/50 leading-none mt-1 shrink-0">03</div>
-            <p class="text-sm text-ink-muted leading-relaxed">We start with <span class="text-coral">what you have</span>. No equipment required. Your health picture builds over time, not all at once.</p>
-          </div>
-        </div>
-      </div>
+
+      <!-- THE and DOTS beneath the particle field, staggered right -->
+      <h1 class="hero-word hw-the">THE</h1>
+      <h1 class="hero-word hw-dots">DOTS</h1>
+
     </div>
+
+    <!-- ── Timeline: three phases, each with its narrative word ── -->
+    <div class="hero-timeline">
+
+      <!-- Phase 01: DETECT | Pattern card + THEN -->
+      <div class="timeline-stop phase-01" id="pattern-card">
+        <div class="phase-marker">
+          <span class="phase-num">01</span>
+          <span class="phase-label">Detect</span>
+        </div>
+        <div class="hero-card-wrap">
+          <div class="hero-card" id="pattern-card-inner">
+            <div class="card-top">
+              <div class="card-pulse"></div>
+              <span class="card-tag">Pattern detected</span>
+              <span class="card-time">Just now</span>
+            </div>
+            <p class="card-body">Sleep fragmentation + <strong>rising resting HR</strong> + stalled weight. Three apps tracked these separately for months. <span class="flag">Baseline saw the connection in minutes.</span></p>
+            <div class="card-stats">
+              <div><div class="stat-label">Sleep</div><div class="stat-val">5.2h</div><div class="stat-delta bad">fragmented</div></div>
+              <div><div class="stat-label">RHR</div><div class="stat-val">53</div><div class="stat-delta bad">+4 bpm</div></div>
+              <div><div class="stat-label">Weight</div><div class="stat-val">203</div><div class="stat-delta bad">stalled</div></div>
+            </div>
+          </div>
+        </div>
+        <h2 class="narrative-word nw-then">THEN</h2>
+      </div>
+
+      <!-- Meandering dotted path from 01 → 02 -->
+      <svg class="timeline-meander reveal" viewBox="0 0 220 200" preserveAspectRatio="none">
+        <path d="M 30 0 C 30 40, 180 40, 160 90 C 140 140, 40 130, 70 180 C 85 200, 95 200, 95 200"
+          stroke="rgba(224,64,64,0.5)" stroke-width="1.5"
+          stroke-dasharray="5 5" stroke-linecap="round" fill="none"/>
+        <circle cx="30" cy="0" r="4" fill="var(--coral)" opacity="0.8"/>
+        <circle cx="95" cy="200" r="4" fill="var(--coral)" opacity="0.8"/>
+      </svg>
+
+      <!-- Phase 02: DIAGNOSE | Root cause card + RAISE -->
+      <div class="timeline-stop phase-02" id="diagnose-stop">
+        <div class="phase-marker">
+          <span class="phase-num">02</span>
+          <span class="phase-label">Diagnose</span>
+        </div>
+        <div class="hero-card-wrap">
+          <div class="hero-card">
+            <div class="card-top">
+              <div class="card-pulse"></div>
+              <span class="card-tag">Root cause found</span>
+              <span class="card-time">Week 1</span>
+            </div>
+            <p class="card-body">Your bedtime swings <strong>±2 hours</strong> night to night. That's the root of everything. <span class="flag">Fix this one thing first.</span></p>
+            <div class="card-stats">
+              <div><div class="stat-label">Fix</div><div class="stat-val">Bedtime</div></div>
+              <div><div class="stat-label">Target</div><div class="stat-val">10:30pm</div><div class="stat-delta good">consistent</div></div>
+            </div>
+          </div>
+        </div>
+        <h2 class="narrative-word nw-raise">RAISE</h2>
+      </div>
+
+      <!-- Solid line from 02 → 03 (animated draw + flowing pulse) -->
+      <svg class="timeline-straight" viewBox="0 0 20 140" preserveAspectRatio="none" id="timeline-straight">
+        <!-- Background glow line -->
+        <line x1="10" y1="0" x2="10" y2="140"
+          stroke="rgba(224, 64, 64, 0.2)" stroke-width="6"
+          stroke-linecap="round"/>
+        <!-- Main animated line -->
+        <line x1="10" y1="0" x2="10" y2="140"
+          stroke="var(--coral)" stroke-width="2.5"
+          stroke-linecap="round"
+          pathLength="1"
+          stroke-dasharray="1"
+          stroke-dashoffset="1"
+          id="timeline-straight-line"/>
+        <!-- Start and end dots -->
+        <circle cx="10" cy="0" r="5" fill="var(--coral)" opacity="0.9"/>
+        <circle cx="10" cy="140" r="5" fill="var(--coral)" opacity="0.9" id="straight-end-dot"/>
+        <!-- Flowing pulse traveling down -->
+        <circle class="flow-pulse" r="4" fill="#fff" opacity="0"/>
+      </svg>
+
+      <!-- Phase 03: OUTCOMES | 3 months later card + THEM -->
+      <div class="timeline-stop phase-03" id="outcomes-stop">
+        <div class="phase-marker">
+          <span class="phase-num">03</span>
+          <span class="phase-label">Habits &amp; outcomes</span>
+        </div>
+        <div class="hero-card-wrap">
+          <div class="hero-card">
+            <div class="card-top">
+              <div class="card-pulse"></div>
+              <span class="card-tag">3 months later</span>
+              <span class="card-time">Day 90</span>
+            </div>
+            <p class="card-body"><strong>Sleep is better. Resting heart rate is better. Weight is down.</strong> One change moved all three. <span class="flag">The dots, raised.</span></p>
+            <div class="card-stats">
+              <div><div class="stat-label">Sleep</div><div class="stat-val">7.1h</div><div class="stat-delta good">+37%</div></div>
+              <div><div class="stat-label">RHR</div><div class="stat-val">46</div><div class="stat-delta good">-7 bpm</div></div>
+              <div><div class="stat-label">Weight</div><div class="stat-val">189</div><div class="stat-delta good">-14 lbs</div></div>
+            </div>
+          </div>
+        </div>
+        <h2 class="narrative-word nw-them">THEM</h2>
+      </div>
+
+    </div>
+
   </div>
 </section>
 
-<!-- ═══════════ CONNECTOR: Ghost text ═══════════ -->
-<div class="connector-section bg-bg px-band py-[clamp(4rem,10vw,8rem)] text-center overflow-hidden" id="connector-noise-signal">
-  <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto">LESS NOISE</div>
-  <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto mt-2" id="ghost-signal" style="background: linear-gradient(to right, rgba(200,60,60,0.25) var(--fill, 0%), rgba(240,240,240,0.04) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text;">MORE SIGNAL</div>
-</div>
-
-<!-- ═══════════ TRANSITION: What we help you do ═══════════ -->
-<section class="bg-bg relative noise py-band px-band text-center">
-  <div class="font-label text-coral mb-8 reveal">(what we help you do)</div>
-  <div class="font-massive text-[clamp(2.5rem,7vw,5.5rem)] text-ink leading-[0.88] entrance-split">THE OUTCOMES<br>WE COACH ON</div>
-  <p class="text-ink-muted text-[0.95rem] leading-[1.85] max-w-md mx-auto mt-8 reveal stagger-2">Your context powers everything below. These are the results people see when the full picture comes together.</p>
-</section>
-
-<!-- ═══════════════════════ OUTCOMES (pinned carousel) ═══════════════════════ -->
-<section class="bg-bg relative" id="outcomes-pin-section">
-  <div id="outcomes-pin-wrap">
-    <div class="min-h-screen flex items-center px-band" id="outcomes-pin-inner">
-      <div class="w-full flex flex-col md:flex-row gap-6 md:gap-16 items-start md:items-center">
-        <div class="hidden md:block md:w-[100px] shrink-0">
-          <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase leading-relaxed">The outcomes<br>we coach on</p>
+<!-- ═══════ THE 40 — Question + Paradigms merged ═══════ -->
+<section class="forty">
+  <svg class="forty-connectors" id="forty-connectors" preserveAspectRatio="none">
+    <path class="forty-link" id="forty-link-1" d="" stroke="rgba(224,64,64,0.7)" stroke-width="1" fill="none"/>
+    <path class="forty-link" id="forty-link-2" d="" stroke="rgba(224,64,64,0.7)" stroke-width="1" fill="none"/>
+    <path class="forty-link" id="forty-link-3" d="" stroke="rgba(224,64,64,0.7)" stroke-width="1" fill="none"/>
+  </svg>
+  <div class="contain">
+    <div class="forty-grid">
+      <div class="forty-text">
+        <p class="forty-question reveal">How do I know<br>if I'm actually healthy?</p>
+        <div class="forty-number-wrap reveal s1">
+          <svg class="forty-cloud" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
+            <g class="forty-cloud-dots" id="forty-cloud-dots"></g>
+          </svg>
+          <h2 class="forty-number">40</h2>
         </div>
-        <div class="flex-1 w-full max-w-lg relative overflow-hidden" style="height: 60px;" id="outcomes-carousel">
-          <div class="absolute left-0 w-full" id="outcomes-carousel-track">
-            <div class="outcome-name" data-outcome-name="sleep" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">SLEEP BETTER</span>
-            </div>
-            <div class="outcome-name" data-outcome-name="weight" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">LOSE WEIGHT</span>
-            </div>
-            <div class="outcome-name" data-outcome-name="energy" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">MORE ENERGY</span>
-            </div>
-            <div class="outcome-name" data-outcome-name="strength" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">BUILD STRENGTH</span>
-            </div>
-            <div class="outcome-name" data-outcome-name="nutrition" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">EAT HEALTHIER</span>
-            </div>
-            <div class="outcome-name" data-outcome-name="stress" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">LESS STRESS</span>
-            </div>
-            <div class="outcome-name" data-outcome-name="focus" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">SHARPER FOCUS</span>
-            </div>
-            <div class="outcome-name" data-outcome-name="coverage" style="height: 60px; display: flex; align-items: center;">
-              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">KNOW MORE</span>
-            </div>
-          </div>
+        <p class="forty-caption reveal s2">Metrics where the science is clear. Validated across large populations, replicated across decades. Not 400. <strong>Forty.</strong></p>
+      </div>
+      <div class="forty-pillars reveal s2">
+        <div class="forty-pillar">
+          <div class="forty-pillar-rule"></div>
+          <div class="forty-pillar-rank">01</div>
+          <h3 class="forty-pillar-name">LONGEVITY</h3>
+          <p class="forty-pillar-desc">How long you live</p>
         </div>
-        <div class="w-full md:w-[300px] shrink-0 relative" id="outcome-card-area" style="min-height: 280px;">
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="0">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">sleep duration</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">5.2 hrs</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">7.4 hrs</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+42%</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">From fragmented to restorative. The foundation everything else depends on.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">The single highest-leverage change for most people.</p>
-          </div>
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="1">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">weight trend</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">206 lbs</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">188 lbs</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">-18 lbs</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Sustainable habits, not crash diets. Your coach tracks the trend, not the day.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Calories, protein, consistency. No crash diets.</p>
-          </div>
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="2">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">daily energy</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">3/10</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">8/10</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+167%</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Move more, recover well, feel alert. Energy is the output of every system working.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Energy is the output of every system working.</p>
-          </div>
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="3">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">training consistency</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">1x/wk</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">4x/wk</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">4x</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Progressive load, consistent training. Volume adjusts with your recovery.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Volume adjusts with your recovery data.</p>
-          </div>
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="4">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">daily protein</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">62g</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">165g</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+166%</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">One change at a time until it sticks. No meal plans. Just better defaults.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">One change at a time until it sticks.</p>
-          </div>
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="5">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">hrv baseline</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">28 ms</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">52 ms</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+86%</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Stress shows up in the numbers before you feel it. Recovery is measurable.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Stress shows up before you feel it.</p>
-          </div>
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="6">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">sleep consistency</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">52%</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">89%</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+71%</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Same bedtime, same wake time. Focus follows when the basics are locked in.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Same time in, same time out. Every day.</p>
-          </div>
-          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="7">
-            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
-              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">health coverage</div>
-              <div class="flex items-baseline gap-3 mb-1">
-                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">42%</div>
-                <div class="text-ink-dim/30">&rarr;</div>
-                <div class="font-stat text-[1.8rem] text-ink leading-tight">85%</div>
-              </div>
-              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+43pts</div>
-              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Your full health picture. What you have measured, what is missing, what to do next.</p>
-            </div>
-            <p class="text-ink-muted text-[0.85rem] leading-relaxed">What you have, what is missing, what to do next.</p>
-          </div>
+        <div class="forty-pillar">
+          <div class="forty-pillar-rule"></div>
+          <div class="forty-pillar-rank">02</div>
+          <h3 class="forty-pillar-name">HEALTH SPAN</h3>
+          <p class="forty-pillar-desc">How long without chronic disease</p>
         </div>
+        <div class="forty-pillar forty-pillar-peak">
+          <div class="forty-pillar-rule"></div>
+          <div class="forty-pillar-rank">03</div>
+          <h3 class="forty-pillar-name">PEAK SPAN</h3>
+          <p class="forty-pillar-desc">How good you feel at your best</p>
+        </div>
+        <p class="forty-pillars-foot">A 15-minute annual physical won't catch it. <span class="accent">We coach on all three.</span></p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════ HOW IT WORKS TEASER ═══════════════════════ -->
-<section class="bg-bg relative noise px-band py-[clamp(4rem,8vw,6rem)] text-center">
-  <div class="font-label text-coral mb-6 reveal">(the process)</div>
-  <div class="font-display font-bold text-[clamp(1.2rem,2.5vw,1.8rem)] text-ink leading-[1.4] tracking-tight max-w-xl mx-auto mb-8 reveal stagger-1">Sign up. Pick an outcome. Get coached on the one thing that moves the needle. See real changes.</div>
-  <a href="v2/how-it-works.html" class="font-mono text-[0.7rem] text-coral tracking-widest uppercase hover:text-ink transition-colors reveal stagger-2">See how it works &rarr;</a>
-</section>
+<!-- ═══════ COVERAGE — horizontal evidence-frontier bar ═══════ -->
+<section class="coverage">
+  <div class="contain">
+    <div class="section-label reveal">The 40, in context</div>
+    <h2 class="coverage-headline reveal s1">EIGHTY IS<br>TODAY'S CEILING.</h2>
 
-<!-- ═══════════════════════ REAL STORIES ═══════════════════════ -->
-<section class="bg-bg relative noise">
-  <div class="px-band py-band">
-    <div class="font-label text-coral mb-16 text-center reveal">(real people, real patterns)</div>
+    <div class="frontier-wrap reveal s2">
+      <div class="frontier-bar" id="frontier-bar">
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <!-- Today marker (80%) — coral, the only marker -->
+        <div class="bar-marker bar-marker-today" style="left:80%">
+          <div class="marker-label">Today<br>80% &rarr;</div>
+          <div class="marker-line"></div>
+        </div>
 
-      <!-- Story 1: Sleep apnea catch -->
-      <div class="border border-ink-dim/20 rounded-2xl p-7 md:p-8 reveal" style="background: rgba(255,255,255,0.03);">
-        <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">Andrew, 35M</div>
-        <p class="font-display font-bold text-ink text-[1.05rem] tracking-tight leading-[1.35] mb-3">Three weeks in, it flagged possible sleep apnea.</p>
-        <p class="text-[0.8rem] text-ink-muted leading-relaxed">Cross-referenced sleep fragmentation, heart rate patterns, and nocturia frequency. Connected dots a decade of doctor visits missed.</p>
-        <div class="w-8 h-px bg-coral/30 mt-5 mb-3"></div>
-        <p class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">Founder's data. Confirmed by sleep study.</p>
+        <!-- Three structural zones — knowledge map -->
+        <div class="zone zone-foundation" style="width:40%">
+          <span class="zone-label">Foundation</span>
+          <span class="zone-pct">40%</span>
+          <span class="zone-sub">Settled science</span>
+        </div>
+        <div class="zone zone-enhanced" style="width:40%">
+          <span class="zone-label">Enhanced</span>
+          <span class="zone-pct">+40%</span>
+          <span class="zone-sub">Leading edge</span>
+        </div>
+        <div class="zone zone-frontier" style="width:20%">
+          <span class="zone-label">Frontier</span>
+          <span class="zone-pct">20%</span>
+          <span class="zone-sub">Not yet known</span>
+        </div>
+
+        <!-- Personal coral fill — animates 40% → 80% -->
+        <div class="personal-fill" id="personal-fill"></div>
       </div>
 
-      <!-- Story 2: Grigoriy compound pattern -->
-      <div class="border border-ink-dim/20 rounded-2xl p-7 md:p-8 reveal stagger-1" style="background: rgba(255,255,255,0.03);">
-        <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">Grigoriy, 42M</div>
-        <p class="font-display font-bold text-ink text-[1.05rem] tracking-tight leading-[1.35] mb-3">Labs looked normal individually. Together, they told a different story.</p>
-        <p class="text-[0.8rem] text-ink-muted leading-relaxed">Glucose, HDL, triglycerides, and ferritin. Each was in range. Combined, they pointed to early insulin resistance his doctor hadn't flagged. We recommended four follow-up labs.</p>
-        <div class="w-8 h-px bg-coral/30 mt-5 mb-3"></div>
-        <p class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">First external user. Compound pattern detection.</p>
-      </div>
+      <h3 class="frontier-moat reveal s3">THE CEILING MOVES.</h3>
+      <p class="frontier-moat-sub reveal s4">every year, the science expands.<br>your subscription moves with it.</p>
 
-      <!-- Story 3: Insulin trend -->
-      <div class="border border-ink-dim/20 rounded-2xl p-7 md:p-8 reveal stagger-2" style="background: rgba(255,255,255,0.03);">
-        <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">Fasting insulin trend</div>
-        <div class="font-stat text-[1.6rem] text-ink leading-tight mb-3">3.5 &rarr; 8.2 &rarr; 13.9 <span class="text-ink-muted text-xs font-body font-normal">mIU/L</span></div>
-        <p class="text-[0.8rem] text-ink-muted leading-relaxed">Each draw looked "normal" on its own. The trend revealed insulin resistance 10-15 years before a diabetes diagnosis would show up. But only if you're tracking across draws.</p>
-        <div class="w-8 h-px bg-coral/30 mt-5 mb-3"></div>
-        <p class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">Three draws. One trajectory. No single test catches this.</p>
-      </div>
-
-    </div>
-
-    <div class="text-center mt-12">
-      <a href="v2/science.html" class="font-mono text-[0.7rem] text-coral tracking-widest uppercase hover:text-ink transition-colors reveal">See the science &rarr;</a>
+      <p class="frontier-pitch reveal s5">
+        Most start at <strong>40%</strong> &nbsp;·&nbsp; three protocols take you to <strong>80%</strong>
+      </p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════ CTA / SIGNUP ═══════════════════════ -->
-<section id="get-started" class="relative overflow-hidden" style="background: #0e0e11;">
-  <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(ellipse 60% 40% at 50% 40%, rgba(200,60,60,0.04) 0%, transparent 60%);"></div>
-  <div class="accent-line hidden md:block" style="right: 30%; top: 10%; height: 50%;"></div>
-  <div class="px-band py-band relative z-10">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
-      <div class="md:col-span-5 flex flex-col justify-center">
-        <div class="font-label text-coral mb-8 reveal">(get started)</div>
-        <div class="font-massive text-[clamp(2.5rem,6vw,4.5rem)] text-ink mb-6 entrance-clip-up">READY<br>WHEN YOU<br>ARE</div>
-        <p class="text-ink-muted text-[0.9rem] leading-relaxed max-w-sm reveal stagger-2">Just your name and how you want to be reached. Your coach will take it from there.</p>
-        <p class="text-ink-dim text-xs mt-8 reveal stagger-3"><strong class="text-ink-muted font-medium">Free while we grow.</strong> Early members get founding rates locked in for life.</p>
+<!-- ═══════ OUTCOMES INTERLUDE — what you actually want ═══════ -->
+<section class="outcomes-interlude">
+  <div class="contain">
+    <div class="outcomes-label reveal">What you actually want</div>
+    <div class="outcomes-stack">
+      <div class="outcome-group">
+        <h2 class="outcome-line reveal s1">LOOK BETTER</h2>
+        <span class="outcome-sub reveal s1">body composition · skin · posture</span>
       </div>
-      <div class="md:col-span-5 md:col-start-8">
-        <form class="space-y-5 reveal stagger-2" id="coach-form" action="https://formspree.io/f/mjgezrdp" method="POST">
-          <input type="hidden" name="_subject" value="Coach signup - baseline v2">
-          <input type="hidden" name="source" value="landing-v2">
-          <input type="hidden" name="demo_context" id="demo-context" value="">
-          <div>
-            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="First name" required class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
+      <div class="outcome-group">
+        <h2 class="outcome-line reveal s2">FEEL BETTER</h2>
+        <span class="outcome-sub reveal s2">sleep · energy · recovery</span>
+      </div>
+      <div class="outcome-group">
+        <h2 class="outcome-line reveal s3">THINK BETTER</h2>
+        <span class="outcome-sub reveal s3">focus · mood · cognition</span>
+      </div>
+    </div>
+    <p class="outcomes-caption reveal s4">This is what the 40 actually points at.</p>
+  </div>
+</section>
+
+<!-- ═══════ PRIMARY CTA — sign-up at peak engagement ═══════ -->
+<section class="closing" id="signup">
+  <div class="closing-orb"></div>
+  <div class="contain">
+    <!-- Tiny competitor strip above the price card -->
+    <div class="closing-others reveal">
+      <span class="other-item"><span class="other-name">Concierge MD</span><span class="other-val">$5,000+</span></span>
+      <span class="other-divider"></span>
+      <span class="other-item"><span class="other-name">Function Health</span><span class="other-val">$499</span></span>
+      <span class="other-divider"></span>
+      <span class="other-item"><span class="other-name">InsideTracker</span><span class="other-val">$249</span></span>
+      <span class="other-divider"></span>
+      <span class="other-item"><span class="other-name">Personal Trainer</span><span class="other-val">$4,800</span></span>
+    </div>
+
+    <!-- THE CARD — single luminous focal point -->
+    <div class="closing-card reveal s1">
+      <div class="closing-card-inner">
+
+        <div class="closing-left">
+          <div class="closing-tag">$30 / month</div>
+          <h2 class="closing-price">$30<span>/mo</span></h2>
+          <p class="closing-headline">Your full health picture.<br><span class="accent">Coached daily.</span></p>
+          <p class="closing-sub">All your data connected. 40 evidence-ranked metrics. Daily coaching across sleep, labs, weight, and recovery.</p>
+
+          <div class="closing-alt">
+            <div class="closing-alt-label">Rather talk first?</div>
+            <a href="https://cal.com/andrew-deal/discovery" class="closing-alt-link">Book a 20-min intro call &rarr;</a>
           </div>
-          <div>
-            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="phone">Phone number</label>
-            <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
+        </div>
+
+        <div class="closing-right">
+          <form class="closing-form" id="coach-form" action="https://formspree.io/f/mjgezrdp" method="POST">
+            <input type="hidden" name="_subject" value="Coach signup — baseline v6">
+            <input type="hidden" name="source" value="landing-v6">
+            <div class="field"><label for="name">Name</label><input type="text" id="name" name="name" placeholder="First name" required></div>
+            <div class="field"><label for="phone">Phone</label><input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required></div>
+            <div class="field"><label for="channel">Channel</label><input type="text" id="channel" name="channel" list="ch" placeholder="WhatsApp, iMessage, SMS..." required><datalist id="ch"><option value="WhatsApp"><option value="iMessage"><option value="SMS"><option value="Telegram"></datalist></div>
+            <div class="field"><label for="email">Email <span style="opacity:0.4">(optional)</span></label><input type="email" id="email" name="email" placeholder="you@example.com"></div>
+            <button type="submit" class="closing-btn">Get Started</button>
+            <p class="closing-note">Your coach will reach out within 24 hours.</p>
+          </form>
+          <div class="success" id="success"><p>You're in. Your coach will reach out shortly.</p></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ INTERSTITIAL — gate the appendix ═══════ -->
+<section class="interstitial">
+  <div class="contain">
+    <div class="interstitial-inner reveal">
+      <div class="interstitial-divider"></div>
+      <p class="interstitial-text">Still curious?</p>
+      <p class="interstitial-sub">You've seen the terrain.<br>Below: the map of who covers what.</p>
+      <div class="interstitial-arrow">
+        <svg viewBox="0 0 24 32" fill="none">
+          <path d="M 12 2 L 12 28 M 4 20 L 12 28 L 20 20" stroke="rgba(224,64,64,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ COVERAGE STACK — the layer that maps everything together ═══════ -->
+<section class="coverage-stack-section">
+  <div class="contain">
+    <div class="section-label reveal">The layer</div>
+    <h2 class="section-title reveal s1" style="margin-bottom: clamp(1.5rem, 3vw, 2.2rem);">ONE LAYER.<br>ALL YOUR DATA.</h2>
+    <p class="evidence-intro reveal s2">Every player measures part of the picture. Baseline is the only layer that reads them all together.</p>
+
+    <div class="cs-stack reveal s3">
+
+      <!-- LAYER 1 — outcome headers (the why) -->
+      <div class="cs-outcomes">
+        <div class="cs-gutter-l"></div>
+        <div class="cs-outcomes-grid">
+          <div class="cs-outcome">Look better</div>
+          <div class="cs-outcome">Feel better</div>
+          <div class="cs-outcome">Think better</div>
+        </div>
+        <div class="cs-gutter-r"></div>
+      </div>
+
+      <!-- LAYER 2 — six category chips (the data inputs) -->
+      <div class="cs-categories">
+        <div class="cs-gutter-l"></div>
+        <div class="cs-categories-grid">
+          <div class="cs-chip">Labs</div>
+          <div class="cs-chip">Sleep</div>
+          <div class="cs-chip">Body</div>
+          <div class="cs-chip">Movement</div>
+          <div class="cs-chip">Recovery</div>
+          <div class="cs-chip">Behavior</div>
+        </div>
+        <div class="cs-gutter-r"></div>
+      </div>
+
+      <!-- LAYER 3 — competitor coverage rows -->
+      <div class="cs-players">
+        <div class="cs-player">
+          <div class="cs-player-name">Function Health</div>
+          <div class="cs-player-bar">
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg"></div>
           </div>
-          <div>
-            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="channel">Preferred channel</label>
-            <input type="text" id="channel" name="channel" list="channel-list" placeholder="WhatsApp, iMessage, Telegram..." required class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
-            <datalist id="channel-list">
-              <option value="WhatsApp">
-              <option value="iMessage">
-              <option value="SMS">
-              <option value="Telegram">
-            </datalist>
+          <div class="cs-player-price">$499/yr</div>
+        </div>
+        <div class="cs-player">
+          <div class="cs-player-name">InsideTracker</div>
+          <div class="cs-player-bar">
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg"></div>
           </div>
-          <div>
-            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="email">Email <span class="text-ink-dim/50">(optional)</span></label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
+          <div class="cs-player-price">$249/yr</div>
+        </div>
+        <div class="cs-player">
+          <div class="cs-player-name">Concierge MD</div>
+          <div class="cs-player-bar">
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg cs-seg-on"></div>
           </div>
-          <button type="submit" class="cta-btn letter-btn w-full py-4 bg-coral text-white font-mono font-bold text-xs uppercase tracking-[0.3em] rounded-md hover:opacity-90 transition-opacity cursor-pointer border-none mt-3 flex items-center justify-center gap-[0.3em]"><span>I</span><span>'</span><span>M</span><span>&nbsp;</span><span>I</span><span>N</span></button>
-          <p class="text-center text-xs text-ink-dim font-mono mt-1">your coach will reach out within 24 hours.</p>
-          <div class="text-center mt-5 pt-5 border-t border-ink-dim/10">
-            <p class="text-xs text-ink-dim mb-2">Rather talk first?</p>
-            <a href="https://cal.com/andrew-deal/discovery" target="_blank" class="font-mono text-[0.65rem] text-coral tracking-widest uppercase hover:text-ink transition-colors">Book a 20-min strategy call &rarr;</a>
-            <p class="text-[0.6rem] text-ink-dim/50 mt-2">No times work? <a href="mailto:deal.e.andrew@gmail.com" class="text-ink-dim hover:text-ink-muted transition-colors underline underline-offset-2">deal.e.andrew@gmail.com</a></p>
+          <div class="cs-player-price">$5,000+/yr</div>
+        </div>
+        <div class="cs-player">
+          <div class="cs-player-name">Oura / Whoop</div>
+          <div class="cs-player-bar">
+            <div class="cs-seg"></div>
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg"></div>
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg cs-seg-on"></div>
+            <div class="cs-seg"></div>
           </div>
-        </form>
-        <div class="hidden mt-6 p-6 border border-green rounded-lg text-center" id="success" style="background: rgba(45, 138, 78, 0.08);">
-          <p class="text-ink text-sm">You're in. Your coach will reach out shortly.</p>
+          <div class="cs-player-price">$370/yr</div>
         </div>
       </div>
+
+      <!-- LAYER 4 — BASELINE focal point: only complete row, ignites on scroll -->
+      <div class="cs-divider"></div>
+      <div class="cs-baseline">
+        <div class="cs-baseline-name">
+          <span class="cs-baseline-tag-label">THE LAYER</span>
+          <span class="cs-baseline-mark">BASELINE</span>
+        </div>
+        <div class="cs-baseline-bar">
+          <div class="cs-seg cs-seg-baseline"></div>
+          <div class="cs-seg cs-seg-baseline"></div>
+          <div class="cs-seg cs-seg-baseline"></div>
+          <div class="cs-seg cs-seg-baseline"></div>
+          <div class="cs-seg cs-seg-baseline"></div>
+          <div class="cs-seg cs-seg-baseline"></div>
+        </div>
+        <div class="cs-baseline-price">$30<span class="per">/mo</span></div>
+      </div>
+      <p class="cs-baseline-tag">the layer that reads all six, together</p>
+
+      <!-- LAYER 5 — annotation strip -->
+      <div class="cs-annotation">
+        <p>Foundation labs: <strong>$143/yr</strong> · paid direct to your lab provider</p>
+        <p>Baseline: <strong>$30/mo</strong> · the layer that reads them all</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
-<footer class="footer-reveal bg-bg overflow-hidden" id="site-footer" style="visibility: hidden;">
-  <div class="px-band pt-16 md:pt-24 pb-12">
-    <div class="font-massive text-[clamp(5rem,18vw,14rem)] text-ink/[0.06] leading-[0.82] mb-12">BASELINE</div>
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-t border-ink-dim/10 pt-8">
-      <div class="space-y-3">
-        <p class="text-sm text-ink-muted">Built by <a href="https://www.linkedin.com/in/pmederos/" class="text-ink-muted underline underline-offset-4 hover:text-ink transition-colors">Paul Mederos</a> and <a href="https://www.linkedin.com/in/adeal/" class="text-ink-muted underline underline-offset-4 hover:text-ink transition-colors">Andrew Deal</a>.</p>
-        <p class="text-xs text-ink-dim">Scoring engine is <a href="https://github.com/a-deal/kiso" class="text-ink-dim underline underline-offset-2 hover:text-ink-muted transition-colors">open source</a>. <a href="privacy/" class="text-ink-dim underline underline-offset-2 hover:text-ink-muted transition-colors">Privacy policy</a>.</p>
-      </div>
-      <p class="font-mono text-[0.55rem] text-ink-dim/50 tracking-widest uppercase">&copy; 2026 baseline health</p>
-    </div>
+<footer>
+  <div class="contain">
+    <p>Built by <a href="https://www.linkedin.com/in/adeal/">Andrew Deal</a>.</p>
+    <p>Scoring engine is <a href="https://github.com/a-deal/kiso">open source</a>. <a href="privacy/">Privacy</a>. <a href="sms-consent/">SMS consent</a>.</p>
   </div>
 </footer>
-<div id="footer-spacer" style="position: relative; z-index: 0; pointer-events: none;"></div>
 
-<!-- GSAP + ScrollTrigger + Lenis -->
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/lenis@1.3.15/dist/lenis.min.js"></script>
-<script src="v2/shared.js?v=1774889473"></script>
-
-<!-- Page-specific: Outcomes carousel -->
 <script>
-// ——— Outcomes carousel (pinned) ———
-const outcomeNames = document.querySelectorAll('.outcome-name');
-const outcomeCards = document.querySelectorAll('.outcome-card-item');
-const carouselTrack = document.getElementById('outcomes-carousel-track');
-const nameHeight = 60;
-const numOutcomes = outcomeNames.length;
+// Form submission
+const form = document.getElementById('coach-form');
+const success = document.getElementById('success');
+if (form) {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      form.style.display = 'none';
+      success.style.display = 'block';
+    } catch (err) { form.querySelector('.form-btn').textContent = 'Try again'; }
+  });
+}
 
-if (numOutcomes && !isMobile) {
-  const scrollPerOutcome = 600;
-  const totalScroll = numOutcomes * scrollPerOutcome;
-  const outcomeTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#outcomes-pin-wrap',
-      start: 'top 15%',
-      end: () => '+=' + totalScroll,
-      pin: '#outcomes-pin-inner',
-      scrub: 1.5,
+// Scroll reveals
+const obs = new IntersectionObserver(
+  entries => entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  }),
+  { threshold: 0.1 }
+);
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Coverage frontier bar: theatrical load sequence — zones draw, marker drops, fill ignites
+const coverageSection = document.querySelector('.coverage');
+if (coverageSection) {
+  const covObs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) coverageSection.classList.add('lit');
+    }),
+    { threshold: 0.3 }
+  );
+  covObs.observe(coverageSection);
+}
+
+// Forty cloud — two-pass: dim storm everywhere + bright signal arc on the right
+(function() {
+  const group = document.getElementById('forty-cloud-dots');
+  if (!group) return;
+  const cx = 250, cy = 250;
+  function rand(min, max) { return min + Math.random() * (max - min); }
+  function makeDot(x, y, r, isBright) {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', x.toFixed(1));
+    c.setAttribute('cy', y.toFixed(1));
+    c.setAttribute('r', r.toFixed(1));
+    if (isBright) c.setAttribute('class', 'bright');
+    c.style.setProperty('--drift-x', rand(8, 15).toFixed(0) + 'px');
+    c.style.setProperty('--drift-y', rand(8, 15).toFixed(0) + 'px');
+    c.style.setProperty('--drift-delay', rand(0, 8).toFixed(2) + 's');
+    c.style.setProperty('--drift-duration', rand(7, 12).toFixed(1) + 's');
+    return c;
+  }
+  // Pass 1: dim storm dots — 360° scatter, exclusion 80
+  for (let i = 0; i < 60; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const radius = rand(90, 280);
+    const x = cx + radius * Math.cos(angle);
+    const y = cy + radius * Math.sin(angle);
+    if (Math.hypot(x - cx, y - cy) < 80) continue;
+    group.appendChild(makeDot(x, y, rand(1.2, 2.2), false));
+  }
+  // Pass 2: bright signal dots — right hemisphere arc (toward pillars)
+  for (let i = 0; i < 16; i++) {
+    const angleDeg = rand(-75, 75);
+    const angle = angleDeg * Math.PI / 180;
+    const radius = rand(140, 200);
+    const x = cx + radius * Math.cos(angle);
+    const y = cy + radius * Math.sin(angle);
+    group.appendChild(makeDot(x, y, rand(1.8, 2.8), true));
+  }
+})();
+
+// Forty connectors — compute curved SVG paths from cloud to each pillar
+function buildFortyConnectors() {
+  const section = document.querySelector('.forty');
+  const cloud = document.querySelector('.forty-cloud');
+  const svg = document.getElementById('forty-connectors');
+  if (!section || !cloud || !svg) return;
+  const pillars = section.querySelectorAll('.forty-pillar');
+  if (pillars.length !== 3) return;
+  const sRect = section.getBoundingClientRect();
+  svg.setAttribute('viewBox', `0 0 ${sRect.width} ${sRect.height}`);
+  svg.setAttribute('width', sRect.width);
+  svg.setAttribute('height', sRect.height);
+  const cRect = cloud.getBoundingClientRect();
+  const originX = cRect.right - sRect.left - 40;
+  const originY = cRect.top - sRect.top + cRect.height / 2;
+  pillars.forEach((p, i) => {
+    const pRect = p.getBoundingClientRect();
+    const targetX = pRect.left - sRect.left;
+    const targetY = pRect.top - sRect.top + 8;
+    const ctrlX = (originX + targetX) / 2 + 40;
+    const ctrlY = (originY + targetY) / 2;
+    const path = `M ${originX} ${originY} Q ${ctrlX} ${ctrlY} ${targetX} ${targetY}`;
+    const link = document.getElementById(`forty-link-${i+1}`);
+    if (link) {
+      link.setAttribute('d', path);
+      const len = link.getTotalLength();
+      link.style.strokeDasharray = len;
+      link.style.strokeDashoffset = len;
     }
   });
-  const seg = 1;
-  outcomeNames.forEach((nameEl, i) => {
-    const t = i * seg;
-    const span = nameEl.querySelector('span');
-    const card = outcomeCards[i];
-    const prevSpan = i > 0 ? outcomeNames[i - 1].querySelector('span') : null;
-    const prevCard = i > 0 ? outcomeCards[i - 1] : null;
-    if (prevCard) { outcomeTl.to(prevCard, { opacity: 0, y: -20, duration: seg * 0.2, ease: 'none' }, t); }
-    outcomeTl.to(carouselTrack, { y: -(i * nameHeight), duration: seg * 0.25, ease: 'none' }, t);
-    if (span) { outcomeTl.to(span, { color: '#c83c3c', duration: seg * 0.2, ease: 'none' }, t); }
-    if (prevSpan) { outcomeTl.to(prevSpan, { color: 'rgba(240,240,240,0.15)', duration: seg * 0.15, ease: 'none' }, t); }
-    if (card) { outcomeTl.fromTo(card, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: seg * 0.25, ease: 'none' }, t + seg * 0.2); }
-  });
-  const lastSpan = outcomeNames[numOutcomes - 1]?.querySelector('span');
-  const lastCard = outcomeCards[numOutcomes - 1];
-  if (lastSpan) outcomeTl.to(lastSpan, { color: 'rgba(240,240,240,0.15)', duration: 0.3, ease: 'none' }, numOutcomes * seg);
-  if (lastCard) outcomeTl.to(lastCard, { opacity: 0, duration: 0.3, ease: 'none' }, numOutcomes * seg);
-} else if (numOutcomes) {
-  const carousel = document.getElementById('outcomes-carousel');
-  const cardArea = document.getElementById('outcome-card-area');
-  if (carousel) carousel.style.display = 'none';
-  if (cardArea) cardArea.style.display = 'none';
-  const pinInner = document.getElementById('outcomes-pin-inner');
-  if (pinInner) {
-    pinInner.classList.remove('min-h-screen');
-    pinInner.style.minHeight = 'auto';
-    const mobileList = document.createElement('div');
-    mobileList.className = 'space-y-6 w-full px-band py-8';
-    const outcomeLabels = ['SLEEP BETTER','LOSE WEIGHT','MORE ENERGY','BUILD STRENGTH','EAT HEALTHIER','LESS STRESS','SHARPER FOCUS','KNOW MORE'];
-    const outcomeOneLiner = [
-      'The single highest-leverage change for most people.',
-      'Calories, protein, consistency. No crash diets.',
-      'Energy is the output of every system working.',
-      'Volume adjusts with your recovery data.',
-      'One change at a time until it sticks.',
-      'Stress shows up before you feel it.',
-      'Same time in, same time out. Every day.',
-      'What you have, what is missing, what to do next.',
-    ];
-    outcomeCards.forEach((card, i) => {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'reveal py-4 border-b border-ink-dim/10';
-      wrapper.style.opacity = '0';
-      const name = document.createElement('div');
-      name.className = 'font-display font-bold text-coral/60 text-[0.85rem] tracking-tight uppercase mb-1';
-      name.textContent = outcomeLabels[i] || '';
-      const line = document.createElement('p');
-      line.className = 'text-ink text-[0.95rem] leading-relaxed';
-      line.textContent = outcomeOneLiner[i] || '';
-      wrapper.appendChild(name);
-      wrapper.appendChild(line);
-      mobileList.appendChild(wrapper);
-      gsap.to(wrapper, { opacity: 1, duration: 0.6, scrollTrigger: { trigger: wrapper, start: 'top 88%', toggleActions: 'play none none reverse' } });
-    });
-    pinInner.querySelector('.w-full')?.replaceWith(mobileList);
+}
+window.addEventListener('load', buildFortyConnectors);
+window.addEventListener('resize', buildFortyConnectors);
+
+// Forty section: storm → solid → linked phase progression on scroll
+const fortySection = document.querySelector('.forty');
+if (fortySection) {
+  const solidObs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) fortySection.classList.add('is-solid');
+  }), { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
+  solidObs.observe(fortySection);
+
+  const linkObs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) fortySection.classList.add('is-linked');
+  }), { rootMargin: '-55% 0px 0px 0px', threshold: 0 });
+  linkObs.observe(fortySection);
+}
+
+// Coverage Stack: section.lit drives staggered competitor segments
+// THEN baseline segments ignite left-to-right (delays in CSS)
+const csSection = document.querySelector('.coverage-stack-section');
+if (csSection) {
+  const csObs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) csSection.classList.add('lit');
+    }),
+    { threshold: 0.25 }
+  );
+  csObs.observe(csSection);
+}
+
+// Closing section: cascading strikethrough → reveal price card
+const closingSection = document.querySelector('.closing');
+const closingOthers = document.querySelector('.closing-others');
+if (closingSection && closingOthers) {
+  const closingObs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) {
+        closingOthers.classList.add('struck');
+        // Mark the section as done after all strikes complete (~1.6s)
+        setTimeout(() => closingSection.classList.add('struck-done'), 1600);
+      }
+    }),
+    { threshold: 0.25 }
+  );
+  closingObs.observe(closingSection);
+}
+
+// Timeline animations: phase-01 THEN draw, phase-03 line draw + THEM reveal
+const phase01 = document.getElementById('pattern-card');
+const outcomes = document.getElementById('outcomes-stop');
+const straightSvg = document.getElementById('timeline-straight');
+
+if (phase01) {
+  const then01Obs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) phase01.classList.add('themed');
+    }),
+    { threshold: 0.3 }
+  );
+  then01Obs.observe(phase01);
+}
+
+if (outcomes && straightSvg) {
+  const outcomesObs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) {
+        outcomes.classList.add('themed');
+        straightSvg.classList.add('line-drawn');
+      }
+    }),
+    { threshold: 0.2 }
+  );
+  outcomesObs.observe(outcomes);
+
+  // Also start line drawing when diagnose stop enters view (earlier)
+  const diagnose = document.getElementById('diagnose-stop');
+  if (diagnose) {
+    const diagnoseObs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) straightSvg.classList.add('line-drawn');
+      }),
+      { threshold: 0.5 }
+    );
+    diagnoseObs.observe(diagnose);
   }
 }
 
-// Init shared animations
-initSharedAnimations();
-ScrollTrigger.refresh();
-</script>
+// Animate coverage bars on their own observation
+const barObs = new IntersectionObserver(
+  entries => entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.cov-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+    }
+  }),
+  { threshold: 0.3 }
+);
+document.querySelectorAll('.coverage-bars').forEach(el => barObs.observe(el));
 
-<!-- Milo Chat Widget -->
-<button id="milo-fab" aria-label="Chat with Milo">
-  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
-</button>
-<div id="milo-panel">
-  <div id="milo-header">
-    <div>
-      <div class="milo-title">Milo</div>
-      <div class="milo-label">demo</div>
-    </div>
-    <button id="milo-close">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-  </div>
-  <div id="milo-messages">
-    <div class="milo-msg system">this is a demo. your data isn't saved.</div>
-    <div class="milo-typing" id="milo-typing"><span></span><span></span><span></span></div>
-  </div>
-  <div id="milo-input-wrap">
-    <button id="milo-mic" aria-label="Voice input" style="display:none;">
-      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-    </button>
-    <input type="text" id="milo-input" placeholder="Ask Milo anything about your health..." autocomplete="off">
-    <button id="milo-send" disabled>
-      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-    </button>
-  </div>
-</div>
+// Nav scroll
+window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60));
+
+// Live MST lines between particles — animate in, solidify on scroll
+(function() {
+  const svg = document.getElementById('hero-lines');
+  const dotField = document.getElementById('hero-particles');
+  const container = dotField.closest('.hero-stagger');
+  const dots = dotField.querySelectorAll('.particle');
+  let scrollSolidity = 0;
+
+  function getCenter(el) {
+    const dot = el.querySelector('.dot') || el;
+    const r = dot.getBoundingClientRect();
+    const cr = dotField.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - cr.left, y: r.top + r.height / 2 - cr.top };
+  }
+
+  function mst(pts) {
+    const n = pts.length;
+    if (n < 2) return [];
+    const inTree = new Array(n).fill(false);
+    const cost = new Array(n).fill(Infinity);
+    const parent = new Array(n).fill(-1);
+    const edges = [];
+    cost[0] = 0;
+    for (let i = 0; i < n; i++) {
+      let u = -1;
+      for (let j = 0; j < n; j++)
+        if (!inTree[j] && (u === -1 || cost[j] < cost[u])) u = j;
+      inTree[u] = true;
+      if (parent[u] !== -1) edges.push([parent[u], u]);
+      for (let v = 0; v < n; v++) {
+        if (inTree[v]) continue;
+        const d = (pts[u].x - pts[v].x) ** 2 + (pts[u].y - pts[v].y) ** 2;
+        if (d < cost[v]) { cost[v] = d; parent[v] = u; }
+      }
+    }
+    return edges;
+  }
+
+  const patternCard = document.getElementById('pattern-card-inner');
+
+  // Scroll drives solidification: 0 = dashed, 1 = solid
+  window.addEventListener('scroll', () => {
+    const rect = container.getBoundingClientRect();
+    const progress = Math.min(1, Math.max(0, -rect.top / (rect.height * 0.5)));
+    scrollSolidity = progress;
+
+    // Add solidified class for label brightening
+    container.classList.toggle('solidified', progress > 0.7);
+
+    // Activate pattern card when dots are mostly connected
+    if (patternCard) {
+      patternCard.classList.toggle('card-active', progress > 0.8);
+    }
+  });
+
+  const cardInner = document.getElementById('pattern-card-inner');
+
+  function draw() {
+    const cr = dotField.getBoundingClientRect();
+    const totalH = cr.height + 320; // Reserve space for card below
+    svg.setAttribute('viewBox', `0 0 ${cr.width} ${totalH}`);
+    svg.style.width = cr.width + 'px';
+    svg.style.height = totalH + 'px';
+
+    const pts = Array.from(dots).map(getCenter);
+    const edges = mst(pts);
+
+    // Interpolate: dashed → solid
+    const dashLen = 3 * (1 - scrollSolidity) + 10 * scrollSolidity;
+    const gapLen = 4 * (1 - scrollSolidity);
+    const opacity = 0.18 + scrollSolidity * 0.35;
+    const width = 1 + scrollSolidity * 0.8;
+
+    let html = '';
+    edges.forEach(([a, b]) => {
+      const p1 = pts[a], p2 = pts[b];
+      html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"
+        stroke="rgba(224,64,64,${opacity})" stroke-width="${width}"
+        stroke-dasharray="${dashLen} ${gapLen}"
+        stroke-linecap="round"/>`;
+    });
+
+    // Draw the dots themselves
+    pts.forEach(p => {
+      const r = 3 + scrollSolidity * 1.5;
+      const dotOpacity = 0.4 + scrollSolidity * 0.5;
+      html += `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="rgba(224,64,64,${dotOpacity})"/>`;
+      if (scrollSolidity > 0.5) {
+        html += `<circle cx="${p.x}" cy="${p.y}" r="${r * 2.5}" fill="rgba(224,64,64,${0.08 * scrollSolidity})"/>`;
+      }
+    });
+
+    // Once dots are mostly connected, draw lines from bottom-most dots into the card
+    if (scrollSolidity > 0.6 && cardInner) {
+      const cardRect = cardInner.getBoundingClientRect();
+      const cardTopX = cardRect.left + cardRect.width / 2 - cr.left;
+      const cardTopY = cardRect.top - cr.top;
+
+      // Find 3 dots closest to the card (highest y values)
+      const sorted = [...pts].map((p, i) => ({ p, i })).sort((a, b) => b.p.y - a.p.y);
+      const leadIns = sorted.slice(0, 3);
+
+      const leadOpacity = (scrollSolidity - 0.6) * 2.5; // 0 → 1 as solidity goes 0.6 → 1
+      leadIns.forEach(({ p }) => {
+        // Curved path from dot to card
+        const midY = (p.y + cardTopY) / 2;
+        html += `<path d="M${p.x},${p.y} Q${p.x},${midY} ${cardTopX},${cardTopY}"
+          stroke="rgba(224,64,64,${leadOpacity * 0.35})" stroke-width="${1.2 * leadOpacity}"
+          fill="none" stroke-linecap="round"/>`;
+      });
+    }
+
+    svg.innerHTML = html;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+</script>
 
 </body>
 </html>
