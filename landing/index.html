@@ -903,6 +903,10 @@ nav.scrolled {
 .forty-cloud-dots circle.bright {
   fill: rgba(224,64,64,0);
   filter: drop-shadow(0 0 5px rgba(224,64,64,0));
+  /* Signal dots stay static so connector lines stay perfectly anchored.
+     The 60 dim drift dots still wander for ambience. Drift is noise,
+     stillness is signal. */
+  animation: none;
   transition: fill 1.4s cubic-bezier(0.16, 1, 0.3, 1),
               filter 1.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -927,20 +931,32 @@ nav.scrolled {
   z-index: 1;
   overflow: visible;
 }
+/* Constellation edges: hairline internal connections within each bundle
+   (MST), drawn first. Outer edges override with a heavier stroke and
+   a slightly delayed/longer transition so they read as the payoff. */
 .forty-link {
-  stroke: rgba(224, 64, 64, 0.18);
-  stroke-width: 0.6;
+  stroke: rgba(224, 64, 64, 0.22);
+  stroke-width: 0.5;
   fill: none;
-  filter: drop-shadow(0 0 3px rgba(224, 64, 64, 0.18));
-  transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 0 2px rgba(224, 64, 64, 0.18));
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.forty-link.outer {
+  stroke: rgba(224, 64, 64, 0.55);
+  stroke-width: 1;
+  filter: drop-shadow(0 0 4px rgba(224, 64, 64, 0.4));
+  transition-duration: 1.6s;
 }
 .forty.is-linked .forty-link {
   stroke-dashoffset: 0 !important;
-  /* Per-line cascade: 28ms stagger × up to 40 lines = ~1.1s max delay.
-     Combined with the 1.4s transition, total draw completes in ~2.5s
-     from the moment is-linked is toggled. Reads as "constellation
-     lighting up in sequence" without any rAF/scroll listeners. */
-  transition-delay: calc(var(--i, 0) * 28ms);
+  /* Constellation stagger: 22ms × ~37 MST edges = ~814ms max delay.
+     Transition 1.2s → constellation fully drawn ~2.0s after trigger. */
+  transition-delay: calc(var(--i, 0) * 22ms);
+}
+.forty.is-linked .forty-link.outer {
+  /* Outer lines wait an extra 300ms so the constellation forms first,
+     then the 3 outer hairlines extend out to the pillars as a payoff. */
+  transition-delay: calc(var(--i, 0) * 22ms + 300ms);
 }
 
 /* Phase 1 → 2: solidification */
@@ -4118,17 +4134,43 @@ const fortyBrightDots = []; // {x, y, pillarIdx} in cloud viewbox coords (0-500)
   }
   brights.sort((a, b) => a.y - b.y);
   brights.forEach((b, i) => {
-    // 14/13/13 bucket: first 14 → LONGEVITY (0), next 13 → HEALTH SPAN (1),
-    // last 13 → PEAK SPAN (2). Upper cluster fans to top pillar, etc.
-    const pillarIdx = i < 14 ? 0 : i < 27 ? 1 : 2;
+    // 15/15/10 bucket: first 15 → LONGEVITY (0), next 15 → HEALTH SPAN (1),
+    // last 10 → PEAK SPAN (2). Upper cluster fans to top pillar, etc.
+    const pillarIdx = i < 15 ? 0 : i < 30 ? 1 : 2;
     group.appendChild(makeDot(b.x, b.y, b.r, true));
     fortyBrightDots.push({ x: b.x, y: b.y, pillarIdx });
   });
 })();
 
-// Forty connectors — 40 individual curved SVG paths, one per bright dot,
-// each terminating at its assigned pillar. Clears + rebuilds on load/resize.
-// The --i custom property drives the per-line cascade stagger via CSS.
+// Prim's MST on a small point set — returns edges as [i, j] index pairs.
+// Used by buildFortyConnectors() to compute intra-bundle constellation edges.
+function mstEdges(nodes) {
+  const n = nodes.length;
+  if (n < 2) return [];
+  const inTree = new Set([0]);
+  const edges = [];
+  while (inTree.size < n) {
+    let bestA = -1, bestB = -1, bestD = Infinity;
+    for (const a of inTree) {
+      for (let b = 0; b < n; b++) {
+        if (inTree.has(b)) continue;
+        const d = Math.hypot(nodes[a].x - nodes[b].x, nodes[a].y - nodes[b].y);
+        if (d < bestD) { bestD = d; bestA = a; bestB = b; }
+      }
+    }
+    edges.push([bestA, bestB]);
+    inTree.add(bestB);
+  }
+  return edges;
+}
+
+// Forty connectors — constellation architecture.
+// Phase 1: intra-bundle MST edges (15+15+10 nodes → 14+14+9 = 37 edges).
+//          Thin, short segments that connect dots within each pillar bundle.
+// Phase 2: 3 outer edges, one per bundle, from the bundle's rightmost dot
+//          (closest to its pillar) out to the pillar target. Heavier stroke.
+// Bright dots are static (no drift animation), so line endpoints stay
+// pixel-accurate against the dot positions at all times.
 function buildFortyConnectors() {
   const section = document.querySelector('.forty');
   const cloud = document.querySelector('.forty-cloud');
@@ -4143,7 +4185,7 @@ function buildFortyConnectors() {
   svg.setAttribute('width', sRect.width);
   svg.setAttribute('height', sRect.height);
 
-  // Cache pillar target points (left edge, 8px below top for visual anchor).
+  // Pillar target points (left edge, 8px below top).
   const pillarTargets = Array.from(pillars).map(p => {
     const pRect = p.getBoundingClientRect();
     return { x: pRect.left - sRect.left, y: pRect.top - sRect.top + 8 };
@@ -4151,32 +4193,48 @@ function buildFortyConnectors() {
 
   // Viewbox (0-500) to on-page scale factor.
   const scale = cRect.width / 500;
-  // Preserve mid-draw state on resize: if already linked, skip the intro.
   const isLinked = section.classList.contains('is-linked');
 
-  // Rebuild from scratch each call — idempotent on resize.
+  // Convert bright dots to section-local coords, grouped by pillar bundle.
+  const bundles = [[], [], []];
+  fortyBrightDots.forEach(d => {
+    bundles[d.pillarIdx].push({
+      x: cRect.left - sRect.left + (d.x * scale),
+      y: cRect.top - sRect.top + (d.y * scale),
+    });
+  });
+
   svg.innerHTML = '';
+  let lineIdx = 0;
 
-  fortyBrightDots.forEach((dot, i) => {
-    // Dot position in section-local coords.
-    const dotX = cRect.left - sRect.left + (dot.x * scale);
-    const dotY = cRect.top - sRect.top + (dot.y * scale);
-    const target = pillarTargets[dot.pillarIdx];
-
-    // Curved bezier with outward-pushed control point for arc feel.
-    const ctrlX = (dotX + target.x) / 2 + 30;
-    const ctrlY = (dotY + target.y) / 2;
-    const d = `M ${dotX.toFixed(1)} ${dotY.toFixed(1)} Q ${ctrlX.toFixed(1)} ${ctrlY.toFixed(1)} ${target.x.toFixed(1)} ${target.y.toFixed(1)}`;
-
+  const addPath = (d, isOuter) => {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('class', 'forty-link');
+    path.setAttribute('class', isOuter ? 'forty-link outer' : 'forty-link');
     path.setAttribute('d', d);
-    path.style.setProperty('--i', i);
+    path.style.setProperty('--i', lineIdx++);
     svg.appendChild(path);
-
     const len = path.getTotalLength();
     path.style.strokeDasharray = len;
     path.style.strokeDashoffset = isLinked ? 0 : len;
+  };
+
+  // Phase 1: constellation edges (straight MST segments within each bundle).
+  bundles.forEach(bundle => {
+    const edges = mstEdges(bundle);
+    edges.forEach(([a, b]) => {
+      const na = bundle[a], nb = bundle[b];
+      addPath(`M ${na.x.toFixed(1)} ${na.y.toFixed(1)} L ${nb.x.toFixed(1)} ${nb.y.toFixed(1)}`, false);
+    });
+  });
+
+  // Phase 2: outer payoff lines — rightmost dot per bundle to its pillar.
+  bundles.forEach((bundle, bIdx) => {
+    if (!bundle.length) return;
+    const anchor = bundle.reduce((a, b) => (b.x > a.x ? b : a));
+    const target = pillarTargets[bIdx];
+    const ctrlX = (anchor.x + target.x) / 2 + 40;
+    const ctrlY = (anchor.y + target.y) / 2;
+    addPath(`M ${anchor.x.toFixed(1)} ${anchor.y.toFixed(1)} Q ${ctrlX.toFixed(1)} ${ctrlY.toFixed(1)} ${target.x.toFixed(1)} ${target.y.toFixed(1)}`, true);
   });
 }
 window.addEventListener('load', buildFortyConnectors);
