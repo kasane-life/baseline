@@ -712,6 +712,30 @@ nav.scrolled {
 .hero-tagline strong { color: var(--ink); font-weight: 600; }
 
 /* Hero subtitle — what you're buying, in one breath */
+.hero-promise {
+  position: relative;
+  z-index: 5;
+  font-family: var(--body);
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  max-width: 620px;
+  margin: clamp(1.25rem, 2.5vw, 2rem) 0 clamp(0.5rem, 1vw, 0.75rem) clamp(1.5rem, 5vw, 5rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+}
+.promise-beat {
+  display: inline-block;
+}
+
+.subtitle-dots {
+  color: var(--coral);
+  font-weight: 500;
+}
+
 .hero-subtitle {
   position: relative;
   isolation: isolate;
@@ -723,7 +747,7 @@ nav.scrolled {
   letter-spacing: 0.01em;
   color: rgba(238, 238, 240, 0.78);
   max-width: 560px;
-  margin: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(2rem, 4vw, 3rem) clamp(1.5rem, 5vw, 5rem);
+  margin: clamp(0.5rem, 1vw, 0.75rem) 0 clamp(2rem, 4vw, 3rem) clamp(1.5rem, 5vw, 5rem);
 }
 .hero-subtitle::before {
   content: '';
@@ -3122,7 +3146,33 @@ nav.scrolled {
   line-height: 1.1;
   letter-spacing: -0.03em;
   text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.closing-payoff {
+  font-family: var(--body);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 34ch;
   margin-bottom: 1.25rem;
+  position: relative;
+  isolation: isolate;
+}
+.closing-payoff::before {
+  content: '';
+  position: absolute;
+  inset: -1.5rem -2rem;
+  background: radial-gradient(
+    ellipse 75% 120% at 30% 50%,
+    rgba(224, 64, 64, 0.12) 0%,
+    rgba(224, 64, 64, 0.04) 45%,
+    transparent 75%
+  );
+  filter: blur(24px);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .closing-headline .accent { color: var(--coral); }
@@ -3585,9 +3635,16 @@ footer a:hover { color: var(--ink-mid); }
 
     </div>
 
-    <!-- Hero subtitle — what you're actually buying, in one breath -->
-    <p class="hero-subtitle reveal s1">
-      <strong>A real person</strong> reads your sleep, labs, and wearables. Every morning.
+    <!-- Hero promise — the felt outcome triple, staggered in -->
+    <p class="hero-promise">
+      <span class="promise-beat reveal s2">Think better.</span>
+      <span class="promise-beat reveal s3">Feel better.</span>
+      <span class="promise-beat reveal s4">Look better.</span>
+    </p>
+
+    <!-- Hero subtitle — mechanism that delivers the promise -->
+    <p class="hero-subtitle reveal s5">
+      A human reads your labs, sleep, and wearables every morning, then hands you the one change that raises <span class="subtitle-dots">your dots</span> today.
     </p>
 
     <!-- ── Timeline: three phases, each with its narrative word ── -->
@@ -3825,7 +3882,8 @@ footer a:hover { color: var(--ink-mid); }
         <div class="closing-left">
           <div class="closing-tag">$30 / month</div>
           <h2 class="closing-price">$30<span>/mo</span></h2>
-          <p class="closing-headline">A real person.<br>Reads your data.<br><span class="accent">Every morning.</span></p>
+          <p class="closing-headline">Bite-sized changes.<br>Coached by real humans.</p>
+          <p class="closing-payoff">Before you know it, you'll think, feel, and look like you never have before.</p>
           <p class="closing-sub">No app. No dashboard. No wellness score.</p>
 
           <div class="closing-alt">
