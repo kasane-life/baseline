@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500" width="1500" height="500">
+  <defs>
+    <linearGradient id="shimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#eeeef0"/>
+      <stop offset="42%"  stop-color="#eeeef0"/>
+      <stop offset="50%"  stop-color="#ff3838"/>
+      <stop offset="58%"  stop-color="#eeeef0"/>
+      <stop offset="100%" stop-color="#eeeef0"/>
+    </linearGradient>
+
+    <radialGradient id="orbTop" cx="50%" cy="0%" r="75%" fx="50%" fy="0%">
+      <stop offset="0%"  stop-color="#ff3838" stop-opacity="0.11"/>
+      <stop offset="55%" stop-color="#ff3838" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="anchorGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#ff3838" stop-opacity="0.80"/>
+      <stop offset="30%" stop-color="#ff3838" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#ff3838" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
+      <stop offset="0%"  stop-color="#000000" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.35"/>
+    </radialGradient>
+
+    <filter id="noise" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.035 0"/>
+    </filter>
+
+    <linearGradient id="flowSleep" x1="1020" y1="130" x2="1408" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#9595a8" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#9595a8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ff3838" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="flowLdl" x1="1115" y1="100" x2="1408" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#9595a8" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#9595a8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ff3838" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="flowHrv" x1="1035" y1="210" x2="1408" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#9595a8" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#9595a8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ff3838" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="flowRhr" x1="1015" y1="305" x2="1408" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#9595a8" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#9595a8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ff3838" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="flowVo2" x1="1115" y1="355" x2="1408" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#9595a8" stop-opacity="0.20"/>
+      <stop offset="60%" stop-color="#9595a8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ff3838" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1500" height="500" fill="#0b0a0d"/>
+  <rect width="1500" height="500" fill="url(#orbTop)"/>
+  <rect width="1500" height="500" filter="url(#noise)"/>
+
+  <!-- Constellation -->
+  <g fill="#9595a8">
+    <circle cx="960"  cy="160" r="1" opacity="0.25"/>
+    <circle cx="975"  cy="260" r="1" opacity="0.22"/>
+    <circle cx="950"  cy="380" r="1" opacity="0.22"/>
+    <circle cx="1080" cy="80"  r="1" opacity="0.25"/>
+    <circle cx="1075" cy="420" r="1" opacity="0.22"/>
+    <circle cx="1200" cy="90"  r="1" opacity="0.25"/>
+    <circle cx="1225" cy="410" r="1" opacity="0.22"/>
+    <circle cx="1300" cy="110" r="1" opacity="0.25"/>
+    <circle cx="1320" cy="400" r="1" opacity="0.22"/>
+    <circle cx="1385" cy="100" r="1" opacity="0.25"/>
+    <circle cx="1380" cy="390" r="1" opacity="0.22"/>
+    <circle cx="1445" cy="160" r="1" opacity="0.22"/>
+    <circle cx="1445" cy="330" r="1" opacity="0.22"/>
+  </g>
+
+  <g stroke-width="1.5" fill="none" stroke-linecap="round">
+    <line x1="1020" y1="130" x2="1408" y2="240" stroke="url(#flowSleep)"/>
+    <line x1="1115" y1="100" x2="1408" y2="240" stroke="url(#flowLdl)"/>
+    <line x1="1035" y1="210" x2="1408" y2="240" stroke="url(#flowHrv)"/>
+    <line x1="1015" y1="305" x2="1408" y2="240" stroke="url(#flowRhr)"/>
+    <line x1="1115" y1="355" x2="1408" y2="240" stroke="url(#flowVo2)"/>
+  </g>
+
+  <!-- Metric dots -->
+  <g fill="#e6e6f0">
+    <circle cx="1020" cy="130" r="2.8"/>
+    <circle cx="1115" cy="100" r="2.8"/>
+    <circle cx="1035" cy="210" r="2.8"/>
+    <circle cx="1015" cy="305" r="2.8"/>
+    <circle cx="1115" cy="355" r="2.8"/>
+  </g>
+  <g font-family="JetBrains Mono Medium" font-size="11" fill="#a5a8b8" letter-spacing="1.6">
+    <text x="1037" y="134">SLEEP</text>
+    <text x="1130" y="104">LDL</text>
+    <text x="1052" y="214">HRV</text>
+    <text x="1032" y="309">RHR</text>
+    <text x="1132" y="359">VO2</text>
+  </g>
+
+  <!-- Anchor: 2 layers -->
+  <circle cx="1408" cy="240" r="56" fill="url(#anchorGlow)"/>
+  <circle cx="1408" cy="240" r="6.5" fill="#ff5050"/>
+  <circle cx="1408" cy="240" r="2.2" fill="#ffffff"/>
+
+  <rect width="1500" height="500" fill="url(#vignette)"/>
+
+  <!-- ═════════ TEXT ═════════ -->
+  <!-- Display headline: promise-first, echoes the hero's "Look your best. Feel lighter. Think clearer." -->
+  <text x="330" y="278" font-family="Anybody Black" font-size="82" fill="url(#shimmer)" letter-spacing="-3.2">LOOK YOUR BEST.</text>
+  <text x="330" y="342" font-family="Anybody Black" font-size="46" fill="#eeeef0" fill-opacity="0.45" letter-spacing="-1.8">FEEL LIGHTER.  THINK CLEARER.</text>
+
+  <!-- Subtag: scope, frequency, price — three qualifying facts for cold traffic. -->
+  <text x="330" y="388" font-family="JetBrains Mono Medium" font-size="12" fill="#a5a8b8" letter-spacing="2.6">40 METRICS  ·  DAILY COACHING  ·  $30 / MO</text>
+
+  <!-- Wordmark: bottom-right only -->
+  <text x="1420" y="470" font-family="Anybody Black" font-size="26" text-anchor="end" fill="#eeeef0" letter-spacing="-0.8">baseline<tspan fill="#ff3838">.</tspan></text>
+</svg>
