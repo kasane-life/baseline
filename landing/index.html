@@ -773,12 +773,10 @@ nav.scrolled {
   color: var(--ink);
   max-width: 620px;
   margin: clamp(1.25rem, 2.5vw, 2rem) 0 clamp(0.5rem, 1vw, 0.75rem) clamp(1.5rem, 5vw, 5rem);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4em;
+  display: block;
 }
 .promise-beat {
-  display: inline-block;
+  display: block;
 }
 
 .subtitle-dots {
@@ -3613,14 +3611,12 @@ footer a:hover { color: var(--ink-mid); }
     text-wrap: balance;
   }
 
-  /* 2. Hero-promise triple: one beat per line, let the staggered reveal land.
-     Parent is a wrapping flex row on desktop — collapse it to block on mobile. */
+  /* 2. Hero-promise triple: scale up on mobile for presence.
+     (display: block is already set on the base rule since beats stack on all viewports.) */
   .hero-promise {
-    display: block;
     font-size: clamp(1.55rem, 6vw, 2rem);
     line-height: 1.25;
   }
-  .promise-beat { display: block; }
 
   /* 3. Particle field: hide labels, let dots become pure ambient light. */
   .particle .dot-label { display: none; }
@@ -3688,9 +3684,9 @@ footer a:hover { color: var(--ink-mid); }
 
     <!-- Hero promise — the felt outcome triple, staggered in -->
     <p class="hero-promise">
-      <span class="promise-beat reveal s2">Look your best.</span>
-      <span class="promise-beat reveal s3">Feel lighter.</span>
-      <span class="promise-beat reveal s4">Think clearer.</span>
+      <span class="promise-beat reveal s2">Look your best</span>
+      <span class="promise-beat reveal s3">Feel lighter</span>
+      <span class="promise-beat reveal s4">Think clearer</span>
     </p>
 
     <!-- Hero subtitle — mechanism that delivers the promise -->
