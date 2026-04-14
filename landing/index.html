@@ -125,6 +125,60 @@ nav, section, footer { position: relative; z-index: 2; }
 .s4 { transition-delay: 0.32s; }
 .s5 { transition-delay: 0.4s; }
 
+/* ── .ui-label consolidation: the shared typographic treatment for all
+   tracked labels and tabular-numeric runs. One edit here propagates
+   to all 46 rules below. */
+.nav-nudge,
+.nav-cta,
+.particle .dot-label,
+.phase-label,
+.hero-subtitle,
+.paradigm-card-label,
+.paradigm-list .p-rank,
+.forty-pillar-rank,
+.zone-label,
+.zone-sub,
+.bar-marker .marker-label,
+.cov-bar .cov-name,
+.cov-bar .cov-pct,
+.outcomes-label,
+.outcome-sub,
+.outcomes-caption,
+.coach-tag,
+.coach-metrics,
+.cs-outcome,
+.cs-chip,
+.cs-player-price,
+.cs-baseline-tag-label,
+.cs-baseline-price,
+.cs-baseline-tag,
+.cs-annotation p,
+.clarifier-tag,
+.metrics-card-label,
+.metric-cost,
+.founder-label,
+.founder-quote,
+.founder-sig,
+.interstitial-sub,
+.tier-price-label,
+.tier-foundation-foot .clarifier-tag,
+.tier-examples,
+.insulin-callout,
+.compete-pct,
+.compete-price,
+.compare-table th,
+.compare-table td.price-col,
+.gap-product,
+.other-item,
+.closing-tag,
+.closing-alt-label,
+.closing-form label,
+.closing-note {
+  font-family: var(--label);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'cv11' 1;
+}
+
 /* ── NAV ── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -166,7 +220,6 @@ nav.scrolled {
   right: 0;
   top: 50%;
   transform: translateY(calc(-50% + 6px));
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -220,7 +273,6 @@ nav.scrolled {
   color: rgba(255, 210, 210, 0.95) !important;
   padding: 0.7rem 1.5rem;
   border-radius: 100px;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-weight: 600;
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -345,7 +397,6 @@ nav.scrolled {
 }
 
 .particle .dot-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -495,7 +546,6 @@ nav.scrolled {
 }
 
 .phase-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.16em;
@@ -740,7 +790,6 @@ nav.scrolled {
   position: relative;
   isolation: isolate;
   z-index: 5;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: clamp(0.85rem, 1.3vw, 1rem);
   font-weight: 400;
   line-height: 1.7;
@@ -1068,7 +1117,6 @@ nav.scrolled {
 }
 
 .paradigm-card-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.20em;
@@ -1094,7 +1142,6 @@ nav.scrolled {
 .paradigm-list li:last-child { border-bottom: none; }
 
 .paradigm-list .p-rank {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.55rem;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -1154,7 +1201,6 @@ nav.scrolled {
   background: linear-gradient(90deg, rgba(224,64,64,0.5) 0%, transparent 100%);
 }
 .forty-pillar-rank {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -1293,7 +1339,6 @@ nav.scrolled {
 }
 
 .zone-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.20em;
@@ -1325,7 +1370,6 @@ nav.scrolled {
 }
 
 .zone-sub {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.55rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1386,7 +1430,6 @@ nav.scrolled {
   z-index: 3;
 }
 .bar-marker .marker-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.55rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -1474,7 +1517,7 @@ nav.scrolled {
 }
 
 .cov-bar .cov-name {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1; font-size: 0.7rem;
+  font-size: 0.7rem;
   color: var(--ink-dim); width: 110px; flex-shrink: 0;
   text-align: right; letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1537,7 +1580,7 @@ nav.scrolled {
 }
 
 .cov-bar .cov-pct {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1; font-size: 0.7rem;
+  font-size: 0.7rem;
   color: var(--ink); width: 40px;
   font-weight: 500;
 }
@@ -1580,7 +1623,6 @@ nav.scrolled {
 }
 
 .outcomes-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.2em;
@@ -1643,7 +1685,6 @@ nav.scrolled {
 
 .outcome-sub {
   display: block;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.22em;
@@ -1653,7 +1694,6 @@ nav.scrolled {
 }
 
 .outcomes-caption {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   color: var(--ink-mid);
@@ -1695,7 +1735,6 @@ nav.scrolled {
 }
 .coach-head { display: flex; flex-direction: column; gap: 0.5rem; }
 .coach-tag {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -1718,7 +1757,6 @@ nav.scrolled {
 }
 .coach-desc strong { color: var(--ink); font-weight: 600; }
 .coach-metrics {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1767,7 +1805,6 @@ nav.scrolled {
 }
 
 .cs-outcome {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.20em;
@@ -1787,7 +1824,6 @@ nav.scrolled {
   background: linear-gradient(180deg, rgba(224,64,64,0.4) 0%, transparent 100%);
 }
 .cs-chip {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -1850,7 +1886,6 @@ nav.scrolled {
   transition: opacity 0.55s ease-out;
 }
 .cs-player-price {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   color: rgba(238,238,240,0.55);
@@ -1916,7 +1951,6 @@ nav.scrolled {
 }
 .cs-baseline-tag-label {
   display: block;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.5rem;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -1959,7 +1993,6 @@ nav.scrolled {
 .coverage-stack-section.lit .cs-seg-baseline:nth-child(5) { transition-delay: 1.68s; }
 .coverage-stack-section.lit .cs-seg-baseline:nth-child(6) { transition-delay: 1.80s; }
 .cs-baseline-price {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.95rem;
   letter-spacing: -0.01em;
   color: var(--coral);
@@ -1975,7 +2008,6 @@ nav.scrolled {
 }
 .cs-baseline-tag {
   margin: 0.9rem 0 0;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1989,7 +2021,6 @@ nav.scrolled {
   text-align: center;
 }
 .cs-annotation p {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   color: rgba(238,238,240,0.5);
@@ -2156,7 +2187,6 @@ nav.scrolled {
 }
 
 .clarifier-tag {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -2192,7 +2222,6 @@ nav.scrolled {
 }
 
 .metrics-card-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.20em;
@@ -2239,7 +2268,6 @@ nav.scrolled {
 }
 
 .metric-cost {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.72rem;
   color: var(--ink-mid);
   text-align: right;
@@ -2301,7 +2329,6 @@ nav.scrolled {
   position: relative;
 }
 .founder-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.22em;
@@ -2310,7 +2337,6 @@ nav.scrolled {
   margin-bottom: 1.2rem;
 }
 .founder-quote {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-weight: 400;
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   line-height: 1.7;
@@ -2324,7 +2350,6 @@ nav.scrolled {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -2381,7 +2406,6 @@ nav.scrolled {
 }
 
 .interstitial-sub {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -2527,7 +2551,6 @@ nav.scrolled {
 }
 
 .tier-price-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.6rem;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -2555,7 +2578,6 @@ nav.scrolled {
 }
 
 .tier-foundation-foot .clarifier-tag {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -2608,7 +2630,7 @@ nav.scrolled {
 .tier-examples {
   margin-top: 1rem; padding-top: 1rem;
   border-top: 1px solid rgba(255,255,255,0.06);
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1; font-size: 0.72rem;
+  font-size: 0.72rem;
   color: var(--ink-dim); line-height: 1.8;
 }
 
@@ -2710,7 +2732,7 @@ nav.scrolled {
   background: var(--coral-dim);
   border-left: 2px solid var(--coral);
   border-radius: 0 6px 6px 0;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1; font-size: 0.82rem;
+  font-size: 0.82rem;
   color: var(--ink-mid); line-height: 1.7;
 }
 
@@ -2788,7 +2810,6 @@ nav.scrolled {
 }
 
 .compete-pct {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.78rem;
   color: var(--ink-dim);
   text-align: right;
@@ -2796,7 +2817,6 @@ nav.scrolled {
 }
 
 .compete-price {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.78rem;
   color: var(--ink-dim);
   text-align: right;
@@ -2868,7 +2888,7 @@ nav.scrolled {
 .compare-table tr:last-child td { border-bottom: none; }
 
 .compare-table th {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1; font-size: 0.6rem; font-weight: 500;
+  font-size: 0.6rem; font-weight: 500;
   color: var(--ink-dim); letter-spacing: 0.14em; text-transform: uppercase;
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -2883,7 +2903,6 @@ nav.scrolled {
 }
 
 .compare-table td.price-col {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.82rem;
   color: var(--ink-dim);
 }
@@ -2944,7 +2963,7 @@ nav.scrolled {
 }
 
 .gap-product {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1; font-size: 0.65rem; font-weight: 500;
+  font-size: 0.65rem; font-weight: 500;
   color: var(--ink-dim); letter-spacing: 0.1em; text-transform: uppercase;
   margin-bottom: 0.5rem;
 }
@@ -2997,7 +3016,6 @@ nav.scrolled {
 
 .other-item {
   display: flex; align-items: baseline; gap: 0.5rem;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
 }
 
 .other-name {
@@ -3101,7 +3119,6 @@ nav.scrolled {
 }
 
 .closing-tag {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.20em;
@@ -3193,7 +3210,6 @@ nav.scrolled {
 }
 
 .closing-alt-label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.6rem;
   font-weight: 500;
   letter-spacing: 0.16em;
@@ -3233,7 +3249,6 @@ nav.scrolled {
 }
 
 .closing-form label {
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.58rem;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -3309,7 +3324,6 @@ nav.scrolled {
 
 .closing-note {
   margin-top: 0.6rem;
-  font-family: var(--label); font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1, 'cv11' 1;
   font-size: 0.62rem;
   letter-spacing: 0.06em;
   color: var(--ink-dim);
