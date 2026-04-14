@@ -3588,6 +3588,43 @@ footer a:hover { color: var(--ink-mid); }
   }
   .compare-table td.gap-col { display: none; }
   .compare-table th:last-child { display: none; }
+
+  /* ─── Mobile craft pass (Meng To review) ─── */
+
+  /* 1. Outcome-line: force all three to 2-line stacks for parallel rhythm.
+     word-spacing trick wraps at the space between "LOOK" / "BETTER" etc. */
+  .outcome-line {
+    word-spacing: 100vw;
+    line-height: 0.88;
+    text-wrap: balance;
+  }
+
+  /* 2. Hero-promise triple: one beat per line, let the staggered reveal land.
+     Parent is a wrapping flex row on desktop — collapse it to block on mobile. */
+  .hero-promise {
+    display: block;
+    font-size: clamp(1.55rem, 6vw, 2rem);
+    line-height: 1.25;
+  }
+  .promise-beat { display: block; }
+
+  /* 3. Particle field: hide labels, let dots become pure ambient light. */
+  .particle .dot-label { display: none; }
+  .particle .dot {
+    width: 9px; height: 9px;
+    box-shadow: 0 0 12px rgba(224, 64, 64, 0.6),
+                0 0 24px rgba(224, 64, 64, 0.25);
+  }
+
+  /* 4. Frontier bar: let Frontier zone absorb the mask fade instead of the label.
+     Fade is a fixed 60px deep so the metaphor reads consistently across viewports. */
+  .zone-foundation { flex: 0 0 28%; }
+  .zone-enhanced   { flex: 0 0 28%; }
+  .zone-frontier   { flex: 1 1 auto; }
+  .frontier-bar {
+    -webkit-mask-image: linear-gradient(90deg, black 0%, black calc(100% - 60px), transparent 100%);
+            mask-image: linear-gradient(90deg, black 0%, black calc(100% - 60px), transparent 100%);
+  }
 }
 </style>
 </head>
