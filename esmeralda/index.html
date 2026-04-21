@@ -29,6 +29,8 @@
   --display: 'Anybody', sans-serif;
   --body: 'Inter', -apple-system, sans-serif;
   --label: 'Inter', -apple-system, sans-serif;
+  --ease: cubic-bezier(0.075, 0.82, 0.165, 1);
+  --ease-fast: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100vw; }
@@ -235,7 +237,7 @@ article ul li::marker { color: var(--coral); }
 .table-wrap {
   margin: 1.5rem 0 2rem;
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 4px;
+  border-radius: 8px;
   background: var(--surface);
   overflow: hidden;
 }
@@ -358,6 +360,250 @@ article code {
   border-radius: 3px;
 }
 
+/* ---------- Proof bar ---------- */
+
+.proof-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: -0.5rem 0 3rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 30px 60px -40px rgba(0,0,0,0.8);
+}
+.proof-bar-item { text-align: center; position: relative; padding: 0 0.5rem; }
+.proof-bar-item + .proof-bar-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(224,64,64,0.35), transparent);
+}
+.proof-bar-num {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--ink) 30%, var(--coral) 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  margin-bottom: 0.4rem;
+}
+.proof-bar-label {
+  font-family: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* ---------- Glass TOC ---------- */
+
+.toc {
+  margin: 0 0 3.5rem;
+  padding: 1.5rem 1.75rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 30px 60px -40px rgba(0,0,0,0.7);
+}
+.toc-label {
+  font-family: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 1rem;
+}
+.toc-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+@media (min-width: 720px) {
+  .toc-grid { grid-template-columns: 1fr 1fr; column-gap: 2.5rem; }
+}
+.toc-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.06);
+  text-decoration: none;
+  transition: transform 0.4s var(--ease);
+}
+.toc-grid > .toc-item:last-child,
+.toc-grid > .toc-item:nth-last-child(2) { border-bottom: none; }
+.toc-q { font-size: 0.86rem; color: var(--ink-mid); transition: color 0.3s var(--ease-fast); }
+.toc-a {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-align: right;
+  transition: color 0.3s var(--ease-fast);
+}
+.toc-item:hover .toc-q { color: var(--ink); }
+.toc-item:hover .toc-a { color: var(--coral); }
+.toc-item:hover { transform: translateX(2px); }
+
+/* ---------- Pullquote ---------- */
+
+.pullquote {
+  margin: 3.5rem 0;
+  padding: 0.5rem 0 0.5rem 2rem;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 3.2vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  border-left: 3px solid var(--coral);
+  font-style: normal;
+}
+.pullquote em {
+  font-style: normal;
+  background: linear-gradient(100deg, var(--coral), #ff7b6e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ---------- Editorial gap rows ---------- */
+
+.gap-list { list-style: none; counter-reset: gap; margin: 2rem 0 3rem; padding: 0; display: grid; gap: 0; }
+.gap-item {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 1.25rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  align-items: start;
+}
+.gap-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
+.gap-item::before {
+  counter-increment: gap;
+  content: counter(gap, decimal-leading-zero);
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--coral);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.gap-item h3 {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+  padding: 0;
+}
+.gap-item p { margin: 0; color: var(--ink-mid); font-size: 1.015rem; }
+
+/* ---------- Founder card ---------- */
+
+.founder-card {
+  margin: 2rem 0;
+  padding: 1.5rem 1.75rem;
+  background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 40px 80px -50px rgba(0,0,0,0.9);
+}
+@media (min-width: 1080px) {
+  .founder-card {
+    float: right;
+    width: 300px;
+    margin: 0.25rem 0 1.5rem 2rem;
+    shape-outside: inset(0 round 16px);
+  }
+}
+.founder-card-label {
+  font-family: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 0.65rem;
+}
+.founder-card-name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.founder-card p {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink-mid);
+  margin: 0;
+}
+
+/* ---------- Cost table target row ---------- */
+
+article tr.target-row td {
+  background: linear-gradient(90deg, rgba(224,64,64,0.08), rgba(224,64,64,0.02));
+  color: var(--ink);
+}
+article tr.target-row td:first-child {
+  border-left: 2px solid var(--coral);
+  position: relative;
+  font-weight: 600;
+}
+article tr.target-row td:first-child::after {
+  content: 'TARGET';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-family: var(--label);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--coral);
+  background: var(--coral-dim);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(224,64,64,0.3);
+}
+@media (max-width: 560px) {
+  article tr.target-row { border: 1px solid rgba(224,64,64,0.35) !important; }
+  article tr.target-row td:first-child { border-left: none; }
+  article tr.target-row td:first-child::after { top: -0.5rem; right: 0.75rem; }
+}
+
+/* ---------- Scroll reveal ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(4px);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 0.8s var(--ease),
+    filter 0.8s var(--ease);
+}
+.reveal.in { opacity: 1; transform: none; filter: blur(0); }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+}
+
 /* ---------- Footer ---------- */
 
 .site-footer {
@@ -401,18 +647,62 @@ article code {
     <div class="kicker">Partnership Spec · April 2026</div>
     <article>
       <h1>Baseline at Edge Esmeralda: Residency Pilot Spec</h1>
+
+<div class="proof-bar">
+  <div class="proof-bar-item"><div class="proof-bar-num">17</div><div class="proof-bar-label">Outcome axes</div></div>
+  <div class="proof-bar-item"><div class="proof-bar-num">65</div><div class="proof-bar-label">Chronic diseases</div></div>
+  <div class="proof-bar-item"><div class="proof-bar-num">NHANES</div><div class="proof-bar-label">Onset-anchored</div></div>
+</div>
+
+<nav class="toc" aria-label="Section contents">
+  <div class="toc-label">At a glance</div>
+  <div class="toc-grid">
+    <a class="toc-item" href="#biomarker-panel"><span class="toc-q">How many markers?</span><span class="toc-a">13 · 3 rings</span></a>
+    <a class="toc-item" href="#cost-projection"><span class="toc-q">How much per user?</span><span class="toc-a">$245–465</span></a>
+    <a class="toc-item" href="#ancillary-equipment"><span class="toc-q">Who pays for what?</span><span class="toc-a">Baseline fronts</span></a>
+    <a class="toc-item" href="#asks"><span class="toc-q">What is the ask?</span><span class="toc-a">4 tiered, 1 critical</span></a>
+  </div>
+</nav>
+
 <h2>Background and mission state</h2>
 <p>Every consumer has the same core question about their health: am I healthy, and can I live healthier? Baseline is a consumer health behavioral change platform that adds a definition around chronic disease onset to answer "am I healthy," then uses that definition to drive measurable behavior change toward "can I live healthier." <strong>The mission is a healthier American consumer.</strong></p>
+
+<aside class="founder-card">
+  <div class="founder-card-label">Founder</div>
+  <div class="founder-card-name">Andrew Deal</div>
+  <p>Seven years as a gym owner and personal trainer before moving into tech at Twitch. From there to Bear Flag Robotics, where I shipped autonomous tractors and navigated R&amp;D through to acquisition by John Deere. Inside Deere, led Carver, a $39M moonshot program for electrification and autonomy in a new agricultural market. After the program, two years advising deep-tech startups in defense, construction, and mining. Six months into the Baseline build now.</p>
+</aside>
+
 <p>Human health has three tiers: <strong>healthspan</strong> (years lived without chronic disease), <strong>peakspan</strong> (age interval at peak functional performance), and <strong>longevity</strong> (total lifespan). Baseline starts with healthspan because "am I at risk of chronic disease onset, and can I move into a healthier range" is the strongest wedge question for most consumers. Once a user's chronic disease baseline is clean, the platform opens into peakspan-tier optimization. Longevity is a downstream tier.</p>
 <p>Current state: 7 pilot users generating structured outcome data, 10 more onboarding this week and next. NHANES-anchored scoring across 17 axes and 65 canonical chronic diseases. Solo-plus-agents operator on a Mac Mini, local-first by default.</p>
-<p><strong>Founder.</strong> Andrew Deal. Seven years as a gym owner and personal trainer before moving into tech at Twitch. From there to Bear Flag Robotics, where I shipped autonomous tractors and navigated R&amp;D through to acquisition by John Deere. Inside Deere, led Carver, a $39M moonshot program for electrification and autonomy in a new agricultural market. After the program, two years advising deep-tech startups in defense, construction, and mining. Six months into the Baseline build now.</p>
 <h2>The gaps we're filling</h2>
-<ol>
-<li><strong>Interpretation.</strong> Labs give numbers, not meaning. The 7-minute physical is the interpretation layer most consumers get. No infrastructure turns biomarkers into an actionable model of one's own health.</li>
-<li><strong>Trajectory.</strong> Most consumers get labs once per year at best. Longitudinal patterns are invisible because each result individually reads as "normal." Multi-year drifts into disease-risk bands go silent.</li>
-<li><strong>Onset-threshold scoring.</strong> "In range" is a false comfort. Chronic disease onset happens inside reference ranges. No consumer product today scores biomarkers against onset thresholds specifically; all report against reference ranges.</li>
-<li><strong>Evidence infrastructure.</strong> Millions are self-administering peptides, GLP-1s, supplements, hormone optimization, longevity protocols. Zero structured outcome capture at population scale. The patent-funded pharma system cannot evaluate non-patentable compounds. The substrate that could aggregate consumer-generated signal into evidence does not exist.</li>
-</ol>
+<ul class="gap-list">
+  <li class="gap-item">
+    <div>
+      <h3>Interpretation</h3>
+      <p>Labs give numbers, not meaning. The 7-minute physical is the interpretation layer most consumers get. No infrastructure turns biomarkers into an actionable model of one's own health.</p>
+    </div>
+  </li>
+  <li class="gap-item">
+    <div>
+      <h3>Trajectory</h3>
+      <p>Most consumers get labs once per year at best. Longitudinal patterns are invisible because each result individually reads as "normal." Multi-year drifts into disease-risk bands go silent.</p>
+    </div>
+  </li>
+  <li class="gap-item">
+    <div>
+      <h3>Onset-threshold scoring</h3>
+      <p>"In range" is a false comfort. Chronic disease onset happens inside reference ranges. No consumer product today scores biomarkers against onset thresholds specifically; all report against reference ranges.</p>
+    </div>
+  </li>
+  <li class="gap-item">
+    <div>
+      <h3>Evidence infrastructure</h3>
+      <p>Millions are self-administering peptides, GLP-1s, supplements, hormone optimization, longevity protocols. Zero structured outcome capture at population scale. The patent-funded pharma system cannot evaluate non-patentable compounds. The substrate that could aggregate consumer-generated signal into evidence does not exist.</p>
+    </div>
+  </li>
+</ul>
+<blockquote class="pullquote"><em>"In range"</em> is a false comfort. Chronic disease onset happens inside reference ranges.</blockquote>
 <h2>Roadmap and how Esmeralda fits</h2>
 <p>Baseline's phase sequence, north-starred to BLISS 2027 as contributor:</p>
 <div class="table-wrap"><table>
@@ -448,7 +738,7 @@ article code {
 </table></div>
 <p><strong>Edge Esmeralda is a phase-1 acceleration event and a phase-2 seed.</strong> A 4-week residency window compresses 3-6 months of recruitment and structured outcome capture into 4 weeks. Residents generate a coherent outcomes dataset the village can take home as a structured health report. That same dataset contributes to Baseline's N-tier cohort curve toward BLISS 2027. Mutual benefit: Edge Esmeralda gets evidence-grade health outcomes programming for residents; Baseline gets cohort acceleration.</p>
 <p>Sections below specify the operational need to run the pilot: biomarker panel, ancillary equipment, cost projection, and tiered partnership asks.</p>
-<h2>The biomarker panel</h2>
+<h2 id="biomarker-panel">The biomarker panel</h2>
 <p>The panel is tiered by firing rule into three rings.</p>
 <h3>Ring 1: default-in, every pilot user, week 1 + week 4 draws</h3>
 <p>13 markers at commodity pricing.</p>
@@ -533,7 +823,7 @@ article code {
 <p>Cystatin C, Homocysteine, B12 + folate, Iron studies (TIBC, saturation), Free T4, TPO antibodies, AAT level + phenotype, tTG-IgA (celiac serology), OGTT.</p>
 <h3>One-time baseline (first draw only)</h3>
 <p>Lp(a), HIV serology, Hepatitis C antibody, Hepatitis B surface antigen + core.</p>
-<h2>Ancillary equipment for home measures (Ring 0)</h2>
+<h2 id="ancillary-equipment">Ancillary equipment for home measures (Ring 0)</h2>
 <p>Every pilot user also needs equipment for ongoing capture between draws.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -579,7 +869,7 @@ article code {
 </table></div>
 <p><strong>Non-wearable equipment: ~$65-85 per user.</strong> Baseline fronts this cost. Residents keep the hardware after the pilot.</p>
 <p><strong>Wearable: partnership opportunity.</strong> A subscription-model wearable (Whoop-style, roughly $30/month, no hardware cost) fits a 4-week loanout naturally and hits sleep, HRV, activity, and HR on one device. Oura or Apple Watch work if Edge Esmeralda has existing relationships. Priority bucket is sleep. If Edge Esmeralda covers the wearable tier, that compresses ~$300 of per-pilot cost at 10 residents.</p>
-<h2>Cost projection, per pilot user, 4-week window</h2>
+<h2 id="cost-projection">Cost projection, per pilot user, 4-week window</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -600,7 +890,7 @@ article code {
 <td data-label="Wearable">$0 (user-owned) or $30 (Whoop)</td>
 <td data-label="Total">$425-785</td>
 </tr>
-<tr>
+<tr class="target-row">
 <td data-label="Scenario">Partnership-compressed (target)</td>
 <td data-label="Labs (2 draws + one-time baseline)">$150-250</td>
 <td data-label="Ring 2 fires (if triggered)">$0-100</td>
@@ -621,7 +911,7 @@ article code {
 <p><strong>At 10 pilot residents, aggregate pilot cost:</strong> ~$4,250-$7,850 fully à la carte; ~$2,450-$4,650 at partnership-tier compression. Invader-partnered aggregate TBD pending delta computation. At 100 residents with a 2x-per-year cadence, scaling projects to $35K-$60K annualized à la carte and $25K-$45K at partnership tier.</p>
 <p>Scenario 3 is the operational ask. Once we can see what Invader's panel already covers, we compute the delta and either fire remaining markers through a secondary vendor or drop them from pilot scope.</p>
 <p><strong>Basis.</strong> Cost ranges use LabCorp/Quest à la carte rack pricing as of Apr 2026 and a &lt;$75-per-draw partnership-tier target at volume. Vendor-confirmed rates come from direct vendor research; negotiated pricing at pilot scale will differ from the ranges shown.</p>
-<h2>Asks, tiered</h2>
+<h2 id="asks">Asks, tiered</h2>
 <ol>
 <li><strong>Lab partnership (Invader).</strong> What markers does their panel already cover? Does the partnership support week 1 and week 4 draws, or week 1 only? Are Ring 2 on-indication fires in scope, or do we route those separately?</li>
 <li><strong>Wearable partnership (optional).</strong> If Edge Esmeralda has an existing wearable partner, Baseline adapts. If not, a subscription-loanout model for the month is ~$30/user; Edge Esmeralda covering this tier compresses ~$300 of per-pilot cost at 10 residents.</li>
@@ -641,6 +931,22 @@ article code {
   </div>
 </footer>
 
+<script>
+  (function(){
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var targets = document.querySelectorAll('h2, .pullquote, .proof-bar, .gap-item, .founder-card, .table-wrap, .toc');
+    targets.forEach(function(el){ el.classList.add('reveal'); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(function(el){ io.observe(el); });
+  })();
+</script>
 
 </body>
 </html>
