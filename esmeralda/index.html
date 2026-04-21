@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baseline at Edge Esmeralda: Residency Pilot Spec</title>
+<meta name="description" content="Partnership spec for biomarker panel, equipment, cost projections, and tiered asks — 4-week residency pilot.">
+<meta property="og:title" content="Baseline at Edge Esmeralda: Residency Pilot Spec">
+<meta property="og:description" content="Partnership spec for biomarker panel, equipment, cost projections, and tiered asks — 4-week residency pilot.">
+<meta property="og:type" content="article">
+<meta name="robots" content="noindex">
+<link rel="icon" href="https://mybaseline.health/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0b0a0d;
+  --surface: #13121a;
+  --surface-2: #1a1924;
+  --ink: #eeeef0;
+  --ink-mid: #9595a8;
+  --ink-dim: #45454f;
+  --coral: #e04040;
+  --coral-dim: rgba(224, 64, 64, 0.12);
+  --green: #3cb868;
+  --display: 'Anybody', sans-serif;
+  --body: 'Inter', -apple-system, sans-serif;
+  --label: 'Inter', -apple-system, sans-serif;
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100vw; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
+}
+
+/* Ambient atmosphere — mirrors landing: noise overlay + 4 drifting orbs */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(224, 64, 64, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 80% 25%, rgba(100, 40, 120, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 20% 70%, rgba(224, 64, 64, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(224, 64, 64, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: atmosphere-drift 24s ease-in-out infinite;
+}
+
+@keyframes atmosphere-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(0, -1%) scale(1.02); }
+}
+
+nav, main, footer { position: relative; z-index: 2; }
+
+::selection { background: var(--coral); color: white; }
+
+.contain {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2rem);
+}
+
+/* ---------- Decorative constellation behind the hero region ---------- */
+.starfield {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: clamp(320px, 50vh, 560px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.85;
+  background-image:
+    radial-gradient(circle 2px at 12% 42%, var(--coral) 50%, transparent 51%),
+    radial-gradient(circle 1.5px at 28% 18%, rgba(224,64,64,0.75) 50%, transparent 51%),
+    radial-gradient(circle 2px at 44% 68%, var(--coral) 50%, transparent 51%),
+    radial-gradient(circle 1.5px at 62% 30%, rgba(224,64,64,0.7) 50%, transparent 51%),
+    radial-gradient(circle 2px at 78% 58%, var(--coral) 50%, transparent 51%),
+    radial-gradient(circle 1.5px at 88% 22%, rgba(224,64,64,0.6) 50%, transparent 51%),
+    radial-gradient(circle 1px at 8% 78%, rgba(224,64,64,0.55) 50%, transparent 51%),
+    radial-gradient(circle 1px at 54% 10%, rgba(224,64,64,0.5) 50%, transparent 51%),
+    radial-gradient(circle 1px at 96% 48%, rgba(224,64,64,0.5) 50%, transparent 51%);
+  animation: starfield-pulse 8s ease-in-out infinite;
+}
+
+@keyframes starfield-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 0.55; }
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  padding: 1.5rem 0 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.site-header .contain {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+
+.logo {
+  font-family: var(--display); font-weight: 700; font-size: 1.05rem;
+  color: var(--ink); text-decoration: none; letter-spacing: -0.5px;
+}
+.logo span { color: var(--coral); }
+
+.header-link {
+  font-family: var(--label);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.header-link:hover { color: var(--ink); }
+
+/* ---------- Article typography ---------- */
+
+article {
+  padding-bottom: 6rem;
+}
+
+.kicker {
+  font-family: var(--label);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--coral);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+h1 {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2rem, 5.2vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  background: linear-gradient(92deg, var(--ink) 0%, var(--ink) 55%, var(--coral) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  margin-bottom: 2.5rem;
+}
+
+h2 {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.35rem, 3.2vw, 1.9rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: clamp(2.5rem, 5vw, 3.75rem);
+  margin-bottom: 1.1rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+h3 {
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+article p {
+  color: var(--ink-mid);
+  margin-bottom: 1.1rem;
+  font-size: 1.015rem;
+}
+
+article p strong, article li strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+article em { color: var(--ink); font-style: italic; }
+
+article a {
+  color: var(--coral);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+article ol, article ul {
+  margin: 0 0 1.5rem 1.2rem;
+  color: var(--ink-mid);
+}
+article li {
+  margin-bottom: 0.65rem;
+  padding-left: 0.35rem;
+  font-size: 1.015rem;
+}
+article ol li::marker { color: var(--coral); font-weight: 700; font-family: var(--display); }
+article ul li::marker { color: var(--coral); }
+
+/* ---------- Tables ----------
+   Fit container width at every viewport. No horizontal scroll.
+   Aggressive word-wrap on narrow widths so dense tables stay compact. */
+
+.table-wrap {
+  margin: 1.5rem 0 2rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* Wide viewports: let tables break out of the 780px article container
+   so 6-column tables have room to breathe. Keeps prose narrow for readability. */
+@media (min-width: 1080px) {
+  .table-wrap {
+    width: calc(100% + 200px);
+    margin-left: -100px;
+    margin-right: -100px;
+    max-width: calc(100vw - 3rem);
+  }
+}
+
+article table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  table-layout: auto;
+}
+
+article th {
+  font-family: var(--label);
+  font-weight: 600;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0.75rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: var(--surface-2);
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+article td {
+  padding: 0.7rem 0.85rem;
+  color: var(--ink-mid);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+article tr:last-child td { border-bottom: none; }
+article td strong { color: var(--ink); }
+
+@media (max-width: 720px) {
+  article table { font-size: 0.82rem; }
+  article th { font-size: 0.62rem; padding: 0.6rem 0.6rem; letter-spacing: 0.1em; }
+  article td { padding: 0.6rem 0.6rem; }
+}
+
+/* Narrow viewports: stack tables as cards. Relies on data-label attrs
+   injected by the render tool (from each <th> into its column's <td>s).
+   No horizontal scroll, no column clipping. */
+@media (max-width: 560px) {
+  .table-wrap {
+    background: transparent;
+    border: none;
+    overflow: visible;
+  }
+  article table,
+  article table thead,
+  article table tbody,
+  article table tr,
+  article table th,
+  article table td {
+    display: block;
+    width: 100%;
+  }
+  article table thead { position: absolute; left: -9999px; }
+  article table tr {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    background: var(--surface);
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.6rem;
+  }
+  article table td {
+    padding: 0.35rem 0;
+    border: none;
+    font-size: 0.92rem;
+  }
+  article table td:not(:last-child) {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.35rem;
+  }
+  article table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* ---------- Blockquotes + code ---------- */
+
+article blockquote {
+  border-left: 2px solid var(--coral);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  color: var(--ink-mid);
+  font-style: italic;
+}
+
+article code {
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 0.88em;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  border-top: 1px solid rgba(255,255,255,0.04);
+  padding: 2rem 0 3rem;
+  margin-top: 4rem;
+}
+
+.site-footer .contain {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  font-family: var(--display); font-weight: 700; font-size: 0.9rem;
+  color: var(--ink-mid); text-decoration: none; letter-spacing: -0.5px;
+}
+.footer-brand span { color: var(--coral); }
+
+.footer-link {
+  font-family: var(--label);
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-dim); text-decoration: none;
+}
+.footer-link:hover { color: var(--ink-mid); }
+</style>
+</head>
+<body>
+
+<div class="starfield"></div>
+
+<nav class="site-header">
+  <div class="contain">
+    <a href="https://mybaseline.health/" class="logo">baseline<span>.</span></a>
+    <a href="https://mybaseline.health/" class="header-link">mybaseline.health</a>
+  </div>
+</nav>
+
+<main>
+  <div class="contain">
+    <div class="kicker">Partnership Spec · April 2026</div>
+    <article>
+      <h1>Baseline at Edge Esmeralda: Residency Pilot Spec</h1>
+<h2>Background and mission state</h2>
+<p>Every consumer has the same core question about their health: am I healthy, and can I live healthier? Baseline is a consumer health behavioral change platform that adds a definition around chronic disease onset to answer "am I healthy," then uses that definition to drive measurable behavior change toward "can I live healthier." <strong>The mission is a healthier American consumer.</strong></p>
+<p>Human health has three tiers: <strong>healthspan</strong> (years lived without chronic disease), <strong>peakspan</strong> (age interval at peak functional performance), and <strong>longevity</strong> (total lifespan). Baseline starts with healthspan because "am I at risk of chronic disease onset, and can I move into a healthier range" is the strongest wedge question for most consumers. Once a user's chronic disease baseline is clean, the platform opens into peakspan-tier optimization. Longevity is a downstream tier.</p>
+<p>Current state: 7 pilot users generating structured outcome data, 10 more onboarding this week and next. NHANES-anchored scoring across 17 axes and 65 canonical chronic diseases. Solo-plus-agents operator on a Mac Mini, local-first by default.</p>
+<p><strong>Founder.</strong> Andrew Deal. Seven years as a gym owner and personal trainer before moving into tech at Twitch. From there to Bear Flag Robotics, where I shipped autonomous tractors and navigated R&amp;D through to acquisition by John Deere. Inside Deere, led Carver, a $39M moonshot program for electrification and autonomy in a new agricultural market. After the program, two years advising deep-tech startups in defense, construction, and mining. Six months into the Baseline build now.</p>
+<h2>The gaps we're filling</h2>
+<ol>
+<li><strong>Interpretation.</strong> Labs give numbers, not meaning. The 7-minute physical is the interpretation layer most consumers get. No infrastructure turns biomarkers into an actionable model of one's own health.</li>
+<li><strong>Trajectory.</strong> Most consumers get labs once per year at best. Longitudinal patterns are invisible because each result individually reads as "normal." Multi-year drifts into disease-risk bands go silent.</li>
+<li><strong>Onset-threshold scoring.</strong> "In range" is a false comfort. Chronic disease onset happens inside reference ranges. No consumer product today scores biomarkers against onset thresholds specifically; all report against reference ranges.</li>
+<li><strong>Evidence infrastructure.</strong> Millions are self-administering peptides, GLP-1s, supplements, hormone optimization, longevity protocols. Zero structured outcome capture at population scale. The patent-funded pharma system cannot evaluate non-patentable compounds. The substrate that could aggregate consumer-generated signal into evidence does not exist.</li>
+</ol>
+<h2>Roadmap and how Esmeralda fits</h2>
+<p>Baseline's phase sequence, north-starred to BLISS 2027 as contributor:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>What</th>
+<th>N scale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Phase">1</td>
+<td data-label="What">Consumer product. Score, trajectory, coaching across three outcome clusters.</td>
+<td data-label="N scale">Pilot 20-50 (current)</td>
+</tr>
+<tr>
+<td data-label="Phase">2</td>
+<td data-label="What">Observability layer. Cohort qualifies as ongoing epi observational study.</td>
+<td data-label="N scale">First associations 100, publishable claim 500</td>
+</tr>
+<tr>
+<td data-label="Phase">3</td>
+<td data-label="What">Connective tissue. Partner with upstream institutions for RCTs on eligible cohorts.</td>
+<td data-label="N scale">Responder phenotyping 1000+</td>
+</tr>
+<tr>
+<td data-label="Phase">4</td>
+<td data-label="What">Public infrastructure. Biomarker + intervention treasure trove for studies and policy.</td>
+<td data-label="N scale">Framework maturity 5000+</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Edge Esmeralda is a phase-1 acceleration event and a phase-2 seed.</strong> A 4-week residency window compresses 3-6 months of recruitment and structured outcome capture into 4 weeks. Residents generate a coherent outcomes dataset the village can take home as a structured health report. That same dataset contributes to Baseline's N-tier cohort curve toward BLISS 2027. Mutual benefit: Edge Esmeralda gets evidence-grade health outcomes programming for residents; Baseline gets cohort acceleration.</p>
+<p>Sections below specify the operational need to run the pilot: biomarker panel, ancillary equipment, cost projection, and tiered partnership asks.</p>
+<h2>The biomarker panel</h2>
+<p>The panel is tiered by firing rule into three rings.</p>
+<h3>Ring 1: default-in, every pilot user, week 1 + week 4 draws</h3>
+<p>13 markers at commodity pricing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Marker</th>
+<th>Role</th>
+<th>Primary axes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Marker">HbA1c</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">T2D, Alzheimer's, CKD</td>
+</tr>
+<tr>
+<td data-label="Marker">Fasting glucose</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">T2D, MetSyn</td>
+</tr>
+<tr>
+<td data-label="Marker">Lipid panel (TC, LDL-C, HDL-C, TG)</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">CVD, MetSyn, MASLD</td>
+</tr>
+<tr>
+<td data-label="Marker">Creatinine + eGFR</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">CKD</td>
+</tr>
+<tr>
+<td data-label="Marker">ALT + AST + platelets (FIB-4 derived)</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">MASLD, advanced fibrosis</td>
+</tr>
+<tr>
+<td data-label="Marker">TSH</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">Hypothyroidism</td>
+</tr>
+<tr>
+<td data-label="Marker">CBC with differential</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">Anemia, hematologic baseline</td>
+</tr>
+<tr>
+<td data-label="Marker">Ferritin</td>
+<td data-label="Role">Score</td>
+<td data-label="Primary axes">Iron stores</td>
+</tr>
+<tr>
+<td data-label="Marker">25-OH Vitamin D</td>
+<td data-label="Role">Score</td>
+<td data-label="Primary axes">Deficiency, osteoporosis-adjacent</td>
+</tr>
+<tr>
+<td data-label="Marker">Fasting insulin (HOMA-IR derived)</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">T2D, MetSyn, MASLD, Alzheimer's, CVD</td>
+</tr>
+<tr>
+<td data-label="Marker">ApoB</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">CVD, atherogenic burden</td>
+</tr>
+<tr>
+<td data-label="Marker">hsCRP</td>
+<td data-label="Role">Score + Flag + Aggregator</td>
+<td data-label="Primary axes">Inflammation cluster</td>
+</tr>
+<tr>
+<td data-label="Marker">UACR (urine albumin / creatinine)</td>
+<td data-label="Role">Score + Aggregator</td>
+<td data-label="Primary axes">CKD</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Ring 2: on-indication fires (per-user per-event)</h3>
+<p>Triggered by Ring 1 signals or Layer -1 intake. Not run per-draw. Average user fires 0-2 across a 4-week pilot.</p>
+<p>Cystatin C, Homocysteine, B12 + folate, Iron studies (TIBC, saturation), Free T4, TPO antibodies, AAT level + phenotype, tTG-IgA (celiac serology), OGTT.</p>
+<h3>One-time baseline (first draw only)</h3>
+<p>Lp(a), HIV serology, Hepatitis C antibody, Hepatitis B surface antigen + core.</p>
+<h2>Ancillary equipment for home measures (Ring 0)</h2>
+<p>Every pilot user also needs equipment for ongoing capture between draws.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Role</th>
+<th>Cost</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Item">BP cuff (Omron-tier)</td>
+<td data-label="Role">Blood pressure tracking</td>
+<td data-label="Cost">~$40-50 one-time</td>
+<td data-label="Source">Baseline fronts, user keeps</td>
+</tr>
+<tr>
+<td data-label="Item">Tape measure</td>
+<td data-label="Role">Waist circumference</td>
+<td data-label="Cost">~$5</td>
+<td data-label="Source">Baseline fronts, user keeps</td>
+</tr>
+<tr>
+<td data-label="Item">Body-weight scale</td>
+<td data-label="Role">Weight tracking</td>
+<td data-label="Cost">~$20-30</td>
+<td data-label="Source">Baseline fronts, user keeps</td>
+</tr>
+<tr>
+<td data-label="Item">Layer -1 intake (21-item questionnaire)</td>
+<td data-label="Role">PHQ-2, GAD-7, family hx, behavior, symptoms</td>
+<td data-label="Cost">$0 marginal</td>
+<td data-label="Source">In-product</td>
+</tr>
+<tr>
+<td data-label="Item">Wearable (continuous)</td>
+<td data-label="Role">Sleep, HRV, activity, HR</td>
+<td data-label="Cost">See wearable ask below</td>
+<td data-label="Source">Partnership opportunity</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Non-wearable equipment: ~$65-85 per user.</strong> Baseline fronts this cost. Residents keep the hardware after the pilot.</p>
+<p><strong>Wearable: partnership opportunity.</strong> A subscription-model wearable (Whoop-style, roughly $30/month, no hardware cost) fits a 4-week loanout naturally and hits sleep, HRV, activity, and HR on one device. Oura or Apple Watch work if Edge Esmeralda has existing relationships. Priority bucket is sleep. If Edge Esmeralda covers the wearable tier, that compresses ~$300 of per-pilot cost at 10 residents.</p>
+<h2>Cost projection, per pilot user, 4-week window</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Labs (2 draws + one-time baseline)</th>
+<th>Ring 2 fires (if triggered)</th>
+<th>Equipment (non-wearable)</th>
+<th>Wearable</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Scenario">Full à la carte (LabCorp/Quest rack)</td>
+<td data-label="Labs (2 draws + one-time baseline)">$360-570</td>
+<td data-label="Ring 2 fires (if triggered)">$0-100</td>
+<td data-label="Equipment (non-wearable)">$65-85</td>
+<td data-label="Wearable">$0 (user-owned) or $30 (Whoop)</td>
+<td data-label="Total">$425-785</td>
+</tr>
+<tr>
+<td data-label="Scenario">Partnership-compressed (target)</td>
+<td data-label="Labs (2 draws + one-time baseline)">$150-250</td>
+<td data-label="Ring 2 fires (if triggered)">$0-100</td>
+<td data-label="Equipment (non-wearable)">$65-85</td>
+<td data-label="Wearable">$30 or $0 (partnership)</td>
+<td data-label="Total">$245-465</td>
+</tr>
+<tr>
+<td data-label="Scenario">Invader-partnered (delta TBD)</td>
+<td data-label="Labs (2 draws + one-time baseline)">TBD</td>
+<td data-label="Ring 2 fires (if triggered)">TBD</td>
+<td data-label="Equipment (non-wearable)">$65-85 (Baseline fronts)</td>
+<td data-label="Wearable">Partnership TBD</td>
+<td data-label="Total">TBD</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>At 10 pilot residents, aggregate pilot cost:</strong> ~$4,250-$7,850 fully à la carte; ~$2,450-$4,650 at partnership-tier compression. Invader-partnered aggregate TBD pending delta computation. At 100 residents with a 2x-per-year cadence, scaling projects to $35K-$60K annualized à la carte and $25K-$45K at partnership tier.</p>
+<p>Scenario 3 is the operational ask. Once we can see what Invader's panel already covers, we compute the delta and either fire remaining markers through a secondary vendor or drop them from pilot scope.</p>
+<p><strong>Basis.</strong> Cost ranges use LabCorp/Quest à la carte rack pricing as of Apr 2026 and a &lt;$75-per-draw partnership-tier target at volume. Vendor-confirmed rates come from direct vendor research; negotiated pricing at pilot scale will differ from the ranges shown.</p>
+<h2>Asks, tiered</h2>
+<ol>
+<li><strong>Lab partnership (Invader).</strong> What markers does their panel already cover? Does the partnership support week 1 and week 4 draws, or week 1 only? Are Ring 2 on-indication fires in scope, or do we route those separately?</li>
+<li><strong>Wearable partnership (optional).</strong> If Edge Esmeralda has an existing wearable partner, Baseline adapts. If not, a subscription-loanout model for the month is ~$30/user; Edge Esmeralda covering this tier compresses ~$300 of per-pilot cost at 10 residents.</li>
+<li><strong>Micro-trials sequencing (Toku Health).</strong> We understand Toku handles long-format micro-trials during the residency. We would want the week 1 and week 4 lab draws sequenced around intervention windows so Baseline scores trajectory against the intervention specifically, not just generic baseline vs follow-up. Happy to coordinate directly with Toku.</li>
+<li><strong>Everything else, Baseline fronts.</strong> BP cuffs, tapes, scales, Layer -1 intake, Baseline product, scoring, coaching infrastructure. Residents keep the hardware.</li>
+</ol>
+<h2>What Edge Esmeralda gets</h2>
+<p>Ten pilot residents produce a coherent 4-week outcomes dataset: week 1 baseline, continuous home and wearable capture, week 4 follow-up, Baseline scoring against the healthspan framework. Not point-in-time observations but trajectory across the residency. Edge Esmeralda gets a structured health outcomes report from the village. Residents leave with health literacy they can act on.</p>
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="contain">
+    <a href="https://mybaseline.health/" class="footer-brand">baseline<span>.</span></a>
+    <a href="https://mybaseline.health/" class="footer-link">mybaseline.health</a>
+  </div>
+</footer>
+
+
+</body>
+</html>
