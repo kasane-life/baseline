@@ -394,22 +394,52 @@ article code {
   color: var(--coral);
   margin-bottom: 1rem;
 }
-.toc-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
-@media (min-width: 720px) {
-  .toc-grid { grid-template-columns: 1fr 1fr; column-gap: 2.5rem; }
+.toc-grid { display: flex; flex-direction: column; gap: 0; }
+.toc-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 0.65rem 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.06);
 }
-.toc-item {
+.toc-grid > .toc-row:last-child { border-bottom: none; }
+@media (min-width: 720px) {
+  .toc-row {
+    grid-template-columns: 11rem 1fr;
+    column-gap: 1.5rem;
+    align-items: start;
+  }
+}
+.toc-section {
+  font-family: var(--label);
+  font-weight: 600;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  text-decoration: none;
+  padding: 0.3rem 0 0.15rem;
+  transition: color 0.3s var(--ease-fast);
+  align-self: start;
+}
+@media (min-width: 720px) {
+  .toc-section { padding: 0.5rem 0 0; }
+}
+.toc-section:hover { color: #ff7b6e; }
+.toc-qa-group { display: flex; flex-direction: column; }
+.toc-qa {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.65rem 0;
-  border-bottom: 1px dashed rgba(255,255,255,0.06);
+  column-gap: 0.75rem;
+  padding: 0.35rem 0;
   text-decoration: none;
   transition: transform 0.4s var(--ease);
 }
-.toc-grid > .toc-item:last-child,
-.toc-grid > .toc-item:nth-last-child(2) { border-bottom: none; }
+.toc-qa + .toc-qa {
+  border-top: 1px dashed rgba(255,255,255,0.04);
+  padding-top: 0.5rem;
+  margin-top: 0.15rem;
+}
 .toc-q { font-size: 0.86rem; color: var(--ink-mid); transition: color 0.3s var(--ease-fast); }
 .toc-a {
   font-family: var(--display);
@@ -420,9 +450,9 @@ article code {
   text-align: right;
   transition: color 0.3s var(--ease-fast);
 }
-.toc-item:hover .toc-q { color: var(--ink); }
-.toc-item:hover .toc-a { color: var(--coral); }
-.toc-item:hover { transform: translateX(2px); }
+.toc-qa:hover .toc-q { color: var(--ink); }
+.toc-qa:hover .toc-a { color: var(--coral); }
+.toc-qa:hover { transform: translateX(2px); }
 
 /* ---------- Pullquote ---------- */
 
@@ -569,18 +599,21 @@ article code {
   margin: 0;
 }
 
-/* ---------- Rings visual (biomarker panel tiering) ---------- */
+/* ---------- Tiers visual (biomarker panel tiering) ---------- */
 
-.rings-visual {
+.tiers-visual {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.75rem;
-  margin: 1.5rem 0 2.5rem;
+  margin: 1.5rem 0 2rem;
 }
-@media (min-width: 720px) {
-  .rings-visual { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (min-width: 560px) {
+  .tiers-visual { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 }
-.ring-card {
+@media (min-width: 900px) {
+  .tiers-visual { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+}
+.tier-card {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
@@ -593,26 +626,26 @@ article code {
     inset 0 1px 0 rgba(255,255,255,0.07),
     0 30px 60px -40px rgba(0,0,0,0.7);
 }
-.ring-card-rule {
+.tier-card-gate {
   font-family: var(--label);
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--coral);
 }
-.ring-card-label {
+.tier-card-label {
   font-family: var(--display);
   font-weight: 900;
   font-size: 1.1rem;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-.ring-card-detail {
+.tier-card-detail {
   font-size: 0.88rem;
   line-height: 1.5;
   color: var(--ink-mid);
 }
-.ring-card-count {
+.tier-card-count {
   margin-top: auto;
   padding-top: 0.75rem;
   font-family: var(--label);
@@ -621,6 +654,85 @@ article code {
   text-transform: uppercase;
   color: var(--ink-dim);
   border-top: 1px dashed rgba(255,255,255,0.08);
+}
+
+/* ---------- Panel outcome aside ---------- */
+
+.panel-outcome {
+  margin: 0 0 2.25rem;
+  padding: 1.1rem 1.35rem;
+  background: linear-gradient(180deg, rgba(224,64,64,0.06), rgba(224,64,64,0.015));
+  border: 1px solid rgba(224,64,64,0.18);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ink-mid);
+}
+.panel-outcome strong { color: var(--ink); font-weight: 600; }
+.panel-outcome-label {
+  display: block;
+  font-family: var(--label);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 0.55rem;
+}
+
+/* ---------- Roadmap phase row progression ---------- */
+
+article tr.phase-row-1 td { background: rgba(255,255,255,0.018); }
+article tr.phase-row-2 td { background: rgba(255,255,255,0.038); }
+article tr.phase-row-3 td { background: rgba(255,255,255,0.06); }
+article tr.phase-row-4 td { background: rgba(255,255,255,0.09); }
+
+@media (max-width: 560px) {
+  article tr.phase-row-1 {
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.012)) !important;
+  }
+  article tr.phase-row-2 {
+    background: linear-gradient(180deg, rgba(255,255,255,0.048), rgba(255,255,255,0.022)) !important;
+  }
+  article tr.phase-row-3 {
+    background: linear-gradient(180deg, rgba(255,255,255,0.072), rgba(255,255,255,0.035)) !important;
+  }
+  article tr.phase-row-4 {
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)) !important;
+  }
+}
+
+/* ---------- Foundation table tier divider rows ---------- */
+
+article tr.tier-divider td {
+  font-family: var(--label);
+  font-weight: 700;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  background: rgba(224,64,64,0.05);
+  padding: 0.7rem 0.85rem;
+  border-top: 1px solid rgba(224,64,64,0.14);
+  border-bottom: 1px solid rgba(224,64,64,0.14);
+}
+
+@media (max-width: 560px) {
+  article tr.tier-divider {
+    background: rgba(224,64,64,0.06) !important;
+    border: 1px solid rgba(224,64,64,0.2) !important;
+    padding: 0.45rem 0.9rem !important;
+    text-align: center;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    margin-bottom: 0.6rem;
+  }
+  article tr.tier-divider td {
+    padding: 0.2rem 0 !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 0.62rem !important;
+  }
+  article tr.tier-divider td::before { display: none; }
 }
 
 /* ---------- Cost table target row ---------- */
@@ -718,10 +830,37 @@ article tr.target-row td:first-child::after {
 <nav class="toc" aria-label="Section contents">
   <div class="toc-label">At a glance</div>
   <div class="toc-grid">
-    <a class="toc-item" href="#biomarker-panel"><span class="toc-q">How many markers?</span><span class="toc-a">13 · 3 rings</span></a>
-    <a class="toc-item" href="#cost-projection"><span class="toc-q">How much per user?</span><span class="toc-a">$245–465</span></a>
-    <a class="toc-item" href="#ancillary-equipment"><span class="toc-q">Who pays for what?</span><span class="toc-a">Baseline fronts</span></a>
-    <a class="toc-item" href="#asks"><span class="toc-q">What is the ask?</span><span class="toc-a">4 tiered, 1 critical</span></a>
+    <div class="toc-row">
+      <a class="toc-section" href="#biomarker-panel">Biomarker panel</a>
+      <div class="toc-qa-group">
+        <a class="toc-qa" href="#biomarker-panel">
+          <span class="toc-q">How many markers?</span>
+          <span class="toc-a">17 foundation · 4 tiers</span>
+        </a>
+      </div>
+    </div>
+    <div class="toc-row">
+      <a class="toc-section" href="#cost-projection">Cost projection</a>
+      <div class="toc-qa-group">
+        <a class="toc-qa" href="#cost-projection">
+          <span class="toc-q">How much per user?</span>
+          <span class="toc-a">$245–465</span>
+        </a>
+        <a class="toc-qa" href="#cost-projection">
+          <span class="toc-q">Who pays for what?</span>
+          <span class="toc-a">Partnership-shared, Baseline fronts</span>
+        </a>
+      </div>
+    </div>
+    <div class="toc-row">
+      <a class="toc-section" href="#asks">Asks</a>
+      <div class="toc-qa-group">
+        <a class="toc-qa" href="#asks">
+          <span class="toc-q">What is the ask?</span>
+          <span class="toc-a">4 tiered, 1 critical</span>
+        </a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -775,22 +914,22 @@ article tr.target-row td:first-child::after {
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="phase-row-1">
 <td data-label="Phase">1</td>
 <td data-label="What">Consumer product. Score, trajectory, coaching across three outcome clusters.</td>
 <td data-label="N scale">Pilot 20-50 (current)</td>
 </tr>
-<tr>
+<tr class="phase-row-2">
 <td data-label="Phase">2</td>
 <td data-label="What">Observability layer. Cohort qualifies as ongoing epi observational study.</td>
 <td data-label="N scale">First associations 100, publishable claim 500</td>
 </tr>
-<tr>
+<tr class="phase-row-3">
 <td data-label="Phase">3</td>
 <td data-label="What">Connective tissue. Partner with upstream institutions for RCTs on eligible cohorts.</td>
 <td data-label="N scale">Responder phenotyping 1000+</td>
 </tr>
-<tr>
+<tr class="phase-row-4">
 <td data-label="Phase">4</td>
 <td data-label="What">Public infrastructure. Biomarker + intervention treasure trove for studies and policy.</td>
 <td data-label="N scale">Framework maturity 5000+</td>
@@ -803,165 +942,134 @@ article tr.target-row td:first-child::after {
   <p>BLISS is the Hoover Institution's annual Bio Leadership Summit, where bio research, policy, and industry converge. Baseline's phase-2 north-star is contributing as an evidence-generator at BLISS 2027, with consumer-outcomes data from the live cohort. The N-tier curve above ladders toward that slot.</p>
 </aside>
 <p><strong>Edge Esmeralda is a phase-1 acceleration event and a phase-2 seed.</strong> A 4-week residency window compresses 3-6 months of recruitment and structured outcome capture into 4 weeks. Residents generate a coherent outcomes dataset the village can take home as a structured health report. That same dataset contributes to Baseline's N-tier cohort curve toward BLISS 2027. Mutual benefit: Edge Esmeralda gets evidence-grade health outcomes programming for residents; Baseline gets cohort acceleration.</p>
-<p>Sections below specify the operational need to run the pilot: biomarker panel, ancillary equipment, cost projection, and tiered partnership asks.</p>
+<p>Sections below specify the operational need to run the pilot: biomarker panel, cost projection, and tiered partnership asks.</p>
 <h2 id="biomarker-panel">The biomarker panel</h2>
-<p>The panel is tiered by firing rule into Rings 1, 2, and 3.</p>
-<div class="rings-visual">
-  <div class="ring-card">
-    <div class="ring-card-rule">Default-in</div>
-    <div class="ring-card-label">Ring 1</div>
-    <div class="ring-card-detail">Every pilot user, week 1 and week 4 draws.</div>
-    <div class="ring-card-count">13 markers</div>
+<p>The panel runs four progressive tiers, gated by chronic-disease-onset risk. Tier 0 and Tier 1 are foundational &mdash; every pilot user, always, and the scope of this proposal. Tier 2 fires only when a Tier 0 or Tier 1 signal flags onset risk, warranting deeper investigation. Tier 3 captures lifetime-stable baseline markers once at first draw. Tiers 2 and 3 are reach targets below.</p>
+<div class="tiers-visual">
+  <div class="tier-card">
+    <div class="tier-card-gate">Foundation</div>
+    <div class="tier-card-label">Tier 0</div>
+    <div class="tier-card-detail">Every pilot user. Home equipment, intake, and wearable capture continuously between blood draws.</div>
+    <div class="tier-card-count">4 measures &middot; ongoing</div>
   </div>
-  <div class="ring-card">
-    <div class="ring-card-rule">On-indication</div>
-    <div class="ring-card-label">Ring 2</div>
-    <div class="ring-card-detail">Fires per user per event, triggered by Ring 1 signal or intake.</div>
-    <div class="ring-card-count">9 markers &middot; 0&ndash;2 fires / user</div>
+  <div class="tier-card">
+    <div class="tier-card-gate">Foundation</div>
+    <div class="tier-card-label">Tier 1</div>
+    <div class="tier-card-detail">Every pilot user. Default-in blood panel at week 1 and week 4.</div>
+    <div class="tier-card-count">13 markers</div>
   </div>
-  <div class="ring-card">
-    <div class="ring-card-rule">One-time</div>
-    <div class="ring-card-label">Ring 3</div>
-    <div class="ring-card-detail">First draw only. Lifetime-stable markers captured once.</div>
-    <div class="ring-card-count">4 markers</div>
+  <div class="tier-card">
+    <div class="tier-card-gate">Reach</div>
+    <div class="tier-card-label">Tier 2</div>
+    <div class="tier-card-detail">Fires only when Tier 0 or Tier 1 flags chronic-disease-onset risk. Per-user, per-event.</div>
+    <div class="tier-card-count">9 markers &middot; 0&ndash;2 fires / user</div>
+  </div>
+  <div class="tier-card">
+    <div class="tier-card-gate">Reach</div>
+    <div class="tier-card-label">Tier 3</div>
+    <div class="tier-card-detail">First draw only. Lifetime-stable baseline markers captured once.</div>
+    <div class="tier-card-count">4 markers</div>
   </div>
 </div>
-<h3>Ring 1: default-in, every pilot user, week 1 + week 4 draws</h3>
-<p>13 markers at commodity pricing.</p>
+<aside class="panel-outcome">
+  <span class="panel-outcome-label">What the panel produces</span>
+  A per-user <strong>onset-threshold report</strong> scored against 17 outcome axes and 65 canonical chronic diseases, weighted to onset rather than reference ranges, with trajectory across the 4-week pilot window.
+</aside>
+<h3>Foundation panel &mdash; Tiers 0 and 1 (proposal scope)</h3>
+<p>17 measures every pilot user gets, from ongoing home capture through the default-in blood draw. This is what we are asking the partnership to cover.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
-<th>Marker</th>
-<th>Role</th>
+<th>Measure</th>
 <th>Primary axes</th>
 </tr>
 </thead>
 <tbody>
+<tr class="tier-divider"><td colspan="2">Tier 0 &middot; continuous home capture</td></tr>
 <tr>
-<td data-label="Marker">HbA1c</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">Blood pressure (home cuff)</td>
+<td data-label="Primary axes">Hypertension, CVD, CKD</td>
+</tr>
+<tr>
+<td data-label="Measure">Body weight + waist circumference (scale + tape)</td>
+<td data-label="Primary axes">MetSyn, T2D, MASLD</td>
+</tr>
+<tr>
+<td data-label="Measure">Wearable (sleep, HRV, activity, HR)</td>
+<td data-label="Primary axes">Cardio fitness, metabolic flexibility, recovery</td>
+</tr>
+<tr>
+<td data-label="Measure">Intake questionnaire (21-item, PHQ-2, GAD-7, family hx, behavior)</td>
+<td data-label="Primary axes">Depression, anxiety, behavior risk, lifetime context</td>
+</tr>
+<tr class="tier-divider"><td colspan="2">Tier 1 &middot; default-in blood panel</td></tr>
+<tr>
+<td data-label="Measure">HbA1c</td>
 <td data-label="Primary axes">T2D, Alzheimer's, CKD</td>
 </tr>
 <tr>
-<td data-label="Marker">Fasting glucose</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">Fasting glucose</td>
 <td data-label="Primary axes">T2D, MetSyn</td>
 </tr>
 <tr>
-<td data-label="Marker">Lipid panel (TC, LDL-C, HDL-C, TG)</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">Lipid panel (TC, LDL-C, HDL-C, TG)</td>
 <td data-label="Primary axes">CVD, MetSyn, MASLD</td>
 </tr>
 <tr>
-<td data-label="Marker">Creatinine + eGFR</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">Creatinine + eGFR</td>
 <td data-label="Primary axes">CKD</td>
 </tr>
 <tr>
-<td data-label="Marker">ALT + AST + platelets (FIB-4 derived)</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">ALT + AST + platelets (FIB-4 derived)</td>
 <td data-label="Primary axes">MASLD, advanced fibrosis</td>
 </tr>
 <tr>
-<td data-label="Marker">TSH</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">TSH</td>
 <td data-label="Primary axes">Hypothyroidism</td>
 </tr>
 <tr>
-<td data-label="Marker">CBC with differential</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">CBC with differential</td>
 <td data-label="Primary axes">Anemia, hematologic baseline</td>
 </tr>
 <tr>
-<td data-label="Marker">Ferritin</td>
-<td data-label="Role">Score</td>
+<td data-label="Measure">Ferritin</td>
 <td data-label="Primary axes">Iron stores</td>
 </tr>
 <tr>
-<td data-label="Marker">25-OH Vitamin D</td>
-<td data-label="Role">Score</td>
+<td data-label="Measure">25-OH Vitamin D</td>
 <td data-label="Primary axes">Deficiency, osteoporosis-adjacent</td>
 </tr>
 <tr>
-<td data-label="Marker">Fasting insulin (HOMA-IR derived)</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">Fasting insulin (HOMA-IR derived)</td>
 <td data-label="Primary axes">T2D, MetSyn, MASLD, Alzheimer's, CVD</td>
 </tr>
 <tr>
-<td data-label="Marker">ApoB</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">ApoB</td>
 <td data-label="Primary axes">CVD, atherogenic burden</td>
 </tr>
 <tr>
-<td data-label="Marker">hsCRP</td>
-<td data-label="Role">Score + Flag + Aggregator</td>
+<td data-label="Measure">hsCRP</td>
 <td data-label="Primary axes">Inflammation cluster</td>
 </tr>
 <tr>
-<td data-label="Marker">UACR (urine albumin / creatinine)</td>
-<td data-label="Role">Score + Aggregator</td>
+<td data-label="Measure">UACR (urine albumin / creatinine)</td>
 <td data-label="Primary axes">CKD</td>
 </tr>
 </tbody>
 </table></div>
-<h3>Ring 2: on-indication fires (per-user per-event)</h3>
-<p>Triggered by Ring 1 signals or Layer -1 intake. Not run per-draw. Average user fires 0-2 across a 4-week pilot.</p>
-<p>Cystatin C, Homocysteine, B12 + folate, Iron studies (TIBC, saturation), Free T4, TPO antibodies, AAT level + phenotype, tTG-IgA (celiac serology), OGTT.</p>
-<h3>Ring 3: one-time baseline (first draw only)</h3>
-<p>Lp(a), HIV serology, Hepatitis C antibody, Hepatitis B surface antigen + core.</p>
-<h2 id="ancillary-equipment">Ancillary equipment for home measures (Ring 0)</h2>
-<p>Every pilot user also needs equipment for ongoing capture between draws.</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Item</th>
-<th>Role</th>
-<th>Cost</th>
-<th>Source</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td data-label="Item">BP cuff (Omron-tier)</td>
-<td data-label="Role">Blood pressure tracking</td>
-<td data-label="Cost">~$40-50 one-time</td>
-<td data-label="Source">Baseline fronts, user keeps</td>
-</tr>
-<tr>
-<td data-label="Item">Tape measure</td>
-<td data-label="Role">Waist circumference</td>
-<td data-label="Cost">~$5</td>
-<td data-label="Source">Baseline fronts, user keeps</td>
-</tr>
-<tr>
-<td data-label="Item">Body-weight scale</td>
-<td data-label="Role">Weight tracking</td>
-<td data-label="Cost">~$20-30</td>
-<td data-label="Source">Baseline fronts, user keeps</td>
-</tr>
-<tr>
-<td data-label="Item">Layer -1 intake (21-item questionnaire)</td>
-<td data-label="Role">PHQ-2, GAD-7, family hx, behavior, symptoms</td>
-<td data-label="Cost">$0 marginal</td>
-<td data-label="Source">In-product</td>
-</tr>
-<tr>
-<td data-label="Item">Wearable (continuous)</td>
-<td data-label="Role">Sleep, HRV, activity, HR</td>
-<td data-label="Cost">See wearable ask below</td>
-<td data-label="Source">Partnership opportunity</td>
-</tr>
-</tbody>
-</table></div>
-<p><strong>Non-wearable equipment: ~$65-85 per user.</strong> Baseline fronts this cost. Residents keep the hardware after the pilot.</p>
-<p><strong>Wearable: partnership opportunity.</strong> A subscription-model wearable (Whoop-style, roughly $30/month, no hardware cost) fits a 4-week loanout naturally and hits sleep, HRV, activity, and HR on one device. Oura or Apple Watch work if Edge Esmeralda has existing relationships. Priority bucket is sleep. If Edge Esmeralda covers the wearable tier, that compresses ~$300 of per-pilot cost at 10 residents.</p>
+
+<h3>Reach targets &mdash; Tiers 2 and 3</h3>
+<p>Tiers 2 and 3 are where the panel's full ambition lives. Tier 0 and Tier 1 tell us whether a user is trending toward chronic disease onset. Tiers 2 and 3 tell us <em>why</em>, and what specifically is driving onset risk when it fires. They add depth the pilot can carry only if partnership pricing absorbs them; otherwise the depth moves to phase 2. The cost projection below reflects Tier 2 as &ldquo;if triggered&rdquo; and Tier 3 as TBD, so neither is committed line-by-line at pilot scale.</p>
+<p><strong>Tier 2 &mdash; on-indication fires.</strong> When a Tier 0 or Tier 1 signal flags onset risk, Tier 2 investigates the mechanism behind the flag. Pre-renal function beyond creatinine, vascular inflammation and methylation signaling beyond hsCRP, thyroid autoimmunity when TSH drifts, OGTT when fasting glucose is borderline. Each fire is scoped per-user, per-event, so cost only accrues when the signal warrants it. Markers: Cystatin C, Homocysteine, B12 + folate, Iron studies (TIBC, saturation), Free T4, TPO antibodies, AAT level + phenotype, tTG-IgA (celiac serology), OGTT.</p>
+<p><strong>Tier 3 &mdash; one-time lifetime baseline.</strong> Captured once at first draw, these encode lifetime-stable risk context that does not move across the pilot window: genetic lipid risk, infectious disease baseline, chronic viral exposure. They are reference anchors the onset-threshold scoring pins against, not repeat measures. Markers: Lp(a), HIV serology, Hepatitis C antibody, Hepatitis B surface antigen + core.</p>
+<p>If Invader's existing panel can absorb any of these, they move from &ldquo;deferred&rdquo; to &ldquo;scope&rdquo; for this pilot. Ideal absorption: Tier 2 fires included on-indication at no marginal cost; Tier 3 baseline captured alongside the week 1 draw. That extends the panel from onset-risk screening to onset-risk investigation in a single 4-week window.</p>
 <h2 id="cost-projection">Cost projection, per pilot user, 4-week window</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Scenario</th>
 <th>Labs (2 draws + one-time baseline)</th>
-<th>Ring 2 fires (if triggered)</th>
+<th>Tier 2 fires (if triggered)</th>
 <th>Equipment (non-wearable)</th>
 <th>Wearable</th>
 <th>Total</th>
@@ -971,7 +1079,7 @@ article tr.target-row td:first-child::after {
 <tr>
 <td data-label="Scenario">Full à la carte (LabCorp/Quest rack)</td>
 <td data-label="Labs (2 draws + one-time baseline)">$360-570</td>
-<td data-label="Ring 2 fires (if triggered)">$0-100</td>
+<td data-label="Tier 2 fires (if triggered)">$0-100</td>
 <td data-label="Equipment (non-wearable)">$65-85</td>
 <td data-label="Wearable">$0 (user-owned) or $30 (Whoop)</td>
 <td data-label="Total">$425-785</td>
@@ -979,7 +1087,7 @@ article tr.target-row td:first-child::after {
 <tr class="target-row">
 <td data-label="Scenario">Partnership-compressed (target)</td>
 <td data-label="Labs (2 draws + one-time baseline)">$150-250</td>
-<td data-label="Ring 2 fires (if triggered)">$0-100</td>
+<td data-label="Tier 2 fires (if triggered)">$0-100</td>
 <td data-label="Equipment (non-wearable)">$65-85</td>
 <td data-label="Wearable">$30 or $0 (partnership)</td>
 <td data-label="Total">$245-465</td>
@@ -987,7 +1095,7 @@ article tr.target-row td:first-child::after {
 <tr>
 <td data-label="Scenario">Invader-partnered (delta TBD)</td>
 <td data-label="Labs (2 draws + one-time baseline)">TBD</td>
-<td data-label="Ring 2 fires (if triggered)">TBD</td>
+<td data-label="Tier 2 fires (if triggered)">TBD</td>
 <td data-label="Equipment (non-wearable)">$65-85 (Baseline fronts)</td>
 <td data-label="Wearable">Partnership TBD</td>
 <td data-label="Total">TBD</td>
@@ -997,9 +1105,10 @@ article tr.target-row td:first-child::after {
 <p><strong>At 10 pilot residents, aggregate pilot cost:</strong> ~$4,250-$7,850 fully à la carte; ~$2,450-$4,650 at partnership-tier compression. Invader-partnered aggregate TBD pending delta computation. At 100 residents with a 2x-per-year cadence, scaling projects to $35K-$60K annualized à la carte and $25K-$45K at partnership tier.</p>
 <p>Scenario 3 is the operational ask. Once we can see what Invader's panel already covers, we compute the delta and either fire remaining markers through a secondary vendor or drop them from pilot scope.</p>
 <p><strong>Basis.</strong> Cost ranges use LabCorp/Quest à la carte rack pricing as of Apr 2026 and a &lt;$75-per-draw partnership-tier target at volume. Vendor-confirmed rates come from direct vendor research; negotiated pricing at pilot scale will differ from the ranges shown.</p>
+<p id="ancillary-equipment"><strong>Equipment and ownership.</strong> Tier 0 hardware (BP cuff, scale, tape) costs ~$65&ndash;85 per user one-time. Baseline fronts this cost; residents keep the hardware after the pilot. The wearable is a separate partnership opportunity: a subscription-model device (Whoop-style, ~$30/month, no hardware cost) fits a 4-week loanout naturally and hits sleep, HRV, activity, and HR on one device. Oura or Apple Watch work if Edge Esmeralda has existing relationships. Priority bucket is sleep. If Edge Esmeralda covers the wearable tier, that compresses ~$300 of per-pilot cost at 10 residents.</p>
 <h2 id="asks">Asks, tiered</h2>
 <ol>
-<li><strong>Lab partnership (Invader).</strong> What markers does their panel already cover? Does the partnership support week 1 and week 4 draws, or week 1 only? Are Ring 2 on-indication fires in scope, or do we route those separately?</li>
+<li><strong>Lab partnership (Invader).</strong> What markers does their panel already cover? Does the partnership support week 1 and week 4 draws, or week 1 only? Are Tier 2 on-indication fires in scope, or do we route those separately?</li>
 <li><strong>Wearable partnership (optional).</strong> If Edge Esmeralda has an existing wearable partner, Baseline adapts. If not, a subscription-loanout model for the month is ~$30/user; Edge Esmeralda covering this tier compresses ~$300 of per-pilot cost at 10 residents.</li>
 <li><strong>Micro-trials sequencing (Toku Health).</strong> We understand Toku handles long-format micro-trials during the residency. We would want the week 1 and week 4 lab draws sequenced around intervention windows so Baseline scores trajectory against the intervention specifically, not just generic baseline vs follow-up. Happy to coordinate directly with Toku.</li>
 <li><strong>Everything else, Baseline fronts.</strong> BP cuffs, tapes, scales, Layer -1 intake, Baseline product, scoring, coaching infrastructure. Residents keep the hardware.</li>
@@ -1023,7 +1132,7 @@ article tr.target-row td:first-child::after {
       document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
       return;
     }
-    var targets = document.querySelectorAll('h2, .pullquote, .gap-item, .founder-card, .bliss-card, .rings-visual, .table-wrap, .toc');
+    var targets = document.querySelectorAll('h2, .pullquote, .gap-item, .founder-card, .bliss-card, .tiers-visual, .panel-outcome, .table-wrap, .toc');
     targets.forEach(function(el){ el.classList.add('reveal'); });
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
