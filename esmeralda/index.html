@@ -170,7 +170,7 @@ h1 {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.75rem;
 }
 
 h2 {
@@ -181,8 +181,8 @@ h2 {
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--ink);
-  margin-top: clamp(2.5rem, 5vw, 3.75rem);
-  margin-bottom: 1.1rem;
+  margin-top: clamp(3.5rem, 7vw, 6rem);
+  margin-bottom: 0.9rem;
   padding-top: 2rem;
   border-top: 1px solid rgba(255,255,255,0.06);
 }
@@ -200,7 +200,7 @@ h3 {
 
 article p {
   color: var(--ink-mid);
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.35rem;
   font-size: 1.015rem;
 }
 
@@ -236,9 +236,14 @@ article ul li::marker { color: var(--coral); }
 
 .table-wrap {
   margin: 1.5rem 0 2rem;
+  padding: 0.25rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
-  background: var(--surface);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 30px 60px -40px rgba(0,0,0,0.7);
   overflow: hidden;
 }
 
@@ -270,7 +275,7 @@ article th {
   padding: 0.75rem 0.85rem;
   text-align: left;
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  background: var(--surface-2);
+  background: rgba(255,255,255,0.04);
   overflow-wrap: break-word;
   word-break: normal;
 }
@@ -298,8 +303,12 @@ article td strong { color: var(--ink); }
    No horizontal scroll, no column clipping. */
 @media (max-width: 560px) {
   .table-wrap {
+    padding: 0;
     background: transparent;
+    backdrop-filter: none;
     border: none;
+    box-shadow: none;
+    border-radius: 0;
     overflow: visible;
   }
   article table,
@@ -313,9 +322,13 @@ article td strong { color: var(--ink); }
   }
   article table thead { position: absolute; left: -9999px; }
   article table tr {
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px;
-    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+    backdrop-filter: blur(16px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.07),
+      0 20px 40px -30px rgba(0,0,0,0.7);
     padding: 0.85rem 1rem;
     margin-bottom: 0.6rem;
   }
@@ -358,50 +371,6 @@ article code {
   color: var(--ink);
   padding: 0.15em 0.4em;
   border-radius: 3px;
-}
-
-/* ---------- Proof bar ---------- */
-
-.proof-bar {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin: -0.5rem 0 3rem;
-  padding: 1.25rem 1.5rem;
-  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    0 30px 60px -40px rgba(0,0,0,0.8);
-}
-.proof-bar-item { text-align: center; position: relative; padding: 0 0.5rem; }
-.proof-bar-item + .proof-bar-item::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 20%; bottom: 20%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(224,64,64,0.35), transparent);
-}
-.proof-bar-num {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--ink) 30%, var(--coral) 130%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  margin-bottom: 0.4rem;
-}
-.proof-bar-label {
-  font-family: var(--label);
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
 }
 
 /* ---------- Glass TOC ---------- */
@@ -648,12 +617,6 @@ article tr.target-row td:first-child::after {
     <article>
       <h1>Baseline at Edge Esmeralda: Residency Pilot Spec</h1>
 
-<div class="proof-bar">
-  <div class="proof-bar-item"><div class="proof-bar-num">17</div><div class="proof-bar-label">Outcome axes</div></div>
-  <div class="proof-bar-item"><div class="proof-bar-num">65</div><div class="proof-bar-label">Chronic diseases</div></div>
-  <div class="proof-bar-item"><div class="proof-bar-num">NHANES</div><div class="proof-bar-label">Onset-anchored</div></div>
-</div>
-
 <nav class="toc" aria-label="Section contents">
   <div class="toc-label">At a glance</div>
   <div class="toc-grid">
@@ -664,7 +627,7 @@ article tr.target-row td:first-child::after {
   </div>
 </nav>
 
-<h2>Background and mission state</h2>
+<h2>Background and mission statement</h2>
 <p>Every consumer has the same core question about their health: am I healthy, and can I live healthier? Baseline is a consumer health behavioral change platform that adds a definition around chronic disease onset to answer "am I healthy," then uses that definition to drive measurable behavior change toward "can I live healthier." <strong>The mission is a healthier American consumer.</strong></p>
 
 <aside class="founder-card">
@@ -937,7 +900,7 @@ article tr.target-row td:first-child::after {
       document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
       return;
     }
-    var targets = document.querySelectorAll('h2, .pullquote, .proof-bar, .gap-item, .founder-card, .table-wrap, .toc');
+    var targets = document.querySelectorAll('h2, .pullquote, .gap-item, .founder-card, .table-wrap, .toc');
     targets.forEach(function(el){ el.classList.add('reveal'); });
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
