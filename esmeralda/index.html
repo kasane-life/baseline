@@ -525,6 +525,104 @@ article code {
   margin: 0;
 }
 
+/* ---------- BLISS card (glass aside, same DNA as founder-card) ---------- */
+
+.bliss-card {
+  margin: 2rem 0;
+  padding: 1.5rem 1.75rem;
+  background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 40px 80px -50px rgba(0,0,0,0.9);
+}
+@media (min-width: 1080px) {
+  .bliss-card {
+    float: right;
+    width: 300px;
+    margin: 0.25rem 0 1.5rem 2rem;
+    shape-outside: inset(0 round 16px);
+  }
+}
+.bliss-card-label {
+  font-family: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 0.65rem;
+}
+.bliss-card-name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.bliss-card p {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink-mid);
+  margin: 0;
+}
+
+/* ---------- Rings visual (biomarker panel tiering) ---------- */
+
+.rings-visual {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin: 1.5rem 0 2.5rem;
+}
+@media (min-width: 720px) {
+  .rings-visual { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+}
+.ring-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1.25rem 1.35rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 30px 60px -40px rgba(0,0,0,0.7);
+}
+.ring-card-rule {
+  font-family: var(--label);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--coral);
+}
+.ring-card-label {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.ring-card-detail {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--ink-mid);
+}
+.ring-card-count {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-family: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border-top: 1px dashed rgba(255,255,255,0.08);
+}
+
 /* ---------- Cost table target row ---------- */
 
 article tr.target-row td {
@@ -699,10 +797,35 @@ article tr.target-row td:first-child::after {
 </tr>
 </tbody>
 </table></div>
+<aside class="bliss-card">
+  <div class="bliss-card-label">North star</div>
+  <div class="bliss-card-name">BLISS 2027</div>
+  <p>BLISS is the Hoover Institution's annual Bio Leadership Summit, where bio research, policy, and industry converge. Baseline's phase-2 north-star is contributing as an evidence-generator at BLISS 2027, with consumer-outcomes data from the live cohort. The N-tier curve above ladders toward that slot.</p>
+</aside>
 <p><strong>Edge Esmeralda is a phase-1 acceleration event and a phase-2 seed.</strong> A 4-week residency window compresses 3-6 months of recruitment and structured outcome capture into 4 weeks. Residents generate a coherent outcomes dataset the village can take home as a structured health report. That same dataset contributes to Baseline's N-tier cohort curve toward BLISS 2027. Mutual benefit: Edge Esmeralda gets evidence-grade health outcomes programming for residents; Baseline gets cohort acceleration.</p>
 <p>Sections below specify the operational need to run the pilot: biomarker panel, ancillary equipment, cost projection, and tiered partnership asks.</p>
 <h2 id="biomarker-panel">The biomarker panel</h2>
-<p>The panel is tiered by firing rule into three rings.</p>
+<p>The panel is tiered by firing rule into Rings 1, 2, and 3.</p>
+<div class="rings-visual">
+  <div class="ring-card">
+    <div class="ring-card-rule">Default-in</div>
+    <div class="ring-card-label">Ring 1</div>
+    <div class="ring-card-detail">Every pilot user, week 1 and week 4 draws.</div>
+    <div class="ring-card-count">13 markers</div>
+  </div>
+  <div class="ring-card">
+    <div class="ring-card-rule">On-indication</div>
+    <div class="ring-card-label">Ring 2</div>
+    <div class="ring-card-detail">Fires per user per event, triggered by Ring 1 signal or intake.</div>
+    <div class="ring-card-count">9 markers &middot; 0&ndash;2 fires / user</div>
+  </div>
+  <div class="ring-card">
+    <div class="ring-card-rule">One-time</div>
+    <div class="ring-card-label">Ring 3</div>
+    <div class="ring-card-detail">First draw only. Lifetime-stable markers captured once.</div>
+    <div class="ring-card-count">4 markers</div>
+  </div>
+</div>
 <h3>Ring 1: default-in, every pilot user, week 1 + week 4 draws</h3>
 <p>13 markers at commodity pricing.</p>
 <div class="table-wrap"><table>
@@ -784,7 +907,7 @@ article tr.target-row td:first-child::after {
 <h3>Ring 2: on-indication fires (per-user per-event)</h3>
 <p>Triggered by Ring 1 signals or Layer -1 intake. Not run per-draw. Average user fires 0-2 across a 4-week pilot.</p>
 <p>Cystatin C, Homocysteine, B12 + folate, Iron studies (TIBC, saturation), Free T4, TPO antibodies, AAT level + phenotype, tTG-IgA (celiac serology), OGTT.</p>
-<h3>One-time baseline (first draw only)</h3>
+<h3>Ring 3: one-time baseline (first draw only)</h3>
 <p>Lp(a), HIV serology, Hepatitis C antibody, Hepatitis B surface antigen + core.</p>
 <h2 id="ancillary-equipment">Ancillary equipment for home measures (Ring 0)</h2>
 <p>Every pilot user also needs equipment for ongoing capture between draws.</p>
@@ -900,7 +1023,7 @@ article tr.target-row td:first-child::after {
       document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
       return;
     }
-    var targets = document.querySelectorAll('h2, .pullquote, .gap-item, .founder-card, .table-wrap, .toc');
+    var targets = document.querySelectorAll('h2, .pullquote, .gap-item, .founder-card, .bliss-card, .rings-visual, .table-wrap, .toc');
     targets.forEach(function(el){ el.classList.add('reveal'); });
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
